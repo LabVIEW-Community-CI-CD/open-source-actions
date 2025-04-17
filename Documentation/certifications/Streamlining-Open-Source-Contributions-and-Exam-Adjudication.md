@@ -1,4 +1,4 @@
-# LabVIEW Certification Redefined: Streamlining Open-Source Contributions and Exam Adjudication (draft)
+# LabVIEW Certification Redefined: Streamlining Open-Source Contributions (draft)
 
 ## Executive Summary
 
@@ -9,16 +9,10 @@ The **Open-Source LabVIEW Program** addresses this challenge by:
 2. **Emailing** updated totals to the Certification Team each time a PR is merged.  
 3. Maintaining **public scoreboards**—both repo-specific and global—that provide real-time, audit-friendly point tallies.
 
-Further, this document proposes an **exam-adjudication framework** to handle **disputed or borderline** certification exams. By leveraging **Community Certified LabVIEW Architects (CLAs)** as **third-party adjudicators**, we:
-- **Ensure neutrality** and reduce NI’s internal grading workload.  
-- **Reward** these exam reviewers with **automatic recertification**, recognizing their expertise and volunteer service.
-
 **Why This Matters**:  
 - **Rising Demand**: As open-source contributions scale, ensuring fairness, reliability, and minimal overhead is paramount.  
-- **Credible Verification**: Public scoreboards and third-party CLA involvement offer **transparency** and **peer-led validation**.  
+- **Credible Verification**: Public scoreboards offer **transparency**.  
 - **Efficiency**: Automating the bulk of the work frees NI staff to focus on high-impact tasks and complex certification reviews.
-
-By consolidating **open-source contributions** and **exam adjudication** into a single, streamlined pipeline, NI can maintain **quality, trust, and engagement** among certified LabVIEW developers.
 
 ---
 
@@ -29,8 +23,7 @@ By consolidating **open-source contributions** and **exam adjudication** into a 
 - **[5. T-Shirt Sizing as a Badge of Honor](#5-t-shirt-sizing-as-a-badge-of-honor)**
 - **[6. Key Considerations & Constraints](#6-key-considerations--constraints)**
 - **[7. Closing Summary](#7-closing-summary)**
-- **[8. Proposed Enhancements: Exam Adjudication & Rewards](#8-proposed-enhancements-exam-adjudication--rewards)**
-- **[9. Open Questions](#9-open-questions)**
+- **[8. Open Questions](#8-open-questions)**
 
 ---
 
@@ -178,51 +171,6 @@ Below are sample **T-Shirt Size + Priority** combinations and their **total poin
 **Outcome**: A simple, automated pipeline that **minimizes Certification’s workload** while **maximizing transparency** for contributors and NI staff alike.
 
 [Back to top](#labview-certification-redefined-streamlining-open-source-contributions-and-exam-adjudication)
-
----
-
-## 8. Proposed Enhancements: Exam Adjudication & Rewards
-
-In addition to the **open-source contribution** model above, we propose a complementary **exam-adjudication** framework to further streamline recertification paths, especially for those pursuing or renewing advanced LabVIEW certifications.
-
-### 8.1 One-Level Escalation & Third-Party Adjudicators
-
-- **Current Context**: NI already has dedicated infrastructure and personnel for grading certification exams.  
-- **Proposed Change**: Introduce a single-level escalation process, where **any disputed or borderline exam submissions** are reviewed by **one designated party** *not* directly affiliated with NI or the exam taker. This neutral, third-party board would:  
-  1. **Review** the exam or project submission after it passes an initial automated check (e.g., VI Analyzer or any open-source tooling).  
-  2. **Decide** whether the exam meets the certification standard.
-
-### 8.2 Automated Pre-Screening
-
-- **Initial Review by Tools**: An automated system (such as VI Analyzer or a similar utility) screens each submission’s technical correctness and style compliance.  
-- **Certification Board Review**: Only exams that pass this automated phase proceed to the **Certification Board** or the **third-party adjudicator** if further review is necessary.
-
-### 8.3 Community CLA Involvement
-
-- **Role of Community CLAs**:  
-  - Engage **Community CLA** members who are not NI employees and not the test takers themselves.  
-  - These CLAs serve as **impartial exam reviewers** to settle borderline cases or disputes.  
-- **Benefits**:  
-  - **Reduced Load on NI**: NI staff handle fewer escalations, focusing on the most complex or contested submissions.  
-  - **Peer Review Ethos**: Adjudication by recognized experts in the community ensures fairness and fosters trust.
-
-### 8.4 Rewarding the Adjudicators
-
-- **All Points Covered**:  
-  - As an incentive and appreciation for their ongoing service, **members of this external adjudication board** receive *full recertification coverage*.  
-  - So long as they remain active on the board (e.g., reviewing a minimum number of exam submissions per year), they automatically fulfill their own recertification requirements.  
-- **Rationale**:  
-  - The effort to review and validate exams is significant.  
-  - These CLAs ensure quality and fairness, so **compensating them with all the points they need** for recertification acknowledges their contributions.
-
-### 8.5 Integration with Existing Certification Workflow
-
-1. **Automated Checks**: Incoming exam projects or code are tested with VI Analyzer or a similar tool.  
-2. **NI Certification Team**: Receives only those submissions that pass or nearly pass, reducing manual workload.  
-3. **Third-Party Review**: If results are inconclusive, the third-party community CLA board reviews and makes a final ruling.  
-4. **Adjudicators’ Reward**: Active board members are deemed to have met their recertification requirement (no additional points tally needed).
-
-**Outcome**: This approach leverages the same **open-source mindset**—community collaboration, transparency, and recognition—to streamline certification grading while **rewarding** those who uphold quality standards.
 
 ---
 
