@@ -55,7 +55,7 @@ To use these scores for certification, you must **link** your GitHub handle with
 
 ### Bucket 1 vs. Bucket 2 & 3
 - **Bucket 1** (shipping LabVIEW IP):
-  - Requires an **automated legal paperwork** check (similar to a CLA).  
+  - Requires an **automated legal paperwork** check (similar to a Contributor License Agreement).  
   - If you haven’t completed it, your PR is blocked by branch protection.  
 - **Bucket 2 & 3** (non-shipping or unsupported IP):
   - No special legal paperwork needed.  
