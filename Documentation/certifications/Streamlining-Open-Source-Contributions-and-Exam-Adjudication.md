@@ -12,7 +12,7 @@ The outcome is a **transparent, peer-driven process** that both **rewards** cont
 
 ## 1. Introduction & Context
 Contributors earn **points** for merged PRs, calculated by **T-Shirt Size** (complexity) + **Priority** (impact).  
-- **T-Shirt Size**: S = 1, M = 2, L = 5, XL = 10, XXL = 15  
+- **T-Shirt Size**: XS = 1, S = 2, M = 5, L = 10, XL = 15  
 - **Priority**: P2 = +0, P1 = +5, P0 = +15  
 
 This total appears on:
