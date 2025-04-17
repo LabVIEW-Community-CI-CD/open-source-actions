@@ -49,11 +49,11 @@ If a contributor didn’t link their GitHub handle initially, all past merges re
 
 | Size  | Complexity                   | Points |
 |:-----:|-----------------------------|:------:|
-| S     | Minor changes/fixes         | 1      |
-| M     | Moderate scope changes      | 2      |
-| L     | Significant new features    | 5      |
-| XL    | Major architecture overhaul | 10     |
-| XXL   | Highly complex refactor     | 15     |
+| XS     | Minor changes/fixes         | 1      |
+| S     | Moderate scope changes      | 2      |
+| M     | Significant new features    | 5      |
+| L    | Major architecture overhaul | 10     |
+| XL   | Highly complex refactor     | 15     |
 
 ### 5.2 Priority (Impact)
 
@@ -68,8 +68,8 @@ If a contributor didn’t link their GitHub handle initially, all past merges re
 | T-Shirt | Size Pts | Priority | Priority Pts | Total |
 |:-------:|:--------:|:--------:|:------------:|:-----:|
 | M       | 2        | P0       | +15          | 17    |
-| XL      | 10       | P1       | +5           | 15    |
-| XXL     | 15       | P0       | +15          | 30    |
+| L      | 10       | P1       | +5           | 15    |
+| XL     | 15       | P0       | +15          | 30    |
 
 ---
 
@@ -99,26 +99,6 @@ If a contributor didn’t link their GitHub handle initially, all past merges re
 ---
 
 ## 8. Open Questions
-1. Should CLAs be able to **grant partial points** or only **pass/fail**?  
-2. How do we **standardize** exam checks for multiple LabVIEW versions?  
-3. Does NI **ever override** the third-party board?  
-4. What about **data privacy** when external CLAs see exam content?
 
----
-
-## Potential Contradictions & Clarifications
-
-1. **Single-Level Escalation vs. Possible Overrides**  
-   - We state “one-level escalation to a neutral board,” yet we also ask if NI could *override* decisions. This **needs clarity**: is the third-party decision final or can NI still step in?
-
-2. **T-Shirt Sizing vs. Exam Board**  
-   - T-Shirt sizing is *fully handled* by the open-source pipeline, but exam adjudication may involve CLAs. These are separate processes, which can be **confused** without emphasizing they’re **independent** tracks.
-
-3. **Brief vs. Detailed**  
-   - Some sections highlight automation and others propose manual board review. Ensure it’s understood that **automation is primary**, and **human review** only happens for **edge cases**.
-
-Overall, no direct contradictions affect feasibility. However, the **open questions** underscore that finalizing governance (who can override decisions and how) is crucial for a consistent, streamlined process.
-
----
 
 [Back to top](#labview-certification-redefined-streamlining-open-source-contributions-and-exam-adjudication)
