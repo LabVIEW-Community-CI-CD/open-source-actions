@@ -1,217 +1,252 @@
 # fetch_forks_stars_watchers.py
+
 import logging
 import time
 import requests
 from datetime import datetime
-from repo_baselines import refresh_baseline_info_mid_run
 
-def get_last_page(resp):
-    link_header=resp.headers.get("Link")
-    if not link_header:
-        return None
-    parts=link_header.split(',')
-    for p in parts:
-        if 'rel="last"' in p:
-            import re
-            m=re.search(r'[?&]page=(\d+)',p)
-            if m:
-                return int(m.group(1))
-    return None
-
-def robust_get_page(session, url, params, handle_rate_limit_func, max_retries=20):
-    mini_retry_attempts=3
-    for attempt in range(1,max_retries+1):
-        local_attempt=1
-        while local_attempt<=mini_retry_attempts:
-            try:
-                resp=session.get(url, params=params)
-                handle_rate_limit_func(resp)
-                if resp.status_code==200:
-                    return (resp,True)
-                elif resp.status_code in (403,429,500,502,503,504):
-                    logging.warning("HTTP %d => attempt %d/%d => retry => %s",
-                                    resp.status_code,attempt,max_retries,url)
-                    time.sleep(5)
-                else:
-                    logging.warning("HTTP %d => attempt %d => break => %s",
-                                    resp.status_code,attempt,url)
-                    return (resp,False)
-                break
-            except requests.exceptions.ConnectionError:
-                logging.warning("Connection error => local mini-retry => %s",url)
-                time.sleep(3)
-                local_attempt+=1
-        if local_attempt>mini_retry_attempts:
-            logging.warning("Exhausted local mini-retry => break => %s",url)
-            return (None,False)
-    logging.warning("Exceeded max_retries => give up => %s",url)
-    return (None,False)
+from robust_fetch import robust_get_page
 
 def list_watchers_single_thread(conn, owner, repo, enabled,
                                 session, handle_rate_limit_func,
-                                max_retries):
-    if enabled==0:
-        logging.info("Repo %s/%s => disabled => skip watchers",owner,repo)
+                                max_retries,
+                                use_etags=True):
+    """
+    Watchers remain a full fetch (no date logic).
+    """
+    if enabled == 0:
+        logging.info("[deadbird/watchers] %s/%s => disabled => skip watchers", owner, repo)
         return
-    page=1
-    last_page=None
-    repo_name=f"{owner}/{repo}"
+
+    repo_name = f"{owner}/{repo}"
+    endpoint = "watchers"
+
+    logging.info("[deadbird/watchers] => calling watchers => %s", repo_name)
+    page = 1
+    total_inserted = 0
+
     while True:
-        url=f"https://api.github.com/repos/{owner}/{repo}/subscribers"
-        params={"page":page,"per_page":100}
-        (resp,success)=robust_get_page(session,url,params,handle_rate_limit_func,max_retries)
-        if not success:
-            logging.warning("Watchers => can't get page %d => skip => %s",page,repo_name)
+        url = f"https://api.github.com/repos/{owner}/{repo}/subscribers"
+        params = {"page":page, "per_page":100}
+        (resp, success) = robust_get_page(session, url, params,
+                                          handle_rate_limit_func,
+                                          max_retries,
+                                          endpoint=endpoint)
+        if not success or not resp:
             break
         data=resp.json()
         if not data:
             break
-        if last_page is None:
-            last_page=get_last_page(resp)
-        if last_page:
-            progress=(page/last_page)*100
-            logging.debug(f"[DEBUG] watchers => page={page}/{last_page} => {progress:.3f}%% => {repo_name}")
 
-        for user_obj in data:
-            insert_watcher_record(conn,repo_name,user_obj)
+        new_count=0
+        for w in data:
+            if insert_watcher_record(conn, repo_name, w):
+                new_count += 1
+        total_inserted += new_count
+
         if len(data)<100:
             break
         page+=1
 
+    logging.info("[deadbird/watchers] => done => inserted=%d => %s", total_inserted, repo_name)
+
+
 def insert_watcher_record(conn, repo_name, user_obj):
-    import json
-    raw_str=json.dumps(user_obj,ensure_ascii=False)
-    user_login=user_obj["login"]
     c=conn.cursor()
-    sql="""
-    INSERT INTO watchers (repo_name, user_login, raw_json)
-    VALUES (%s,%s,%s)
-    ON DUPLICATE KEY UPDATE
-      raw_json=VALUES(raw_json)
-    """
-    c.execute(sql,(repo_name,user_login,raw_str))
-    conn.commit()
-    c.close()
+    user_login=user_obj.get("login","")
+    c.execute("""
+      SELECT user_login FROM watchers
+      WHERE repo_name=%s AND user_login=%s
+    """,(repo_name,user_login))
+    row=c.fetchone()
+    if row:
+        c.close()
+        return False
+    else:
+        import json
+        raw_str=json.dumps(user_obj, ensure_ascii=False)
+        sql="""
+        INSERT INTO watchers
+          (repo_name, user_login, raw_json)
+        VALUES
+          (%s,%s,%s)
+        """
+        c.execute(sql,(repo_name,user_login,raw_str))
+        conn.commit()
+        c.close()
+        return True
+
 
 def list_forks_single_thread(conn, owner, repo, enabled,
                              session, handle_rate_limit_func,
-                             max_retries):
-    if enabled==0:
-        logging.info("Repo %s/%s => disabled => skip forks",owner,repo)
+                             max_retries,
+                             use_etags=True,
+                             baseline_dt=None):
+    """
+    Unchanged from older logic. If you want local skipping with baseline_dt,
+    you can keep or remove. The main fix is for stars.
+    """
+    if enabled == 0:
+        logging.info("[deadbird/forks] %s/%s => disabled => skip forks", owner, repo)
         return
-    page=1
-    last_page=None
-    repo_name=f"{owner}/{repo}"
-    while True:
-        old_en=enabled
-        new_base,new_en=refresh_baseline_info_mid_run(conn,owner,repo,None,old_en)
-        if new_en==0:
-            logging.info("Repo %s/%s => toggled disabled => stop forks mid-run",owner,repo)
-            break
 
-        url=f"https://api.github.com/repos/{owner}/{repo}/forks"
-        params={"sort":"oldest","page":page,"per_page":100}
-        (resp,success)=robust_get_page(session,url,params,handle_rate_limit_func,max_retries)
-        if not success:
-            logging.warning("Forks => can't get page %d => skip => %s",page,repo_name)
+    repo_name=f"{owner}/{repo}"
+    endpoint="forks"
+
+    # Example: skip entire call if baseline_dt < now
+    if baseline_dt:
+        now_dt=datetime.utcnow()
+        if baseline_dt<now_dt:
+            logging.debug("[deadbird/forks] baseline_dt < now => skip entire call => %s",repo_name)
+            return
+
+    logging.info("[deadbird/forks] => calling => local skip if fork.created_at>baseline_dt => %s",repo_name)
+    page=1
+    total_inserted=0
+    total_skipped=0
+
+    while True:
+        url = f"https://api.github.com/repos/{owner}/{repo}/forks"
+        params = {"page":page,"per_page":100,"sort":"oldest"}
+        (resp,success)=robust_get_page(session,url,params,
+                                       handle_rate_limit_func,max_retries,
+                                       endpoint=endpoint)
+        if not success or not resp:
             break
         data=resp.json()
         if not data:
             break
-        if last_page is None:
-            last_page=get_last_page(resp)
-        if last_page:
-            progress=(page/last_page)*100
-            logging.debug(f"[DEBUG] forks => page={page}/{last_page} => {progress:.3f}%% => {repo_name}")
 
         for fk in data:
-            insert_fork_record(conn,repo_name,fk)
+            fork_created_str=fk.get("created_at")
+            if fork_created_str:
+                fork_created_dt=datetime.strptime(fork_created_str, "%Y-%m-%dT%H:%M:%SZ")
+                if baseline_dt and fork_created_dt>baseline_dt:
+                    logging.debug("[deadbird/forks] skipping => fork_created_dt=%s => baseline_dt=%s => %s",
+                                  fork_created_dt, baseline_dt, repo_name)
+                    total_skipped+=1
+                    continue
+
+            if insert_fork_record(conn,repo_name,fk):
+                total_inserted+=1
+
         if len(data)<100:
             break
         page+=1
 
+    logging.info("[deadbird/forks] => done => inserted=%d, skipped=%d => %s",
+                 total_inserted,total_skipped,repo_name)
+
+
 def insert_fork_record(conn, repo_name, fork_obj):
-    import json
-    raw_str=json.dumps(fork_obj,ensure_ascii=False)
-    fork_id=fork_obj["id"]
-    cstr=fork_obj.get("created_at")
-    cdt=None
-    if cstr:
-        cdt=datetime.strptime(cstr,"%Y-%m-%dT%H:%M:%SZ")
     c=conn.cursor()
-    sql="""
-    INSERT INTO forks (repo_name, fork_id, created_at, raw_json)
-    VALUES
-      (%s,%s,%s,%s)
-    ON DUPLICATE KEY UPDATE
-      created_at=VALUES(created_at),
-      raw_json=VALUES(raw_json)
-    """
-    c.execute(sql,(repo_name,fork_id,cdt,raw_str))
-    conn.commit()
-    c.close()
+    fork_id=fork_obj.get("id")
+    c.execute("""
+      SELECT fork_id FROM forks
+      WHERE repo_name=%s AND fork_id=%s
+    """,(repo_name,fork_id))
+    row=c.fetchone()
+    if row:
+        c.close()
+        return False
+    else:
+        import json
+        raw_str=json.dumps(fork_obj,ensure_ascii=False)
+        created_str=fork_obj.get("created_at")
+        created_dt=None
+        if created_str:
+            created_dt=datetime.strptime(created_str,"%Y-%m-%dT%H:%M:%SZ")
+
+        sql="""
+        INSERT INTO forks
+          (repo_name, fork_id, created_at, raw_json)
+        VALUES
+          (%s,%s,%s,%s)
+        """
+        c.execute(sql,(repo_name,fork_id,created_dt,raw_str))
+        conn.commit()
+        c.close()
+        return True
+
 
 def list_stars_single_thread(conn, owner, repo, enabled,
-                             baseline_dt,
                              session, handle_rate_limit_func,
-                             max_retries):
-    if enabled==0:
-        logging.info("Repo %s/%s => disabled => skip stars",owner,repo)
-        return
-    repo_name=f"{owner}/{repo}"
-    old_accept=session.headers.get("Accept","")
-    session.headers["Accept"]="application/vnd.github.v3.star+json"
-    page=1
-    last_page=None
-    while True:
-        old_en=enabled
-        new_base,new_en=refresh_baseline_info_mid_run(conn,owner,repo,None,old_en)
-        if new_en==0:
-            logging.info("Repo %s/%s => toggled disabled => stop stars mid-run",owner,repo)
-            break
+                             max_retries,
+                             use_etags=True):
+    """
+    => Full fetch for stars => no baseline_dt argument => no skip logic
+    => Freed from baseline logic => no confusion on call signature.
+    => Accept: application/vnd.github.v3.star+json to get 'starred_at'
+    => Keep paging until data is empty or no next link.
+    """
 
+    if enabled == 0:
+        logging.info("[deadbird/stars] %s/%s => disabled => skip stars", owner, repo)
+        return
+
+    repo_name=f"{owner}/{repo}"
+    endpoint="stars"
+
+    logging.info("[deadbird/stars] => FULL fetch => ignoring baseline => %s",repo_name)
+
+    old_accept = session.headers.get("Accept","")
+    session.headers["Accept"]="application/vnd.github.v3.star+json"
+
+    page=1
+    total_inserted=0
+
+    while True:
         url=f"https://api.github.com/repos/{owner}/{repo}/stargazers"
         params={"page":page,"per_page":100}
-        (resp,success)=robust_get_page(session,url,params,handle_rate_limit_func,max_retries)
-        if not success:
-            logging.warning("Stars => can't get page %d => skip => %s",page,repo_name)
+        (resp,success)=robust_get_page(session,url,params,
+                                       handle_rate_limit_func,max_retries,
+                                       endpoint=endpoint)
+        if not success or not resp:
             break
         data=resp.json()
         if not data:
             break
-        if last_page is None:
-            last_page=get_last_page(resp)
-        if last_page:
-            progress=(page/last_page)*100
-            logging.debug(f"[DEBUG] stars => page={page}/{last_page} => {progress:.3f}%% => {repo_name}")
 
-        import json
-        for stargazer in data:
-            starred_at_str=stargazer.get("starred_at")
-            if not starred_at_str:
-                continue
-            sdt=datetime.strptime(starred_at_str,"%Y-%m-%dT%H:%M:%SZ")
-            if sdt<baseline_dt:
-                # skip older
-                continue
-            user_login=stargazer["user"]["login"]
-            raw_str=json.dumps(stargazer,ensure_ascii=False)
-            insert_star_record(conn,repo_name,user_login,sdt,raw_str)
+        new_count=0
+        for st in data:
+            if insert_star_record(conn,repo_name,st):
+                new_count+=1
+        total_inserted+=new_count
 
         if len(data)<100:
             break
         page+=1
-    session.headers["Accept"]=old_accept
 
-def insert_star_record(conn, repo_name, user_login, starred_dt, raw_str):
+    session.headers["Accept"]=old_accept
+    logging.info("[deadbird/stars] => done => inserted=%d => %s", total_inserted, repo_name)
+
+
+def insert_star_record(conn, repo_name, star_obj):
     c=conn.cursor()
-    sql="""
-    INSERT INTO stars (repo_name, user_login, starred_at, raw_json)
-    VALUES (%s,%s,%s,%s)
-    ON DUPLICATE KEY UPDATE
-      starred_at=VALUES(starred_at),
-      raw_json=VALUES(raw_json)
-    """
-    c.execute(sql,(repo_name,user_login,starred_dt,raw_str))
-    conn.commit()
-    c.close()
+    user_login=star_obj.get("user",{}).get("login","")
+    starred_str=star_obj.get("starred_at")
+    starred_dt=None
+    if starred_str:
+        starred_dt=datetime.strptime(starred_str,"%Y-%m-%dT%H:%M:%SZ")
+
+    c.execute("""
+      SELECT id FROM stars
+      WHERE repo_name=%s AND user_login=%s AND starred_at=%s
+    """,(repo_name,user_login,starred_dt))
+    row=c.fetchone()
+    if row:
+        c.close()
+        return False
+    else:
+        import json
+        raw_str=json.dumps(star_obj,ensure_ascii=False)
+        sql="""
+        INSERT INTO stars
+          (repo_name,user_login,starred_at,raw_json)
+        VALUES
+          (%s,%s,%s,%s)
+        """
+        c.execute(sql,(repo_name,user_login,starred_dt,raw_str))
+        conn.commit()
+        c.close()
+        return True

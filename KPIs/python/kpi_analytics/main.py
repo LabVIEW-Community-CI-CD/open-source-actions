@@ -41,23 +41,17 @@ def main():
 
     # environment
     NUM_FISCAL_QUARTERS= int(os.environ.get("NUM_FISCAL_QUARTERS","8"))
-    GLOBAL_OFFSET= int(os.environ.get("GLOBAL_OFFSET","0"))
-    scaling_repo= os.environ.get("SCALING_REPO","ni/labview-icon-editor")
+    GLOBAL_OFFSET= int(os.environ.get("GLOBAL_OFFSET","-54"))
+    scaling_repo= os.environ.get("SCALING_REPO","ni/actor-framework")
 
     # BFS Repos
     all_repos= [
-        "dotnet/core",
-        "facebook/react",
-        "tensorflow/tensorflow",
-        "EPICS/reconos",
-        "OpenFOAM/OpenFOAM-dev",
-        "FreeCAD/freecad",
+        "ni/actor-framework",
+        "freecad/freecad",
         "fritzing/fritzing-app",
         "qucs/qucs",
-        "OpenSCAD/openscad",
-        "Node-RED/nodered",
-        "OpenPLC/OpenPLC-IDE",
-        "Eclipse/mraa",
+        "openscad/openscad",
+        "eclipse/mraa",
     ]
 
     print(f"=== BFS Aggregator (Refined, Overwriting debug_log.txt) ===")
@@ -71,7 +65,7 @@ def main():
         od= find_oldest_date_for_repo(r)
         if od is None:
             # no data fallback
-            od= datetime(2100,1,1)
+            od= datetime(2007,1,1)
         od= od+ timedelta(days=GLOBAL_OFFSET)
         oldest_dates[r]= od
 
