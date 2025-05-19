@@ -14,7 +14,7 @@ This program is built on a flexible governance model and integrates seamlessly w
 - Designed for strategic alignment between NI-owned IP and external innovation.
 - Reduces engineering backlog by transforming contributors into distributed roadmap accelerators.
 - Directly supports LabVIEW recertification (for eligible holders) through traceable open-source contributions.
-- Ensures governance accountability through BDFL control, structured SteerCos, and metadata-backed traceability.
+- Ensures governance accountability through [BDFL](https://en.wikipedia.org/wiki/Benevolent_dictator_for_life) control, structured SteerCos, and metadata-backed traceability.
 
 ---
 
@@ -40,7 +40,7 @@ This program is built on a flexible governance model and integrates seamlessly w
 
 ## Governance Structure
 
-### Program Manager (BDFL)
+### Program Manager ([BDFL](https://en.wikipedia.org/wiki/Benevolent_dictator_for_life))
 - Acts as the final decision-maker across all SteerCos and project tracks.
 - Ensures technical alignment with internal NI teams and product line owners.
 - Logs and justifies overrides of SteerCo votes to preserve transparency.
@@ -106,13 +106,10 @@ This alignment reduces manual work for the Certification team and allows for sca
 **Q2: Can NI internal teams participate?**  
 **A:** Yes, NI employees and external contributors collaborate equally under the same process.
 
-**Q3: Why use a BDFL model?**  
-**A:** It minimizes decision-making latency and ensures program alignment without requiring full-time community governance.
-
-**Q4: What safeguards exist for contributor experience?**  
+**Q3: What safeguards exist for contributor experience?**  
 **A:** Issue capacity is scaled based on available SteerCo input. SteerCo members signal availability to prevent overcommitment.
 
-**Q5: Is this model intended to evolve?**  
+**Q4: Is this model intended to evolve?**  
 **A:** Yes. As contributor engagement scales, NI may pilot new delegation models and governance policies to extend sustainability.
 
 ---
