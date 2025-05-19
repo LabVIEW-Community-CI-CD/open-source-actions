@@ -1,10 +1,13 @@
+> **⚠️ Note:** This document is a living resource intended to support internal process definition and governance clarity.  
+> It serves as an upstream reference for related documentation and may contain detailed content that is provisional or currently under active iteration.
+
 # Technical Steering Committee (TSC) Guidelines – NI Open-Source Program
 
 ## Executive Summary
 
 This document outlines the structure, responsibilities, and operating norms of the Technical Steering Committees (SteerCos) that participate in NI's Open-Source Program. These guidelines clarify the scope of influence SteerCo members have, how decisions are made, and how this governance structure aligns with broader NI goals, including contributor experience and recertification pathways.
 
-This governance model was inspired in part by community-led models like the Apache Software Foundation, but was adapted to suit the needs of a distributed, part-time volunteer contributor base and a recertification-integrated ecosystem.
+This governance model was inspired in part by community-led models like the Apache, Linux, and Eclipse Software Foundations, but was adapted to suit the needs of a distributed, part-time volunteer contributor base and a recertification-integrated ecosystem.
 
 **Key Highlights:**
 

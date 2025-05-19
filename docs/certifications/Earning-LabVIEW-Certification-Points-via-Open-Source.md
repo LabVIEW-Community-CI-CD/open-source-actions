@@ -1,3 +1,6 @@
+> **⚠️ Note:** This document is a living resource intended to support internal process definition and governance clarity.  
+> It serves as an upstream reference for related documentation and may contain detailed content that is provisional or currently under active iteration.
+
 # Guide for Contributors: Earning LabVIEW Certification Points via Open-Source
 
 This document explains **how contributors** to NI’s open-source LabVIEW projects can earn points toward **LabVIEW certification**. It covers linking your GitHub handle to your NI.com account, understanding T‑Shirt sizes and priorities, viewing your total scores on a public scoreboard, and finally applying those points for recertification.
