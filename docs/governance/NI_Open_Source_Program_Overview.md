@@ -5,6 +5,20 @@
 
 ## Executive Summary
 
+The NI Open-Source Program is a trust-first, contributor-led initiative focused on responsibly open-sourcing LabVIEW IP in alignment with community interest and NI's strategic goals.
+
+The program aims to successfully open source 10 repositories by NI Connect 2026. This is accomplished through a structured, three-stage lifecycle:
+
+1. **Community Interest Discovery** – Contributors apply to join Steering Committees (SteerCos). Every accepted applicant raises the Priority Score of their selected repo.
+2. **Evaluation** – The Open Source Core Team reviews signals and moves top-ranked repos into formal evaluation. Evaluation is governed by clear criteria including IP maturity, strategic alignment, and contributor interest.
+3. **Evaluation Complete** – Repos are launched only when leadership maturity and KPI feasibility are confirmed. Product-consumed repos undergo additional commercial readiness checks.
+
+Only the **top 10 repos**—ranked by the **Priority Score**—are supported at any given time. This ensures NI only invests in projects the community actively wants to support.
+
+Governance is maintained through a balance of community SteerCos, a BDFL-style Program Manager, and a cross-functional Open Source Core Team. NI may nominate internal IP, but activation only occurs when contributors commit time.
+
+This model protects contributor trust and delivers sustainable collaboration between NI and the LabVIEW ecosystem.
+
 This document provides an in-depth overview of the NI Open-Source Program. It outlines how NI is leveraging open-source collaboration to sustainably maintain and modernize legacy IP, incentivize community participation, and enable professional growth through certification-aligned contribution.
 
 This program is built on a flexible governance model and integrates seamlessly with LabVIEW's recertification process. It does **not** provide initial certification — only **recertification credits** to eligible individuals.

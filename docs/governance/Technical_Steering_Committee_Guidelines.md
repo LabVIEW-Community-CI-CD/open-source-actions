@@ -122,3 +122,15 @@ Any other public-facing use requires explicit permission.
 **A:** Your decisions directly shape which issues earn contributors rerecertification credit. T-shirt sizing defines contribution effort and maps to credit.
 
 ---
+
+## Program Context Update
+
+As part of the broader NI Open-Source Program, SteerCos participate in a structured, three-stage repo lifecycle:
+
+1. **Community Interest Discovery** – SteerCo applications signal interest.
+2. **Evaluation** – Accepted contributors increase a repo’s Priority Score. Top 10 repos enter evaluation.
+3. **Evaluation Complete** – Launch only occurs if SteerCo maturity and KPI targets are met.
+
+The program commits to supporting only **10 active repositories** at a time, prioritized by contributor-driven interest. This ensures Steering Committees are formed around viable, community-supported projects and not unilaterally initiated by NI.
+
+SteerCo members play a critical role in validating whether repos are technically feasible and suitable for public contribution.
