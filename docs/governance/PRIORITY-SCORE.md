@@ -1,0 +1,42 @@
+> **⚠️ Note:** This document is a living resource intended to support internal process definition and governance clarity.  
+> It serves as an upstream reference for related documentation and may contain detailed content that is provisional or currently under active iteration.
+
+# PRIORITY-SCORE.md – NI Open-Source Program
+
+This file explains how repositories are prioritized for support.
+
+## 🎯 Purpose
+
+The Priority Score ranks which repos get launched.
+
+## 🔢 How It Works
+
+- +1 for every accepted SteerCo applicant to a repo
+- Only one repo per applicant
+- Maintained by Core Team
+
+## 📊 Impact
+
+- Determines top 10 repos
+- Drives evaluation order
+- Prevents top-down repo selection
+
+## 🛑 Cap = 10 Repos
+
+Only 10 repos are supported at a time.
+Others are in standby.
+
+## ⚖️ Trust-Based
+
+Score is community-driven.
+NI cannot override interest.
+
+## 🛠 How to Raise a Score
+
+- Apply to a SteerCo
+- Be accepted
+- Your repo gets +1
+
+## 📬 Questions?
+
+Ask the Core Team or PM via GitHub or Discord.
