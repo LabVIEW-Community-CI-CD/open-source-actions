@@ -1,3 +1,6 @@
+> **⚠️ Note:** This document is a living resource intended to support internal process definition and governance clarity.  
+> It serves as an upstream reference for related documentation and may contain detailed content that is provisional or currently under active iteration.
+
 # PRIORITY-SCORE.md – NI Open-Source Program
 
 This file explains how repositories are prioritized for support.

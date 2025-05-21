@@ -1,6 +1,7 @@
-# NI Open-Source Program – PROGRAM-GUIDE.md
+> **⚠️ Note:** This document is a living resource intended to support internal process definition and governance clarity.  
+> It serves as an upstream reference for related documentation and may contain detailed content that is provisional or currently under active iteration.
 
-> This document serves as the authoritative governance guide for how repositories are evaluated, prioritized, and launched under NI’s Open-Source Program. It outlines the lifecycle, decision process, contributor-driven controls, and program goals.
+# NI Open-Source Program – PROGRAM-GUIDE.md
 
 ## 🎯 Program Goal
 

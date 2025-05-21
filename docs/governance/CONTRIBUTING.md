@@ -1,3 +1,6 @@
+> **⚠️ Note:** This document is a living resource intended to support internal process definition and governance clarity.  
+> It serves as an upstream reference for related documentation and may contain detailed content that is provisional or currently under active iteration.
+
 # CONTRIBUTING.md – NI Open-Source Program
 
 This document explains how to contribute to a GitHub repository governed by NI’s Open-Source Program.

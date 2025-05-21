@@ -1,3 +1,6 @@
+> **⚠️ Note:** This document is a living resource intended to support internal process definition and governance clarity.  
+> It serves as an upstream reference for related documentation and may contain detailed content that is provisional or currently under active iteration.
+
 # STEERCO-GUIDELINES.md – NI Open-Source Program
 
 This document defines the structure, expectations, and responsibilities of Steering Committee (SteerCo) members within NI’s Open-Source Program. It exists to provide full operational clarity to both new and experienced members.
