@@ -47,11 +47,23 @@ For CLA-based repos:
 
 All CLA/DCO status changes must be documented publicly before enforcement
 
+## 🛡️ Contribution Ownership and Licensing
+
+All contributions are licensed under the repository's declared license (e.g., MIT, BSD).  
+For CLA-based projects, contributors agree that NI may reuse, redistribute, and integrate the IP, subject to the CLA terms.
+
+> ⚖️ Contributors retain copyright to their own code.  
+> NI assumes no ownership unless explicitly assigned via CLA.
+
+CLA agreements will be enforced via GitHub bots (in progress) and logged for audit in compliance with Emerson legal standards.
+
+
 ---
 
 ## §5. Revision History
 
 | Date       | Summary                                      |
 |------------|----------------------------------------------|
+|2025-05-23 | Added IP ownership and CLA reuse language to clarify contributor terms and legal scope【GOVERNANCE-CHANGELOG.md】|
 | 2025-05-22 | Added DCO vs. CLA logic to clarify contribution models |
 | 2025-04-XX | Initial version                              |
