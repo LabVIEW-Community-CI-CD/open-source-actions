@@ -39,6 +39,14 @@ Contributor recognition serves to:
 ---
 
 ## §4. How Badges Are Issued
+## 🔒 Recognition Consent
+
+All public recognition is **opt-in**. Contributors will be prompted in PRs and GitHub Discussions to confirm:
+
+- If their name or GitHub handle may appear in public credits
+- If they wish to receive badge status in public listings
+
+Consent is tracked in GitHub comments or form responses. Opt-out requests are honored immediately.
 
 <!-- 🛠 FIX: Clarified nomination vs. authority logic -->
 
