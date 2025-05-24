@@ -21,11 +21,14 @@ This document explains how to contribute to a GitHub repository governed by NI�
 
 ## 🎓 Recertification
 
-- Only repos [actively governed by the program](https://github.com/topics/ni-open-source)
-- Available information 
-- Only for issues approved and sized by SteerCo
-- Metadata must be traceable
-- PR must be merged
+<!-- 🛠 FIX: Aligned with structured point system and mandatory GitHub traceability -->
+
+- Recertification points apply only to repositories governed by the NI Open-Source Program
+- Only issues **approved and sized by a formed SteerCo** are eligible
+- Contributions must use approved GitHub templates (e.g., `Manual Test Report`, `PR template`)
+- Points are calculated using [this model](https://github.com/ni/open-source/blob/main/docs/Earning-LabVIEW-Certification-Points-via-Open-Source.md)
+- Program Manager confirms eligibility and handles manual overrides as needed
+
 
 ## 📝 PR Guidelines
 
