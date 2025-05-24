@@ -33,26 +33,25 @@ Contributions are tracked directly via GitHub and recognized via badges, SteerCo
 
 ## §3. Contributor Best Practices
 
-- Always use labels (e.g., `bug`, `enhancement`, `test result`, `documentation`)
-- Reference related issues in PRs using `Fixes #123` or `Related to #456`
-- Keep titles specific and meaningful
-- For test reports, include:
-  - **Test ID** (if defined)
-  - **Platform/Version**
-  - **Expected vs. Actual Behavior**
-  - **Outcome** (Pass/Fail/Blocked)
+<!-- 🛠 FIX: Structured input required for recognition -->
+
+- Use GitHub labels consistently (`bug`, `enhancement`, `test result`, etc.)
+- Use templates for all test results and PRs — these are **mandatory** for recognition and certification scoring
+- Reports submitted without templates may be reviewed by the Program Manager for manual approval
 
 ---
 
 ## §4. Manual Testing and Structured Test Reports
 
-To improve the reliability of open-source IP, the program uses GitHub Issues to track manual testing by volunteers.
+<!-- 🛠 FIX: Enforced test report structure -->
 
-When submitting a test report:
-- Use the `Test Result` issue template if available
-- Be clear if the test was exploratory or for a known bug
-- Tag `test-coordinator` if assigned
-- Link to the relevant milestone or GitHub Project board if applicable
+All manual test reports must use the provided **GitHub issue template** (e.g., `Manual Test Report`) to qualify for:
+
+- Certification points
+- Test Coordinator badge
+- Inclusion in release validation
+
+Non-template reports may be accepted by exception, pending Program Manager review.
 
 ---
 
