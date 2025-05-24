@@ -24,17 +24,19 @@ It is **not a vote**, nor is it set by an individual—it is the result of:
 
 ## §2. Scoring Model Overview
 
-The program uses a **4-factor scoring model** to evaluate whether an open-source repo is a good candidate for investment.  
-Each factor is assessed independently, then considered together by the Program Manager and NI leadership.
+<!-- 🛠 FIX: Clarified structured inputs, removed ambiguity on numeric metrics -->
 
-| Criterion        | Owner(s)             | Description |
-|------------------|----------------------|-------------|
-| **Practicality** | NI R&D               | Technical readiness of the codebase. Includes licensing, internal dependencies, documentation, and testability without NI-internal tools. |
-| **Market Breadth** | Product Management | Breadth of applicability across NI’s audience. Considers whether the repo serves a general or niche use case. |
-| **Value**        | Product Management (with user input) | Strategic importance to NI and its users. Informed by customer needs, partner input, and internal roadmap alignment. |
-| **Interest**     | Community (required) | Number and quality of contributors expressing leadership interest. Measured through GitHub activity and SteerCo formation. |
+Scoring includes structured indicators such as:
 
-> 🔍 *Each score informs program-level decisions but does not guarantee launch. Scores help NI focus its attention where impact is highest.*
+- Active SteerCo membership
+- Public test harness presence
+- Community GitHub activity
+- Label usage on issues
+
+Numeric metrics are used to **inform**, not dictate, final scoring.  
+Final score decisions are made by the Program Manager, with input from R&D, PM, and the community.
+
+SteerCo may propose interest metrics but does **not assign scores**.
 
 ---
 
@@ -51,17 +53,11 @@ Each factor is assessed independently, then considered together by the Program M
 
 ## §4. Who Sets the Score?
 
-Scoring is **not a vote** and **not fixed numerically**. Instead, the score is determined by:
+<!-- 🛠 FIX: Reinforced role boundaries -->
 
-- **Input from domain owners** (R&D, PM, Community)
-- **Observed metrics and volunteer leadership**
-- **Program Manager discretion**, based on alignment with program goals
-
-The result is a **tiered priority class**:
-
-- **P0:** Maximum investment focus. Must have strong leadership, immediate business impact, and high community support.
-- **P1:** Solid candidate. Resources may be allocated when available. Continues to evolve.
-- **P2:** Low/no resource commitment from NI. May be community-supported but does not meet current thresholds.
+- Input is collected from R&D, Product Management, and the community
+- SteerCo members may suggest interest metrics but **do not control final scores**
+- The Program Manager makes final scoring decisions
 
 ---
 
