@@ -48,27 +48,30 @@ SteerCo members are *influencers, not approvers*.
 
 ## §4. Meeting Policy
 
-SteerCo meetings will be structured to protect contributors’ time and maintain momentum.
+<!-- 🛠 FIX: Removed implied biweekly cadence and clarified pull-based scheduling -->
 
-| Policy | Description |
-|--------|-------------|
-| 🔄 Cadence | Governance meetings alternate biweekly with IP-specific meetings |
-| 📝 Agendas | Agendas must be published 24 hours in advance and clearly scoped |
-| ✂️ Separation | IP-focused meetings are scoped to a single repo or technical cluster; governance meetings address scoring, process, and program design |
-| 📎 Recording | Key decisions must be documented in public GitHub threads or governance commits |
+| Policy       | Description                                                                                          |
+|--------------|------------------------------------------------------------------------------------------------------|
+| 🔄 Scheduling | SteerCo meetings occur **only when explicitly requested** by committee members or NI. No standing cadence. |
+| 📝 Agendas    | Required by default. Must be published at least 24 hours in advance, even for ad hoc meetings.      |
+| ✂️ Separation | Governance vs. IP meeting scopes remain distinct.                                                   |
+| 📎 Recording  | Key decisions must be documented in GitHub issues or governance commits.                            |
 
 ---
 
 ## §5. Joining or Leaving a SteerCo
 
+<!-- 🛠 FIX: Clarified GitHub-based logging requirement -->
+
 To join a SteerCo:
-- Fill out the public interest form
-- Be selected based on relevance, expertise, or contribution history
-- Commit to a 2-hour/week engagement model
+- Submit interest via the official [GitHub Discussion thread](https://github.com/ni/open-source/discussions/22)
+- Undergo approval by the Open Source Core Team (via private vote)
+- Commit to 2 hours/week of active GitHub participation
 
 To step down:
-- Notify the Program Manager via GitHub or Discord
-- Removal is non-punitive—members may return when ready
+- Notify the Program Manager via GitHub (preferred) or Discord (allowed)
+- Status changes must be logged in GitHub for traceability
+
 
 ---
 
@@ -83,7 +86,8 @@ SteerCo membership:
 
 ## §7. Revision History
 
-| Date       | Summary                                      |
-|------------|----------------------------------------------|
-| 2025-05-22 | Added meeting structure, clarified role boundaries |
-| 2025-04-XX | Initial version                              |
+| Date       | Summary                                             |
+|------------|-----------------------------------------------------|
+| 2025-05-23 | Clarified scheduling logic and GitHub traceability |
+| 2025-05-22 | Added meeting structure, clarified role boundaries  |
+
