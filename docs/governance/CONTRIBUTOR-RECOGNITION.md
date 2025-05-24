@@ -29,22 +29,22 @@ Contributor recognition serves to:
 
 ## §3. Types of Recognition
 
-| Badge | Criteria | Tracked Through |
-|-------|----------|-----------------|
-| 🛠 **Maintainer** | Actively reviews PRs, merges code, maintains repo health for >1 month | GitHub roles + PR history |
-| 🧭 **SteerCo Member** | Publicly listed in accepted SteerCo with 2-hour/week engagement | GitHub discussions + onboarding form |
-| 💬 **Top Contributor** | Authored accepted PRs, test reports, or meaningful discussions across 3+ issues | GitHub issue history |
-| 🧪 **Test Coordinator** | Regularly verifies IP through manual test reports and community coordination | GitHub test issues + Projects |
-| 🧱 **Infra Builder** | Creates GitHub Actions, CI pipelines, or contribution tooling adopted across repos | GitHub commit history |
-| 🎓 **Certified Contributor** *(Planned)* | Integrated with NI recertification process via GitHub-linked tracking | TBD |
+<!-- 🛠 FIX: Reinforced test template requirement -->
+
+| Badge               | Criteria                                                                                      | Tracked Through                  |
+|---------------------|-----------------------------------------------------------------------------------------------|----------------------------------|
+| 🧪 Test Coordinator | Must use `Manual Test Report` GitHub template. Template use is mandatory for test recognition | GitHub test issues + Projects    |
+
 
 ---
 
 ## §4. How Badges Are Issued
 
-- Badges are **awarded manually** by the Program Manager, based on observable GitHub activity.
-- Badge issuance is **documented publicly** in a repo discussion thread (e.g., `open-source/discussions/recognition`).
-- No self-nomination is required—community and SteerCo members may propose nominees.
+<!-- 🛠 FIX: Clarified nomination vs. authority logic -->
+
+- Badges are **issued manually by the Program Manager**
+- Community members may **nominate others via [GitHub Discussions](https://github.com/ni/open-source/discussions/22)**
+- In the Program Manager’s absence, the **Open Source Core Team** may temporarily review and issue badges
 
 ---
 
