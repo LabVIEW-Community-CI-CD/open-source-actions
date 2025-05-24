@@ -64,10 +64,24 @@ The following roles will be scoped in future governance updates:
 - Open Source Core Team (membership, scope, escalation path)
 - Certification Team (policy interface, scoring model governance)
 
+### 🔧 Maintainer (New Role Definition)
+
+Maintainers are contributors with repository-level merge rights and day-to-day decision authority.
+
+| Responsibility        | Description                                               |
+|------------------------|-----------------------------------------------------------|
+| Code Review & Merging | Approve and merge PRs when criteria are met               |
+| Community Support     | Respond to Issues and encourage contributions             |
+| Roadmap Input         | Collaborate with SteerCo and Program Manager              |
+| Badge Eligibility     | Eligible for Maintainer Badge after 60 days of activity   |
+
+Maintainers are appointed by the Program Manager and reviewed quarterly.
+
 ---
 
 ## 📝 Revision History
 
 | Date       | Summary                                                      |
 |------------|--------------------------------------------------------------|
+| 2025-05-23 | Introduced Maintainer role with defined scope and merge authority【GOVERNANCE-CHANGELOG.md】|
 | 2025-05-23 | Initial version added to formalize authority and role logic  |
