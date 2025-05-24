@@ -8,6 +8,16 @@
 
 ---
 
+## 📅 2025-05-23 – Codified Steering Committee-Based Governance Trust and Resilience
+
+- Formally recognized the combined credibility of Technical and Organizational Steering Committees as foundational to contributor trust
+- Granted Organizational SteerCo a temporary hold mechanism when flagged by a majority of active SteerCos
+- Required formal transition plan for Program Manager changes
+- Protected continuity of trust-linked signals across role transitions
+- Established “Governance Watch” GitHub thread for real-time policy oversight
+
+---
+
 ## 📅 2025-05-23 – Introduced GOVERNANCE.md for Central Authority Model
 
 - Added new `GOVERNANCE.md` file to define the Program Manager’s centralized decision authority
