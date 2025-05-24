@@ -79,6 +79,62 @@ Maintainers are appointed by the Program Manager and reviewed quarterly.
 
 ---
 
+## 🔧 Maintainer (New Role Definition)
+
+Maintainers are contributors with repository-level merge rights and day-to-day decision authority.
+
+| Responsibility        | Description                                               |
+|------------------------|-----------------------------------------------------------|
+| Code Review & Merging | Approve and merge PRs when criteria are met               |
+| Community Support     | Respond to Issues and encourage contributions             |
+| Roadmap Input         | Collaborate with SteerCo and Program Manager              |
+| Badge Eligibility     | Eligible for Maintainer Badge after 60 days of activity   |
+
+Maintainers are appointed by the Program Manager and reviewed quarterly.
+
+--
+
+## 👥 Open Source Core Team (New Definition)
+
+The Core Team is a small operational group appointed by the Program Manager to support governance, recognition, and scaling.
+
+| Responsibility       | Description                                             |
+|----------------------|---------------------------------------------------------|
+| Badge Issuance Backup | May issue badges during Program Manager absence        |
+| Governance Feedback   | Review draft policy and flag inconsistencies           |
+| Escalation Triage     | Serve as interim contact for disputes or abuse reports |
+
+Core Team members are listed in the CONTRIBUTORS file and rotated annually.
+
+--
+
+## 🧭 Conflict Resolution and Appeals
+
+Any contributor may request a governance review by opening an Issue labeled `governance-appeal`.
+
+- Appeals are triaged by the Open Source Core Team.
+- Responses are documented publicly within 10 days.
+- SteerCo majority may request a re-review.
+- The Program Manager makes final rulings unless overruled by NI Legal.
+
+This process ensures traceable, fair outcomes across all contributor actions.
+
+--
+
+## 💰 Resourcing and Program Ownership (Planned)
+
+The NI Open-Source Program operates under shared responsibility from:
+- R&D (technical review, scoring input)
+- Product Management (market signals, roadmap alignment)
+- Community Leadership (SteerCo and contributor insight)
+
+Future versions of this file will define:
+- Budget sponsorship (for automation, events, recognition)
+- Dedicated FTEs or Core Team allocations
+- Reporting cadence to NI business leadership
+
+--
+
 ## 📝 Revision History
 
 | Date       | Summary                                                      |
