@@ -51,10 +51,20 @@ This includes but is not limited to:
 The assistant is responsible for enforcing this linkage automatically.  
 If an applicable reference is missing from a governance artifact, the assistant must prompt for its inclusion.
 
+## 🛡️ Change Control and Insertion Policy
+
+This file must only be updated or extended through full, structure-aware output.
+
+Partial snippets, manual insertions, or line-level edits are prohibited unless:
+- The assistant provides a complete replacement version of the file, OR
+- The user explicitly invokes `#manual-edit` for exceptional cases
+
+This policy prevents format drift, section misplacement, and structural inconsistencies during policy evolution.  
+It ensures all changes follow the default structured output standard and remain audit-safe.
+
 ## 🧭 Context
 
 This directive ensures that governance tooling, contributor recognition, and escalation processes remain accountable, transparent, and audit-safe—without relying on unverified assumptions or silent automation.
 
 Issued by: Sergio Velderrain (Program Manager & Architect)  
 Date: 2025-05-25
-
