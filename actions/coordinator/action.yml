@@ -1,35 +1,192 @@
 name: "Coordinator"
-description: "Coordinates various CI tasks by delegating to the appropriate sub-action based on the 'task' input."
+description: "Composite action to route tasks to the appropriate sub-action"
 inputs:
   task:
-    description: "The task to perform (e.g. 'missing-in-project')."
+    description: "Task name to execute (corresponds to sub-action folder name)"
     required: true
   lv-ver:
-    description: "LabVIEW version (e.g. '2021'). Required for 'missing-in-project' task."
-    required: true
+    description: "LabVIEW version (e.g. '2021') – required for tasks that launch LabVIEW"
+    required: false
   arch:
-    description: "Target LabVIEW bitness (either '32' or '64'). Required for 'missing-in-project' task."
+    description: "LabVIEW bitness (32 or 64)"
     required: false
     default: "64"
   project-file:
-    description: "Path to the .lvproj file to inspect. Defaults to 'main.lvproj' in the repository root."
+    description: "Path to the LabVIEW project (.lvproj) to use"
     required: false
     default: "main.lvproj"
+  github_token:
+    description: "GitHub token (for tasks that call GitHub APIs)"
+    required: false
+  relative_path:
+    description: "Base repository path (if different from workspace root)"
+    required: false
+    default: "."
+  labview_minor_revision:
+    description: "LabVIEW minor revision (patch number, e.g. '3')"
+    required: false
+    default: "3"
+  major:
+    description: "Major version number (for versioning tasks)"
+    required: false
+  minor:
+    description: "Minor version number (for versioning tasks)"
+    required: false
+  patch:
+    description: "Patch version number (for versioning tasks)"
+    required: false
+  build:
+    description: "Build number (for versioning tasks)"
+    required: false
+  commit:
+    description: "Commit identifier (SHA) for versioning"
+    required: false
+  release_notes_file:
+    description: "Path to release notes file (for packaging tasks)"
+    required: false
+  display_information_json:
+    description: "Display information JSON content (for packaging tasks)"
+    required: false
+  vipb_path:
+    description: "Path to the .vipb file (for packaging tasks)"
+    required: false
+  current_filename:
+    description: "Current file path (for rename-file task)"
+    required: false
+  new_filename:
+    description: "New file path (for rename-file task)"
+    required: false
+
 outputs:
   passed:
-    description: "True if no missing files were detected (the 'missing-in-project' task passed)."
-    value: ${{ steps.mip.outputs.passed }}
+    description: "True if the operation passed (e.g. no missing files in project)"
+    value: ${{ steps.missing_in_project.outputs.passed }}
   missing-files:
-    description: "Comma-separated list of missing file paths (from the 'missing-in-project' task)."
-    value: ${{ steps.mip.outputs['missing-files'] }}
+    description: "Newline-separated list of missing files (if any)"
+    value: ${{ steps.missing_in_project.outputs['missing-files'] }}
+  missing-files-count:
+    description: "Number of missing files found"
+    value: ${{ steps.missing_in_project.outputs['missing-files-count'] }}
+  version:
+    description: "Computed version string"
+    value: ${{ steps.compute.outputs.VERSION }}
+  major:
+    description: "Computed major version number"
+    value: ${{ steps.compute.outputs.MAJOR }}
+  minor:
+    description: "Computed minor version number"
+    value: ${{ steps.compute.outputs.MINOR }}
+  patch:
+    description: "Computed patch version number"
+    value: ${{ steps.compute.outputs.PATCH }}
+  build:
+    description: "Computed build number"
+    value: ${{ steps.compute.outputs.BUILD }}
+  is_prerelease:
+    description: "Whether the computed version is a pre-release"
+    value: ${{ steps.compute.outputs.IS_PRERELEASE }}
+
 runs:
-  using: composite
+  using: "composite"
   steps:
-    - name: Run Missing-In-Project
-      if: ${{ inputs.task == 'missing-in-project' }}
-      id: mip
-      uses: LabVIEW-Community-CI-CD/open-source-actions/actions/missing-in-project@main
+    - name: Project Build
+      if: ${{ inputs.task == 'project-build' }}
+      uses: ./../project-build
       with:
         lv-ver: ${{ inputs.lv-ver }}
         arch: ${{ inputs.arch }}
         project-file: ${{ inputs['project-file'] }}
+    - name: Project Clean
+      if: ${{ inputs.task == 'project-clean' }}
+      uses: ./../project-clean
+      with:
+        lv-ver: ${{ inputs.lv-ver }}
+        arch: ${{ inputs.arch }}
+        project-file: ${{ inputs['project-file'] }}
+    - name: Missing In Project
+      id: missing_in_project
+      if: ${{ inputs.task == 'missing-in-project' }}
+      uses: ./../missing-in-project
+      with:
+        lv-ver: ${{ inputs.lv-ver }}
+        arch: ${{ inputs.arch }}
+        project-file: ${{ inputs['project-file'] }}
+    - name: Run Unit Tests
+      if: ${{ inputs.task == 'run-unit-tests' }}
+      uses: ./../run-unit-tests
+      with:
+        minimum_supported_lv_version: ${{ inputs.lv-ver }}
+        supported_bitness: ${{ inputs.arch }}
+    - name: Apply VIPC
+      if: ${{ inputs.task == 'apply-vipc' }}
+      uses: ./../apply-vipc
+      with:
+        minimum_supported_lv_version: ${{ inputs.lv-ver }}
+        vip_lv_version: ${{ inputs.lv-ver }}
+        supported_bitness: ${{ inputs.arch }}
+        relative_path: ${{ inputs.relative_path }}
+    - name: Compute Version
+      id: compute
+      if: ${{ inputs.task == 'compute-version' }}
+      uses: ./../compute-version
+      with:
+        github_token: ${{ inputs.github_token }}
+    - name: Build Packed Library
+      if: ${{ inputs.task == 'build-lvlibp' }}
+      uses: ./../build-lvlibp
+      with:
+        minimum_supported_lv_version: ${{ inputs.lv-ver }}
+        supported_bitness: ${{ inputs.arch }}
+        relative_path: ${{ inputs.relative_path }}
+        major: ${{ inputs.major }}
+        minor: ${{ inputs.minor }}
+        patch: ${{ inputs.patch }}
+        build: ${{ inputs.build }}
+        commit: ${{ inputs.commit }}
+    - name: Build VI Package
+      if: ${{ inputs.task == 'build-vi-package' }}
+      uses: ./../build-vi-package
+      with:
+        supported_bitness: ${{ inputs.arch }}
+        minimum_supported_lv_version: ${{ inputs.lv-ver }}
+        labview_minor_revision: ${{ inputs.labview_minor_revision }}
+        major: ${{ inputs.major }}
+        minor: ${{ inputs.minor }}
+        patch: ${{ inputs.patch }}
+        build: ${{ inputs.build }}
+        commit: ${{ inputs.commit }}
+        release_notes_file: ${{ inputs.release_notes_file }}
+        display_information_json: ${{ inputs.display_information_json }}
+    - name: Generate Release Notes
+      if: ${{ inputs.task == 'generate-release-notes' }}
+      uses: ./../generate-release-notes
+      with:
+        output_path: ${{ inputs.release_notes_file }}
+    - name: Modify VIPB Display Info
+      if: ${{ inputs.task == 'modify-vipb-display-info' }}
+      uses: ./../modify-vipb-display-info
+      with:
+        supported_bitness: ${{ inputs.arch }}
+        relative_path: ${{ inputs.relative_path }}
+        vipb_path: ${{ inputs.vipb_path }}
+        minimum_supported_lv_version: ${{ inputs.lv-ver }}
+        labview_minor_revision: ${{ inputs.labview_minor_revision }}
+        major: ${{ inputs.major }}
+        minor: ${{ inputs.minor }}
+        patch: ${{ inputs.patch }}
+        build: ${{ inputs.build }}
+        commit: ${{ inputs.commit }}
+        release_notes_file: ${{ inputs.release_notes_file }}
+        display_information_json: ${{ inputs.display_information_json }}
+    - name: Close LabVIEW
+      if: ${{ inputs.task == 'close-labview' }}
+      uses: ./../close-labview
+      with:
+        minimum_supported_lv_version: ${{ inputs.lv-ver }}
+        supported_bitness: ${{ inputs.arch }}
+    - name: Rename File
+      if: ${{ inputs.task == 'rename-file' }}
+      uses: ./../rename-file
+      with:
+        current_filename: ${{ inputs.current_filename }}
+        new_filename: ${{ inputs.new_filename }}
