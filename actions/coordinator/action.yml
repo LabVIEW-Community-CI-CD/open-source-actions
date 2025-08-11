@@ -1,0 +1,35 @@
+name: "Coordinator"
+description: "Coordinates various CI tasks by delegating to the appropriate sub-action based on the 'task' input."
+inputs:
+  task:
+    description: "The task to perform (e.g. 'missing-in-project')."
+    required: true
+  lv-ver:
+    description: "LabVIEW version (e.g. '2021'). Required for 'missing-in-project' task."
+    required: true
+  arch:
+    description: "Target LabVIEW bitness (either '32' or '64'). Required for 'missing-in-project' task."
+    required: false
+    default: "64"
+  project-file:
+    description: "Path to the .lvproj file to inspect. Defaults to 'main.lvproj' in the repository root."
+    required: false
+    default: "main.lvproj"
+outputs:
+  passed:
+    description: "True if no missing files were detected (the 'missing-in-project' task passed)."
+    value: ${{ steps.mip.outputs.passed }}
+  missing-files:
+    description: "Comma-separated list of missing file paths (from the 'missing-in-project' task)."
+    value: ${{ steps.mip.outputs['missing-files'] }}
+runs:
+  using: composite
+  steps:
+    - name: Run Missing-In-Project
+      if: ${{ inputs.task == 'missing-in-project' }}
+      id: mip
+      uses: LabVIEW-Community-CI-CD/open-source-actions/actions/missing-in-project@main
+      with:
+        lv-ver: ${{ inputs.lv-ver }}
+        arch: ${{ inputs.arch }}
+        project-file: ${{ inputs['project-file'] }}
