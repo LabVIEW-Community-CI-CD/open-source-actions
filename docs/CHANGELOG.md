@@ -5,3 +5,4 @@ All significant documentation changes for this project will be documented in thi
 ## 2025-08-12
 
 - Introduced changelog to track major documentation updates.
+- Updated action docs, index, README, and dispatcher guidance.
