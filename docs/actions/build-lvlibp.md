@@ -1,11 +1,13 @@
 # build-lvlibp
 
 ## Purpose
+
 Build a LabVIEW project’s build specification into a Packed Project Library (.lvlibp).
 
 ## Parameters
 
 ### Required
+
 - **MinimumSupportedLVVersion** (`string`): LabVIEW version used for the build.
 - **SupportedBitness** (`string`): "32" or "64" bitness of LabVIEW.
 - **RelativePath** (`string`): Working directory or project root.
@@ -18,9 +20,11 @@ Build a LabVIEW project’s build specification into a Packed Project Library (.
 - **Commit** (`string`): Commit identifier embedded in the build.
 
 ### Optional
+
 None.
 
 ## CLI example
+
 ```powershell
 pwsh -File actions/Invoke-OSAction.ps1 -ActionName build-lvlibp -ArgsJson '{
   "MinimumSupportedLVVersion": "2020",
@@ -37,6 +41,7 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName build-lvlibp -ArgsJson '{
 ```
 
 ## GitHub Action example
+
 ```yaml
 - name: Build Packed Library
   uses: LabVIEW-Community-CI-CD/open-source-actions/abstract-action@v1
@@ -58,5 +63,6 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName build-lvlibp -ArgsJson '{
 ```
 
 ## Return Codes
+
 - `0` – build succeeded
 - `1` – build failed or g-cli error

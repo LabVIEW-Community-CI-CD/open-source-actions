@@ -2,25 +2,34 @@
 
 To keep documentation consistent and easy to review, please follow these rules when editing or adding Markdown files.
 
+## Action documentation
+
+When adding a new action, copy `docs/actions/_template.md` to `docs/actions/<action-name>.md` and complete each section: Purpose, Parameters, CLI example, GitHub Action example, and Return Codes.
+
 ## Markdown linting
+
 - Run a Markdown linter such as [`markdownlint`](https://github.com/DavidAnson/markdownlint) before submitting changes.
 - Keep one `#`-level heading at the top of each file and increment heading levels sequentially; do not skip levels.
 
 ## Heading levels
+
 - Use `#` for the document title, then `##`, `###`, and so on.
 - Avoid jumping from a `##` heading directly to `####`.
 
 ## Code block conventions
+
 - Use fenced code blocks with triple backticks.
 - Specify the language for syntax highlighting (for example, use `\`\`\`powershell` to start a PowerShell block).
 - Use `text` for blocks that show output rather than code.
 
 ## Linking requirements
+
 - Use relative links for files within this repository.
 - Provide descriptive link text instead of raw URLs.
 - Check that external links resolve correctly.
 
 ## Spell and linter checks
+
 - Run a spell checker or Markdown linter (if available) before opening a pull request to catch formatting and spelling issues early.
 
 ## Preview the docs locally
