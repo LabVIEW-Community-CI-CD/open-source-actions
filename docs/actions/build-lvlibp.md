@@ -66,3 +66,5 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName build-lvlibp -ArgsJson '{
 
 - `0` – build succeeded
 - `1` – build failed or g-cli error
+
+For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).

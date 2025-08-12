@@ -43,3 +43,5 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson '{
 - `0` – all tests passed
 - `2` – tests failed
 - `3` – g-cli or test run error
+
+For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).

@@ -46,3 +46,5 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName missing-in-project -ArgsJson 
 - `0` – no missing files detected
 - `1` – g-cli or VI error
 - `2` – missing files found
+
+For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).

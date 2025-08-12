@@ -39,3 +39,5 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName <action-name> -ArgsJson '{
 
 - `0` – success
 - non‑zero – failure
+
+For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
