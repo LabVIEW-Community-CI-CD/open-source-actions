@@ -1,14 +1,29 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+function Add-GCliToPath {
+  [CmdletBinding()]
+  param([string]$PathToAdd)
+  if ($PSBoundParameters.ContainsKey('PathToAdd') -and $PathToAdd) {
+    $env:PATH = "$PathToAdd$([IO.Path]::PathSeparator)$env:PATH"
+  }
+}
+
+function ConvertTo-SafeJson {
+  [CmdletBinding()]
+  param([hashtable]$Args)
+  $masked = @{}
+  foreach ($k in $Args.Keys) {
+    $v = $Args[$k]
+    if ($k -match '(?i)(token|secret|password|key)') { $v = '***' }
+    $masked[$k] = $v
+  }
+  return ($masked | ConvertTo-Json -Compress)
+}
+
 <#
 .SYNOPSIS
-  Format a LabVIEW UnitTestReport.xml file (best-effort).
-
-.DESCRIPTION
-  Parses the XML report produced by run-unit-tests/RunUnitTests.ps1, prints a simple
-  table, and returns an array of PSCustomObjects with key fields. Warnings are emitted
-  if the file is missing or malformed; this helper never throws.
+  Pretty-prints a LabVIEW UnitTestReport.xml and returns result objects.
 #>
 function Format-UnitTestReport {
   [CmdletBinding()]
@@ -31,17 +46,25 @@ function Format-UnitTestReport {
     return @()
   }
 
-  $rows = @()
+  $col1='TestCaseName'; $col2='ClassName'; $col3='Status'; $col4='Time(s)'; $col5='Assertions'
+  $maxName=$col1.Length; $maxClass=$col2.Length; $maxStatus=$col3.Length; $maxTime=$col4.Length; $maxAssert=$col5.Length
+  $results=@()
+
   foreach ($case in $testCases) {
     $name       = $case.GetAttribute('name')
     $className  = $case.GetAttribute('classname')
+    $status     = $case.GetAttribute('status')
     $time       = $case.GetAttribute('time')
     $assertions = $case.GetAttribute('assertions')
-    $status     = 'Passed'
-    if ($case.SelectSingleNode('failure') -ne $null -or $case.SelectSingleNode('error') -ne $null) { $status = 'Failed' }
-    elseif ($case.SelectSingleNode('skipped') -ne $null) { $status = 'Skipped' }
+    if ([string]::IsNullOrWhiteSpace($status)) { $status = 'Skipped' }
 
-    $rows += [pscustomobject]@{
+    if ($name.Length       -gt $maxName)   { $maxName   = $name.Length }
+    if ($className.Length  -gt $maxClass)  { $maxClass  = $className.Length }
+    if ($status.Length     -gt $maxStatus) { $maxStatus = $status.Length }
+    if ($time.Length       -gt $maxTime)   { $maxTime   = $time.Length }
+    if ($assertions.Length -gt $maxAssert) { $maxAssert = $assertions.Length }
+
+    $results += [pscustomobject]@{
       TestCaseName = $name
       ClassName    = $className
       Status       = $status
@@ -50,14 +73,21 @@ function Format-UnitTestReport {
     }
   }
 
-  try {
-    $rows | Format-Table -AutoSize TestCaseName,ClassName,Status,@{Label='Time(s)';Expression={$_.Time}},Assertions | Out-String | Write-Host
-  } catch {
-    foreach ($r in $rows) {
-      Write-Host ("{0}  {1}  {2}  {3}  {4}" -f $r.TestCaseName, $r.ClassName, $r.Status, $r.Time, $r.Assertions)
+  $header = ($col1.PadRight($maxName) + '  ' + $col2.PadRight($maxClass) + '  ' + $col3.PadRight($maxStatus) + '  ' + $col4.PadRight($maxTime) + '  ' + $col5.PadRight($maxAssert))
+  Write-Host $header
+  foreach ($res in $results) {
+    $line = ($res.TestCaseName.PadRight($maxName) + '  ' +
+             $res.ClassName.PadRight($maxClass)   + '  ' +
+             $res.Status.PadRight($maxStatus)     + '  ' +
+             $res.Time.PadRight($maxTime)         + '  ' +
+             $res.Assertions.PadRight($maxAssert))
+    switch ($res.Status) {
+      'Passed'  { Write-Host $line -ForegroundColor Green }
+      'Skipped' { Write-Host $line -ForegroundColor Yellow }
+      default   { Write-Host $line -ForegroundColor Red }
     }
   }
-  return $rows
+  return $results
 }
 
 function InvokeApplyVIPC {
@@ -73,9 +103,8 @@ function InvokeApplyVIPC {
     [string]$gcliPath
   )
   Write-Information "ApplyVIPC: DryRun=$DryRun"
-  if ($PSBoundParameters.ContainsKey('gcliPath') -and $gcliPath) {
-    $env:PATH = "$gcliPath$([IO.Path]::PathSeparator)$env:PATH"
-  }
+  Add-GCliToPath -PathToAdd $gcliPath
+
   $scriptPath = Join-Path (Join-Path $PSScriptRoot 'apply-vipc') 'ApplyVIPC.ps1'
   $args = @{
     MinimumSupportedLVVersion = $MinimumSupportedLVVersion
@@ -84,10 +113,12 @@ function InvokeApplyVIPC {
     RelativePath              = $RelativePath
     VIPCPath                  = $VIPCPath
   }
+
   if ($DryRun) {
-    Write-Information "DryRun: would run $scriptPath with args $(($args | ConvertTo-Json -Compress))"
+    Write-Information "DryRun: would run $scriptPath with args $(ConvertTo-SafeJson $args)"
     return 0
   }
+
   & $scriptPath @args
   $code = if ($LASTEXITCODE -is [int]) { [int]$LASTEXITCODE } else { if ($?) { 0 } else { 1 } }
   return $code
@@ -111,9 +142,8 @@ function InvokeBuildLvlibp {
     [string]$gcliPath
   )
   Write-Information "BuildLvlibp: DryRun=$DryRun"
-  if ($PSBoundParameters.ContainsKey('gcliPath') -and $gcliPath) {
-    $env:PATH = "$gcliPath$([IO.Path]::PathSeparator)$env:PATH"
-  }
+  Add-GCliToPath -PathToAdd $gcliPath
+
   $scriptPath = Join-Path (Join-Path $PSScriptRoot 'build-lvlibp') 'Build_lvlibp.ps1'
   $args = @{
     MinimumSupportedLVVersion = $MinimumSupportedLVVersion
@@ -127,10 +157,12 @@ function InvokeBuildLvlibp {
     Build                     = $Build
     Commit                    = $Commit
   }
+
   if ($DryRun) {
-    Write-Information "DryRun: would run $scriptPath with args $(($args | ConvertTo-Json -Compress))"
+    Write-Information "DryRun: would run $scriptPath with args $(ConvertTo-SafeJson $args)"
     return 0
   }
+
   & $scriptPath @args
   $code = if ($LASTEXITCODE -is [int]) { [int]$LASTEXITCODE } else { if ($?) { 0 } else { 1 } }
   return $code
@@ -147,15 +179,16 @@ function InvokeMissingInProject {
     [string]$gcliPath
   )
   Write-Information "MissingInProject: DryRun=$DryRun"
-  if ($PSBoundParameters.ContainsKey('gcliPath') -and $gcliPath) {
-    $env:PATH = "$gcliPath$([IO.Path]::PathSeparator)$env:PATH"
-  }
+  Add-GCliToPath -PathToAdd $gcliPath
+
   $scriptPath = Join-Path (Join-Path $PSScriptRoot 'missing-in-project') 'Invoke-MissingInProjectCLI.ps1'
   $args = @{ LVVersion=$LVVersion; Arch=$Arch; ProjectFile=$ProjectFile }
+
   if ($DryRun) {
-    Write-Information "DryRun: would run $scriptPath with args $(($args | ConvertTo-Json -Compress))"
+    Write-Information "DryRun: would run $scriptPath with args $(ConvertTo-SafeJson $args)"
     return 0
   }
+
   & $scriptPath @args
   $code = if ($LASTEXITCODE -is [int]) { [int]$LASTEXITCODE } else { if ($?) { 0 } else { 1 } }
   return $code
@@ -171,19 +204,30 @@ function InvokeRunUnitTests {
     [string]$gcliPath
   )
   Write-Information "RunUnitTests: DryRun=$DryRun"
-  if ($PSBoundParameters.ContainsKey('gcliPath') -and $gcliPath) {
-    $env:PATH = "$gcliPath$([IO.Path]::PathSeparator)$env:PATH"
-  }
+  Add-GCliToPath -PathToAdd $gcliPath
+
   $scriptPath = Join-Path (Join-Path $PSScriptRoot 'run-unit-tests') 'RunUnitTests.ps1'
   $args = @{ MinimumSupportedLVVersion=$MinimumSupportedLVVersion; SupportedBitness=$SupportedBitness }
+
   if ($DryRun) {
-    Write-Information "DryRun: would run $scriptPath with args $(($args | ConvertTo-Json -Compress))"
+    Write-Information "DryRun: would run $scriptPath with args $(ConvertTo-SafeJson $args)"
     return 0
   }
+
   & $scriptPath @args
   $code = if ($LASTEXITCODE -is [int]) { [int]$LASTEXITCODE } else { if ($?) { 0 } else { 1 } }
-  # Best-effort report formatting; never changes the exit code
-  $reportPath = Join-Path (Split-Path $scriptPath -Parent) 'UnitTestReport.xml'
-  try { Format-UnitTestReport -ReportPath $reportPath | Out-Null } catch { Write-Warning $_.Exception.Message }
-  return $code
+
+  # Try to pretty-print the unit test report without changing exit semantics
+  $candidatePaths = @(
+    'UnitTestReport.xml',
+    Join-Path (Split-Path $scriptPath -Parent) 'UnitTestReport.xml'
+  )
+  foreach ($rp in $candidatePaths) {
+    if (Test-Path -LiteralPath $rp) {
+      try { Format-UnitTestReport -ReportPath $rp | Out-Null } catch { Write-Warning $_.Exception.Message }
+      break
+    }
+  }
+
+  return $code  # 0 = success; 2 = test failures; 3 = g-cli error (preserved)
 }

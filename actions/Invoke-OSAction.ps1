@@ -1,3 +1,4 @@
+#requires -Version 7.0
 param(
   [Parameter(Position=0)] [string] $ActionName,
   [Parameter()] [string] $ArgsJson = '{}',
@@ -13,7 +14,7 @@ $ErrorActionPreference = 'Stop'
 
 Import-Module (Join-Path $PSScriptRoot 'OpenSourceActions.psm1') -Force
 
-# Ordered registry of actions (lowercase keys) → adapter functions
+# Ordered, lower-case registry of action names → adapter functions
 $Registry = [ordered]@{
   'apply-vipc'         = 'InvokeApplyVIPC'
   'build-lvlibp'       = 'InvokeBuildLvlibp'
@@ -22,7 +23,6 @@ $Registry = [ordered]@{
 }
 
 function Set-LogLevel {
-  [CmdletBinding()]
   param([string]$Level)
   switch ($Level.ToUpperInvariant()) {
     'ERROR' { $InformationPreference='SilentlyContinue'; $VerbosePreference='SilentlyContinue' }
@@ -38,9 +38,7 @@ function Show-List {
   $Registry.Keys | Sort-Object | ForEach-Object { Write-Host " - $_" }
 }
 
-function Show-Description {
-  [CmdletBinding()]
-  param([Parameter(Mandatory)][string]$Name)
+function Show-Description([string]$Name) {
   $key = $Name.ToLowerInvariant()
   if (-not $Registry.ContainsKey($key)) { throw "Unknown action '$Name'" }
   $funcName = $Registry[$key]
@@ -53,18 +51,30 @@ function Show-Description {
   }
 }
 
+function Filter-Args([hashtable]$InputArgs, [string]$FuncName, [string]$ActionNameForWarn) {
+  $paramNames = (Get-Command $FuncName -ErrorAction Stop).Parameters.Keys
+  $unknown = @()
+  $filtered = @{}
+  foreach ($k in @($InputArgs.Keys)) {
+    if ($paramNames -contains $k) { $filtered[$k] = $InputArgs[$k] } else { $unknown += $k }
+  }
+  if ($unknown.Count) {
+    Write-Warning "Ignored unknown parameters for '$ActionNameForWarn': $($unknown -join ', ')"
+  }
+  return $filtered
+}
+
 try {
-  # Discovery first (no need to parse JSON or push location)
+  # Discovery short-circuits
   if ($ListActions) { Show-List; exit 0 }
   if ($Describe)    { Show-Description -Name $Describe; exit 0 }
 
   if (-not $ActionName) { throw 'ActionName is required unless using -ListActions or -Describe' }
-
   $key = $ActionName.ToLowerInvariant()
   if (-not $Registry.ContainsKey($key)) { throw "Unknown ActionName '$ActionName'. Use -ListActions to see options." }
   $funcName = $Registry[$key]
 
-  # Parse JSON → case-insensitive hashtable
+  # Parse ArgsJson -> case-insensitive hashtable
   $argsHash = @{}
   if ($ArgsJson -and $ArgsJson.Trim()) {
     try {
@@ -73,27 +83,17 @@ try {
       throw "ArgsJson is not valid JSON: $($_.Exception.Message)"
     }
   }
-
-  # Filter unknown keys against adapter parameters to avoid splat errors
-  $funcParams = (Get-Command $funcName -ErrorAction Stop).Parameters.Keys
-  $filteredArgs = @{}
-  foreach ($k in @($argsHash.Keys)) {
-    if ($funcParams -contains $k) {
-      $filteredArgs[$k] = $argsHash[$k]
-    } else {
-      Write-Warning "Ignored unknown argument '$k' for action '$ActionName'"
-    }
-  }
-
-  # Inject dispatcher-owned params
-  if ($DryRun)   { $filteredArgs['DryRun']  = $true }
-  if ($LogLevel) { $filteredArgs['LogLevel'] = $LogLevel }
+  if ($DryRun)   { $argsHash['DryRun']   = $true }
+  if ($LogLevel) { $argsHash['LogLevel'] = $LogLevel }
 
   Set-LogLevel -Level $LogLevel
 
+  # Only pass parameters that the adapter actually accepts
+  $argsHash = Filter-Args -InputArgs $argsHash -FuncName $funcName -ActionNameForWarn $key
+
   if ($WorkingDirectory) { Push-Location -Path $WorkingDirectory }
   try {
-    $result = & $funcName @filteredArgs
+    $result = & $funcName @argsHash
     $exitCode = if ($result -is [int]) { [int]$result }
                 elseif ($LASTEXITCODE -is [int]) { [int]$LASTEXITCODE }
                 else { 0 }
@@ -104,7 +104,8 @@ try {
     if ($WorkingDirectory) { Pop-Location }
   }
   exit $exitCode
-} catch {
+}
+catch {
   Write-Error $_.Exception.Message
   exit 1
 }

@@ -1,12 +1,12 @@
 name: 'Unified LabVIEW Action'
-description: 'Composite action to dispatch LabVIEW CI/CD tasks via a unified PowerShell interface.'
+description: 'Composite action to dispatch LabVIEW CI/CD tasks through a unified PowerShell interface.'
 inputs:
   action_name:
-    description: 'Name of the action to execute (e.g., build-lvlibp).'
+    description: 'Name of the action to execute (e.g. run-unit-tests).'
     required: true
     type: string
   args_json:
-    description: 'JSON arguments for the selected action.'
+    description: 'JSON string of arguments for the selected action.'
     required: false
     default: '{}'
     type: string
@@ -33,7 +33,9 @@ runs:
         $args = @()
         $args += "-ActionName '${{ inputs.action_name }}'"
         $args += "-ArgsJson '''${{ inputs.args_json }}'''"
-        if ('${{ inputs.working_directory }}') { $args += "-WorkingDirectory '${{ inputs.working_directory }}'" }
+        if ('${{ inputs.working_directory }}') {
+          $args += "-WorkingDirectory '${{ inputs.working_directory }}'"
+        }
         $args += "-LogLevel '${{ inputs.log_level }}'"
         if (${{ inputs.dry_run }}) { $args += "-DryRun" }
         & "${{ github.action_path }}/../Invoke-OSAction.ps1" @args
