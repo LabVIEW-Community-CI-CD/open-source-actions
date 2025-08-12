@@ -120,10 +120,10 @@ The adapters mask common secret keys (`token|secret|password|key`) in `DryRun` J
 
 ## Adapters (MVP)
 
-- `apply-vipc` → `actions/apply-vipc/ApplyVIPC.ps1`
-- `build-lvlibp` → `actions/build-lvlibp/Build_lvlibp.ps1`
-- `missing-in-project` → `actions/missing-in-project/Invoke-MissingInProjectCLI.ps1`
-- `run-unit-tests` → `actions/run-unit-tests/RunUnitTests.ps1` (0/2/3 semantics + formatted report)
+- [`apply-vipc`](docs/actions/apply-vipc.md) → `actions/apply-vipc/ApplyVIPC.ps1`
+- [`build-lvlibp`](docs/actions/build-lvlibp.md) → `actions/build-lvlibp/Build_lvlibp.ps1`
+- [`missing-in-project`](docs/actions/missing-in-project.md) → `actions/missing-in-project/Invoke-MissingInProjectCLI.ps1`
+- [`run-unit-tests`](docs/actions/run-unit-tests.md) → `actions/run-unit-tests/RunUnitTests.ps1` (0/2/3 semantics + formatted report)
 
 Add more by following the pattern in `OpenSourceActions.psm1`, exporting the function in `OpenSourceActions.psd1`, and registering it in `Invoke-OSAction.ps1`.
 
