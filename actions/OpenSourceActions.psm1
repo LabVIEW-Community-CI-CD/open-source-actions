@@ -229,5 +229,5 @@ function InvokeRunUnitTests {
     }
   }
 
-  return $code  # 0 = success; 2 = test failures; 3 = g-cli error (preserved)
+  return $code  # 0=success; 2=test failures; 3=g-cli error (preserved)
 }

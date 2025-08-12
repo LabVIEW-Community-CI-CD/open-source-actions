@@ -58,9 +58,7 @@ function Filter-Args([hashtable]$InputArgs, [string]$FuncName, [string]$ActionNa
   foreach ($k in @($InputArgs.Keys)) {
     if ($paramNames -contains $k) { $filtered[$k] = $InputArgs[$k] } else { $unknown += $k }
   }
-  if ($unknown.Count) {
-    Write-Warning "Ignored unknown parameters for '$ActionNameForWarn': $($unknown -join ', ')"
-  }
+  if ($unknown.Count) { Write-Warning "Ignored unknown parameters for '$ActionNameForWarn': $($unknown -join ', ')" }
   return $filtered
 }
 
@@ -74,14 +72,11 @@ try {
   if (-not $Registry.ContainsKey($key)) { throw "Unknown ActionName '$ActionName'. Use -ListActions to see options." }
   $funcName = $Registry[$key]
 
-  # Parse ArgsJson -> case-insensitive hashtable
+  # Parse ArgsJson → case-insensitive hashtable
   $argsHash = @{}
   if ($ArgsJson -and $ArgsJson.Trim()) {
-    try {
-      $argsHash = ConvertFrom-Json -InputObject $ArgsJson -AsHashtable -ErrorAction Stop
-    } catch {
-      throw "ArgsJson is not valid JSON: $($_.Exception.Message)"
-    }
+    try { $argsHash = ConvertFrom-Json -InputObject $ArgsJson -AsHashtable -ErrorAction Stop }
+    catch { throw "ArgsJson is not valid JSON: $($_.Exception.Message)" }
   }
   if ($DryRun)   { $argsHash['DryRun']   = $true }
   if ($LogLevel) { $argsHash['LogLevel'] = $LogLevel }

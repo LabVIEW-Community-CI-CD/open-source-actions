@@ -1,0 +1,42 @@
+name: 'Unified LabVIEW Action'
+description: 'Composite action to dispatch LabVIEW CI/CD tasks through a unified PowerShell interface.'
+inputs:
+  action_name:
+    description: 'Name of the action to execute (e.g. run-unit-tests).'
+    required: true
+    type: string
+  args_json:
+    description: 'JSON string of arguments for the selected action.'
+    required: false
+    default: '{}'
+    type: string
+  working_directory:
+    description: 'Working directory where the action will run.'
+    required: false
+    type: string
+  log_level:
+    description: 'Verbosity level (ERROR|WARN|INFO|DEBUG).'
+    required: false
+    default: 'INFO'
+    type: string
+  dry_run:
+    description: 'If true, simulate the action without side effects.'
+    required: false
+    default: false
+    type: boolean
+runs:
+  using: 'composite'
+  steps:
+    - name: Invoke unified PowerShell action
+      shell: pwsh
+      run: |
+        $args = @()
+        $args += "-ActionName '${{ inputs.action_name }}'"
+        $args += "-ArgsJson '''${{ inputs.args_json }}'''"
+        if ('${{ inputs.working_directory }}') {
+          $args += "-WorkingDirectory '${{ inputs.working_directory }}'"
+        }
+        $args += "-LogLevel '${{ inputs.log_level }}'"
+        if (${{ inputs.dry_run }}) { $args += "-DryRun" }
+        & "${{ github.action_path }}/../Invoke-OSAction.ps1" @args
+        if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
