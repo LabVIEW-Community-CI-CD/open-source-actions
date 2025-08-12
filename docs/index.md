@@ -12,7 +12,18 @@ Unifies LabVIEW CI/CD scripts behind a single PowerShell dispatcher. Use `Invoke
 
 ## Action Reference
 
+- [add-token-to-labview](actions/add-token-to-labview.md)
 - [apply-vipc](actions/apply-vipc.md)
+- [build](actions/build.md)
 - [build-lvlibp](actions/build-lvlibp.md)
+- [build-vi-package](actions/build-vi-package.md)
+- [close-labview](actions/close-labview.md)
+- [generate-release-notes](actions/generate-release-notes.md)
 - [missing-in-project](actions/missing-in-project.md)
+- [modify-vipb-display-info](actions/modify-vipb-display-info.md)
+- [prepare-labview-source](actions/prepare-labview-source.md)
+- [rename-file](actions/rename-file.md)
+- [restore-setup-lv-source](actions/restore-setup-lv-source.md)
+- [revert-development-mode](actions/revert-development-mode.md)
 - [run-unit-tests](actions/run-unit-tests.md)
+- [set-development-mode](actions/set-development-mode.md)
