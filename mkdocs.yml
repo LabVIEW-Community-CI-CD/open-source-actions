@@ -6,6 +6,7 @@ nav:
     - Overview: index.md
     - Architecture: architecture.md
   - Quickstart: quickstart.md
+  - Troubleshooting: troubleshooting.md
   - Unified Dispatcher: UnifiedDispatcher.md
   - Adapter Authoring: adapter-authoring.md
   - Versioning: versioning.md
