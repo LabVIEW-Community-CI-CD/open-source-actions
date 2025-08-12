@@ -34,3 +34,5 @@ After updating the manifest:
 
 ## Communication
 Release notes, README badges, and migration guides help users understand the impact of version changes and how to update their workflows.
+
+Significant documentation revisions are tracked in [CHANGELOG.md](CHANGELOG.md). When you add or modify major documentation sections, append a dated entry or associated release version to keep the changelog current.

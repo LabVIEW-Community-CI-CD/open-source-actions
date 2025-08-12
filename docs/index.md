@@ -7,6 +7,7 @@ Unifies LabVIEW CI/CD scripts behind a single PowerShell dispatcher. Use `Invoke
 - [Quickstart](quickstart.md)
 - [Adapter Authoring Guide](adapter-authoring.md)
 - [Versioning Policy](versioning.md)
+- [Documentation Changelog](CHANGELOG.md)
 
 ## Action Reference
 
