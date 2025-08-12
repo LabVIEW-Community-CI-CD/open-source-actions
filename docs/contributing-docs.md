@@ -22,3 +22,21 @@ To keep documentation consistent and easy to review, please follow these rules w
 
 ## Spell and linter checks
 - Run a spell checker or Markdown linter (if available) before opening a pull request to catch formatting and spelling issues early.
+
+## Preview the docs locally
+
+You can use [MkDocs](https://www.mkdocs.org/) to preview documentation changes on your machine.
+
+1. Install MkDocs and the Material theme:
+
+   ```bash
+   pip install mkdocs mkdocs-material
+   ```
+
+2. Start a local server:
+
+   ```bash
+   mkdocs serve
+   ```
+
+MkDocs serves the site at <http://127.0.0.1:8000/> by default. The server automatically rebuilds when files change, so refresh the browser to see your latest edits.
