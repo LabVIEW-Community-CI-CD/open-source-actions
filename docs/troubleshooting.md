@@ -1,4 +1,5 @@
 # Troubleshooting
+Use this guide to diagnose common problems encountered when running the actions.
 
 ## Setup issues
 - Ensure NI LabVIEW and g-cli are installed and accessible.
