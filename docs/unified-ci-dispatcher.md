@@ -4,81 +4,31 @@
 various LabVIEW build and CI tasks under a single dispatcher. This
 project provides a **unified entrypoint** (`Invoke-OSAction.ps1`) that
 routes a high-level **ActionName** to a specific adapter script,
-standardizing how CI tasks are
-invoked.
-It enables both GitHub Actions workflows and local PowerShell users to
-call any supported LabVIEW CI action through a common interface,
-improving consistency and reducing duplicated script logic.
+standardizing how CI tasks are invoked. It enables both GitHub Actions
+workflows and local PowerShell users to call any supported LabVIEW CI
+action through a common interface, improving consistency and reducing
+duplicated script logic.
+
+For setup instructions, adapter authoring guidelines, and versioning
+policy, see the dedicated docs:
+[Quickstart](quickstart.md), [Adapter Authoring Guide](adapter-authoring.md),
+and [Versioning Policy](versioning.md).
+
+## Table of Contents
+
+- [Quickstart](quickstart.md)
+- [How It Works](#how-it-works-unified-dispatcher-usage)
+- [Discovery Features](#discovery-features)
+- [Available Actions](#available-actions)
+- [Cross-Platform and Runner Guidance](#cross-platform-and-runner-guidance)
+- [Example Workflow](#example-workflow)
+- [Versioning Policy](versioning.md)
+- [Adapter Authoring Guide](adapter-authoring.md)
+- [Getting Help](#getting-help)
 
 ## Quickstart
 
-1.  **Install Requirements:** Ensure you have **NI LabVIEW** (with
-    command-line interface support, often via *g-cli*) installed on the
-    target runner. Most actions require LabVIEW and the NI g-cli tool to
-    be available (Windows runners are
-    recommended).
-    Also verify PowerShell 7+ (`pwsh`) is available for cross-platform
-    script execution.
-2.  **Invoke via Composite Action (GitHub):** Use the provided composite
-    action in your workflow. For example, to **build a LabVIEW Packed
-    Library** using this unified dispatcher:
-
-<!-- -->
-
-    jobs:
-      build_lvlibp:
-        runs-on: windows-latest
-        steps:
-          - uses: actions/checkout@v3
-          - name: Build Packed Library (32-bit)
-            uses: LabVIEW-Community-CI-CD/open-source-actions/abstract-action@v1
-            with:
-              action_name: build-lvlibp
-              args_json: > 
-                {
-                  "MinimumSupportedLVVersion": "2019",
-                  "SupportedBitness": "32",
-                  "RelativePath": ".",
-                  "LabVIEW_Project": "MyProject.lvproj",
-                  "Build_Spec": "My Build",
-                  "Major": 1, "Minor": 0, "Patch": 0,
-                  "Build": 123, "Commit": "abcdef"
-                }
-
-In this step, the composite action invokes the dispatcher to run the
-**Build** task. The `args_json` contains all parameters the action needs
-(here, to build a 32-bit LV library). The dispatcher will locate the
-appropriate script and execute it, failing the step if a problem occurs
-(non-zero exit).
-
-1.  **Invoke via PowerShell (CLI):** You can also call the dispatcher
-    script directly. For example, the above build can be run in a
-    PowerShell session or script:
-
-<!-- -->
-
-    pwsh -File actions/Invoke-OSAction.ps1 -ActionName build-lvlibp -ArgsJson '{
-      "MinimumSupportedLVVersion": "2019",
-      "SupportedBitness": "32",
-      "RelativePath": ".",
-      "LabVIEW_Project": "MyProject.lvproj",
-      "Build_Spec": "My Build",
-      "Major": 1, "Minor": 0, "Patch": 0,
-      "Build": 123, "Commit": "abcdef"
-    }'
-
-This will import the **OpenSourceActions** module and run the **Build**
-adapter. On completion, the script returns with an exit code (0 for
-success or a non-zero error code). You can include optional flags like
-`-WorkingDirectory` to change directory before execution, or `-DryRun`
-to simulate the action (see below).
-
-1.  **Confirm Results:** After running, check the console output and
-    exit code. The unified dispatcher prints informative logs (at INFO
-    level by default) and any errors encountered. For GitHub Actions, a
-    non-zero exit code will mark the step as failed, surfacing any error
-    messages thrown by the adapter or underlying
-    script.
+See [Quickstart](quickstart.md) for installation and usage examples.
 
 ## How It Works (Unified Dispatcher Usage)
 
@@ -271,45 +221,47 @@ Key considerations:
 Below is an example workflow leveraging multiple Open-Source Actions in
 sequence to illustrate a typical CI/CD pipeline for a LabVIEW project:
 
-    name: LabVIEW CI
-    on: [push]
-    jobs:
-      build_test_package:
-        runs-on: windows-latest
-        steps:
-          - uses: actions/checkout@v3
+```yaml
+name: LabVIEW CI
+on: [push]
+jobs:
+  build_test_package:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v3
 
-          - name: Set Development Mode (Prepare Source)
-            uses: LabVIEW-Community-CI-CD/open-source-actions/abstract-action@v1
-            with:
-              action_name: set-development-mode
-              args_json: '{"RelativePath": "."}'
+      - name: Set Development Mode (Prepare Source)
+        uses: LabVIEW-Community-CI-CD/open-source-actions/abstract-action@v1
+        with:
+          action_name: set-development-mode
+          args_json: '{"RelativePath": "."}'
 
-          - name: Run Unit Tests
-            uses: LabVIEW-Community-CI-CD/open-source-actions/abstract-action@v1
-            with:
-              action_name: run-unit-tests
-              args_json: '{"MinimumSupportedLVVersion": "2020", "SupportedBitness": "64"}'
+      - name: Run Unit Tests
+        uses: LabVIEW-Community-CI-CD/open-source-actions/abstract-action@v1
+        with:
+          action_name: run-unit-tests
+          args_json: '{"MinimumSupportedLVVersion": "2020", "SupportedBitness": "64"}'
 
-          - name: Build Library and Package
-            uses: LabVIEW-Community-CI-CD/open-source-actions/abstract-action@v1
-            with:
-              action_name: build
-              args_json: > 
-                {
-                  "RelativePath": ".",
-                  "Major": 1, "Minor": 2, "Patch": 3,
-                  "Build": 0, "Commit": "${{ github.sha }}",
-                  "LabVIEWMinorRevision": "f1",
-                  "CompanyName": "YourOrg",
-                  "AuthorName": "YourName"
-                }
+      - name: Build Library and Package
+        uses: LabVIEW-Community-CI-CD/open-source-actions/abstract-action@v1
+        with:
+          action_name: build
+          args_json: >
+            {
+              "RelativePath": ".",
+              "Major": 1, "Minor": 2, "Patch": 3,
+              "Build": 0, "Commit": "${{ github.sha }}",
+              "LabVIEWMinorRevision": "f1",
+              "CompanyName": "YourOrg",
+              "AuthorName": "YourName"
+            }
 
-          - name: Revert from Development Mode
-            uses: LabVIEW-Community-CI-CD/open-source-actions/abstract-action@v1
-            with:
-              action_name: revert-development-mode
-              args_json: '{"RelativePath": "."}'
+      - name: Revert from Development Mode
+        uses: LabVIEW-Community-CI-CD/open-source-actions/abstract-action@v1
+        with:
+          action_name: revert-development-mode
+          args_json: '{"RelativePath": "."}'
+```
 
 **What this does:** The workflow checks out code, sets the repo to
 development mode (unpacking sources and adding tokens), runs unit tests,
@@ -320,40 +272,9 @@ uses the unified `abstract-action` with a specific `action_name` and
 JSON arguments. If any step fails (returns a non-zero exit code), the
 job will stop and be marked as failed.
 
-## SemVer Versioning
+## Versioning
 
-This project follows **Semantic Versioning (SemVer)** for the
-**OpenSourceActions** PowerShell module and composite action. The
-version is defined in the module manifest (`OpenSourceActions.psd1`) and
-reflected in release tags:
-
-- **MAJOR** version increments for breaking changes: Removing or
-  renaming an action, changing required parameter names/types, or any
-  update that could break existing workflows. (E.g., dropping support
-  for an older LabVIEW version in a way that changes behavior might
-  warrant a major bump.)
-- **MINOR** version increments for new features and non-breaking
-  improvements: Adding a new action adapter, introducing optional
-  parameters to existing actions (while maintaining backward
-  compatibility), or enhancements to logging and DryRun behavior. Users
-  can upgrade minor versions without changing their workflows, gaining
-  new functionality.
-- **PATCH** version increments for bug fixes and documentation updates:
-  Internal fixes that do not affect the interface or outcomes, such as
-  fixing a script’s logic, adjusting default values without breaking
-  expected behavior, or improving documentation and comments.
-
-For example, going from `v1.2.0` to `v1.3.0` indicates a new action or
-feature was added, whereas `v2.0.0` would signal a significant change
-like an incompatible interface update. The module’s version is updated
-in **OpenSourceActions.psd1** (the `ModuleVersion` field) accordingly,
-and each release is accompanied by **Release Notes**.
-
-Please refer to **docs/versioning.md** for details on how to update
-versions and release notes when contributing changes. In general, any
-time the module version changes, update the manifest and include a
-section in the release notes describing what changed (especially for
-major or minor updates).
+See [Versioning Policy](versioning.md) for details on module and action versioning.
 
 ## Getting Help
 
@@ -361,7 +282,7 @@ major or minor updates).
   detailed guides:
 - **Actions Reference:** `docs/actions/` (one file per action) – input
   descriptions, usage examples, and error codes.
-- **Developer Guide:** `docs/developer-guide.md` – how to extend this
+- **Adapter Authoring Guide:** `docs/adapter-authoring.md` – how to extend this
   toolkit with new actions.
 - **Design Rationale:** `docs/design.md` – the architectural reasoning
   behind this unified dispatcher.
@@ -2335,286 +2256,9 @@ without touching anything.
   file). This is good to avoid conflicts with later steps that also need
   to run LabVIEW CLI.
 
-# Developer Guide
+## Adapter Authoring Guide
 
-*For contributors who want to add new actions (adapters) or modify
-existing ones in the Open-Source Actions project.*
-
-This guide explains the structure of the unified dispatcher and how to
-extend it with new adapters and scripts. By following the conventions
-below, your new action will integrate smoothly with the dispatcher,
-composite action, and documentation.
-
-## Architecture Recap
-
-Before adding a new adapter, it's important to understand the
-components:
-
-- **Dispatcher Script (**`Invoke-OSAction.ps1`**):** The entry point
-  that parses inputs and dispatches to an adapter function based on
-  `-ActionName`. It contains a registry (hashtable) mapping action names
-  to function
-  names.
-  It handles common concerns like JSON parsing, setting working
-  directory, and global error
-  catching.
-- **PowerShell Module (**`OpenSourceActions.psm1`**):** This module
-  houses all adapter functions (one per action) and any shared logic.
-  Adapters are named `Invoke<Action>` (e.g., InvokeAddTokenToLabVIEW)
-  and are exported via the module
-  manifest.
-- **Underlying Scripts:** Each action has an underlying script (or set
-  of scripts) that actually implement the functionality (usually
-  existing in the `actions/<action-name>/` folder). The adapter will
-  call this script.
-- **Composite Action (**`action.yml` **in** `abstract-action/`**):**
-  Wraps the dispatcher for GitHub workflows, exposing inputs that mirror
-  `Invoke-OSAction.ps1`
-  parameters.
-
-When adding a new action, you will create/modify elements in several of
-these components.
-
-## Naming Conventions
-
-**Action Name (string):** Should be all-lowercase with words separated
-by hyphens, e.g., `"my-new-action"`. Use a concise, descriptive name
-that fits the pattern of existing actions. Typically, it matches the
-folder name where the script resides.
-
-**Script Filename:** The underlying script (PowerShell `.ps1`)
-implementing the action's logic should go into `actions/<action-name>/`
-folder. If possible, name the script clearly (e.g., `MyNewAction.ps1`).
-If the script is an existing one you are onboarding, keep its name but
-ensure the folder name and ActionName reflect a friendly kebab-case
-name.
-
-**Adapter Function Name:** In the module, name it `Invoke<PascalCase>`
-version of the action. For example, `"my-new-action"` -\> function
-`InvokeMyNewAction`. Use PascalCase for multi-word names, preserving
-meaningful capitalization (e.g., `VIPC` stays uppercase as in
-`InvokeApplyVIPC`). The function name should ideally correlate obviously
-to the script name.
-
-**Folder and File Structure:** Create a new folder under `actions/` if
-not already present:
-
-    actions/
-      my-new-action/
-        MyNewAction.ps1
-
-(You might also include any helper scripts here if needed.)
-
-Update the repository's **registry** in `Invoke-OSAction.ps1` by adding
-an entry mapping `'my-new-action'` to
-`'InvokeMyNewAction'`.
-
-## Adapter Function Template
-
-Add your function to `OpenSourceActions.psm1`. Follow this pattern:
-
-    function InvokeMyNewAction {
-        [CmdletBinding()]
-        param(
-            # Required parameters
-            [Parameter(Mandatory)] [string] $Param1,
-            [Parameter(Mandatory)] [int] $Param2,
-            # ... other required params
-            # Optional parameters
-            [Parameter()] [string] $OptionalParam = "default",
-            [Parameter()] [string] $LogLevel = 'INFO',
-            [switch] $DryRun
-        )
-        Write-Information "Invoking MyNewAction with Param1=$Param1 ..." -InformationAction Continue
-        $scriptPath = Join-Path $PSScriptRoot 'my-new-action/MyNewAction.ps1'
-        # Build argument hashtable for underlying script
-        $args = @{
-            Param1 = $Param1
-            Param2 = $Param2
-            OptionalParam = $OptionalParam
-            # ... include all script params except LogLevel/DryRun
-        }
-        if ($DryRun) {
-            Write-Information "DryRun: would call $scriptPath with args $($args | ConvertTo-Json -Compress)"
-            return 0
-        }
-        & $scriptPath @args
-        if ($LASTEXITCODE -ne 0) {
-            throw "MyNewAction failed with exit code $LASTEXITCODE"
-        }
-        return $LASTEXITCODE
-    }
-
-**Parameter Block:** - Use `[CmdletBinding()]` to get advanced function
-features. - Mark required inputs with `[Parameter(Mandatory)]`. -
-Provide types (use `[string]`, `[int]`, `[bool]`/`[switch]`, etc.,
-matching what the script expects). - Include common optional
-parameters: - `$LogLevel` (string, default 'INFO') – even if your
-adapter doesn't explicitly use it, including it ensures consistency (the
-dispatcher will set \$VerbosePreference based on
-it). -
-`$DryRun` (switch) – allow simulation.
-
-**Calling Underlying Script:** - Use `Join-Path $PSScriptRoot` to locate
-the script file relative to the module, as shown above. This ensures it
-finds the script regardless of current directory. - Prepare a hashtable
-`$args` with keys exactly matching the underlying script's param names.
-Fill it from adapter params. - Do not include LogLevel or DryRun in
-`$args` for the script unless the script explicitly has those parameters
-(most underlying scripts do not, they are older scripts). Instead, the
-adapter handles DryRun by not calling the script.
-
-**DryRun Handling:** - If `$DryRun` is set, log what *would* happen (use
-`Write-Information` for consistency). Typically, log the script path and
-arguments. Then `return 0` to exit successfully without doing
-anything. - Make sure to do this **before** calling the script (see
-template).
-
-**Executing Script:** - Use the call operator `&` with the `$args`
-splatted (`& $scriptPath @args`). This executes the script with those
-parameters. - After execution, check `$LASTEXITCODE`. If it's non-zero,
-throw an exception with a helpful message. Throwing is important: it
-triggers the dispatcher’s catch, leading to a controlled failure and
-proper exit code
-handling. -
-If `$LASTEXITCODE` is zero, simply return it (or just return 0).
-
-**Logging in Adapter:** - Use `Write-Information` for normal logs
-(respecting InformationPreference, which the dispatcher ties to
-LogLevel). For critical errors inside adapter (other than script exit
-codes), you might `Write-Error` or just throw. - Avoid using
-`Write-Host` or direct output – stick to Write-Information/Verbose for
-logs so they can be filtered by LogLevel.
-
-**Mandatory Parameter Validation:** - If an underlying script expects
-certain combos, handle that either in script or adapter. E.g., if some
-params are interdependent, you can add logic in adapter to throw if
-invalid combination.
-
-After writing the function: - Add it to the `FunctionsToExport` list in
-`OpenSourceActions.psd1` (module manifest) so that it’s available when
-module is
-imported. -
-Add the ActionName mapping in `Invoke-OSAction.ps1` registry (as
-mentioned). - Include your function in alphabetical or logical order
-among others in the .psm1 for neatness.
-
-## Registry Update (Invoke-OSAction.ps1)
-
-Open `Invoke-OSAction.ps1` and find the `$registry = @{ ... }`
-hashtable.
-Add an entry for your action:
-
-    $registry = @{
-        'add-token-to-labview' = 'InvokeAddTokenToLabVIEW'
-        'apply-vipc'           = 'InvokeApplyVIPC'
-        # ... existing mappings
-        'my-new-action'        = 'InvokeMyNewAction'
-    }
-
-Make sure the key is lowercase (the dispatcher does `.ToLower()` on
-ActionName before
-lookup)
-and the value is exactly your function name.
-
-No other parts of Invoke-OSAction usually need changing, unless your
-action needs special global handling (rare).
-
-## Logging and Verbosity
-
-The dispatcher sets `$VerbosePreference` and `$InformationPreference`
-based on the `-LogLevel` input. In your adapter or scripts, use: -
-`Write-Verbose "details"` for debug-level logs. -
-`Write-Information "info"` for general info. -
-`Write-Warning "warn msg"` if something is concerning but not fatal. -
-`Write-Error "error msg"` for errors (though in adapters usually you
-throw instead of Write-Error, to stop execution).
-
-This way, if user sets LogLevel to DEBUG, they'll see verbose logs. At
-INFO, they'll see information messages.
-
-## DryRun Considerations
-
-Ensure that any destructive or external-call action in your adapter is
-guarded by DryRun. In many cases, simply not calling the underlying
-script suffices, as the script does the real work. If your adapter
-itself had multiple steps, wrap each in `if (!$DryRun) { ... }` as
-needed, but often just the main call is enough.
-
-Also, your underlying script might support a `-WhatIf` or similar. We
-generally don't rely on that; we handle DryRun at the adapter level.
-
-Test DryRun by running the dispatcher with your action and `-DryRun` to
-see that it logs the intended message and does nothing else.
-
-## Testing Your Adapter
-
-**Pester Tests:** Add or update tests in `tests/pester/` for your
-adapter. Create a `.Tests.ps1` file if not exists. Write tests to
-cover: - Adapter function accepts valid input and calls underlying
-script (you might mock the script call). - Mandatory parameter
-enforcement (calling without a required param should throw). - DryRun
-returns success without executing script (you can set up a dummy script
-that would create a file, and ensure DryRun didn't create it, for
-example). - If possible, test that a non-zero \$LASTEXITCODE from script
-leads to the adapter throwing.
-
-Because some adapters call LabVIEW, full integration tests might be
-tricky. Use mocking where appropriate or limit to logic tests.
-
-**Smoke Testing:** On a real system (or a GitHub runner), perform a
-manual run of the new action: - Use the composite action in a workflow
-or run `pwsh Invoke-OSAction.ps1 -ActionName my-new-action ...` with
-sample args. - Ensure it does what you expect (check files, outputs,
-exit code). - Test error cases: give bad input to see if it fails
-gracefully with a clear message.
-
-## Module Version and Documentation
-
-If your new action is a significant addition, consider bumping the
-module version (MINOR, typically) in the `.psd1` and adding an entry to
-release notes. See **docs/versioning.md** for version policy.
-
-Document the new action: - Create a markdown file in `docs/actions/` for
-it, following the format of others, so users know how to use it. -
-Update any central lists (e.g., the README's list of actions) to include
-it.
-
-By maintaining documentation and tests alongside the code, we keep
-quality high.
-
-## Logging and Error Handling Guidelines
-
-- **No Plain Write-Host:** Use structured logging
-  (Information/Verbose/Warning/Error).
-- **Throw on Failure:** Adapters should `throw` on any condition where
-  the action didn't accomplish its task. This triggers the unified error
-  handling (the dispatcher will catch it and convert to a standardized
-  error message with exit code
-  1).
-- **Exit Codes:** Under normal operation, do not call `Exit` in
-  adapters. Just return \$LASTEXITCODE or throw. The dispatcher calls
-  `exit $exitCode` at the very end for
-  you.
-  Underlying scripts might call `exit` or set \$LASTEXITCODE; our
-  pattern is to avoid explicit `exit` in adapters.
-- **Cleaning Up:** If your adapter creates any temp files or changes
-  state, try to revert it or document that the action does this. The
-  framework doesn't have a formal rollback, but for example, if you set
-  an environment variable or registry, consider resetting it in a
-  `finally` if an error happens. Most actions won't need this.
-
-## Following these Steps
-
-By adhering to these conventions, your new action will be: -
-Discoverable via `Invoke-OSAction -ListActions` (since it's in the
-registry). - Usable in GitHub Actions via the `action_name` input. -
-Consistent in error handling and logging behavior with other actions. -
-Easier to maintain and debug.
-
-Happy coding, and thank you for contributing to Open-Source Actions!
-Make sure to run the full test suite (`Invoke-Pester`) and update
-documentation before submitting your changes.
+See [Adapter Authoring Guide](adapter-authoring.md) for instructions on creating new actions.
 
 # Design Rationale
 
@@ -2859,188 +2503,6 @@ older scripts (which are proven but varied) behind a clean interface.
 This yields a more predictable CI pipeline behavior and simplifies both
 usage and future development of this toolkit.
 
-# Versioning Policy
-
-The **OpenSourceActions** module and composite action follow Semantic
-Versioning (SemVer) to clearly communicate changes. The version number
-is stored in the module manifest (`OpenSourceActions.psd1`) as
-`ModuleVersion`, and tags/releases of the repository use the same
-version.
-
-Format: **MAJOR.MINOR.PATCH**
-
-- **MAJOR version** – Increases for incompatible changes. This includes:
-- Removal of an action or a breaking rename of an action name.
-- Changes to required input names or types for an existing action (so
-  that workflows using the old inputs would break).
-- Fundamental changes to behavior or output that would likely require
-  users to adjust (e.g., changing exit code conventions, removing DryRun
-  support, etc.).
-- Drops in support (e.g., discontinuing support for a particular LabVIEW
-  version might not trigger MAJOR unless it affects the interface, but
-  if it affects broad usage it could).
-
-*When incrementing MAJOR, aim to batch breaking changes and clearly
-document all of them in release notes.*
-
-- **MINOR version** – Increases for added functionality or improvements
-  that are backwards compatible:
-- Adding a new action adapter (new ActionName) is a minor feature
-  addition (existing workflows aren’t affected, they just have new
-  options).
-- Adding optional parameters to an existing action (provided existing
-  calls without that param still work with defaults).
-- Changes in underlying behavior that don’t require workflow changes but
-  offer new capabilities (e.g., performance improvements, better
-  logging, supporting a new LabVIEW version in an action implicitly).
-- Marking features as deprecated (not removed yet) might accompany a
-  minor if it’s just a warning.
-
-*MINOR updates should be safe to adopt; they should not break any
-existing usage, only extend it.*
-
-- **PATCH version** – Increases for bug fixes, documentation updates,
-  and other trivial changes that do not affect the interface:
-- Fixing a bug in a script or adapter that doesn’t change how you call
-  it, but maybe corrects an exit code or handles an error properly.
-- Minor tweaks to logging messages, typos in output.
-- Internal refactoring that doesn’t change outward behavior.
-- Documentation changes (which don’t impact runtime).
-- Changes to tests, CI pipeline configs, etc., that don’t affect the
-  module’s runtime.
-
-*PATCH updates should not introduce any new features or change any
-behaviors that users rely on (other than the bug now being fixed).*
-Ideally, a user could update the patch version without even noticing
-except the bug is gone.
-
-**Initial Development and 0.x:**  
-If the module is pre-1.0, it may not fully follow SemVer guarantees (as
-SemVer allows breaking changes in 0.x). However, given that this project
-is already used in CI, we strive to adhere to the spirit of SemVer even
-in 0.x by minimizing breakage. Once 1.0.0 is released, strict SemVer
-will be followed.
-
-## Updating Version in .psd1
-
-When ready to release a new version: 1. Open `OpenSourceActions.psd1`.
-Find `ModuleVersion = 'X.Y.Z'`. 2. Update it to the new version number
-according to the changes made. - If only backwards-compatible features
-added, increment MINOR, reset PATCH to 0 (e.g., 1.2. **3** -\> 1.3.0). -
-If only bug fixes, increment PATCH (e.g., 1.2.3 -\> 1.2.4). - If
-breaking changes, increment MAJOR, reset MINOR and PATCH to 0 (e.g.,
-1.4.2 -\> 2.0.0). 3. Update `ModuleVersion` and also `GUID` if it’s a
-major change (PowerShell module GUID change is optional, usually keep
-same GUID for same module unless you want side-by-side installs).
-
-Also check the composite action if it has a version hardcoded (usually
-it doesn’t need a version in yaml itself except for documentation).
-
-## Release Notes
-
-Every version change should be accompanied by an update to
-**ReleaseNotes** (or `CHANGELOG.md` if we maintain one). We often use
-`Tooling/deployment/release_notes.md` or GitHub Releases to document
-changes: - List the changes grouped by Added, Changed, Fixed, Removed
-(especially for major). - For major or minor, highlight if any action
-names added or any inputs changed. - For patches, describe the bug
-fixes.
-
-The `generate-release-notes` action can aid in drafting notes from
-commit history, but you should edit it for clarity and grouping.
-
-If using GitHub Releases, create a release with the tag `vX.Y.Z` and
-include the notes. If just using a markdown file in repo, update it
-under a heading for that version.
-
-Examples:
-
-    ## [1.3.0] - 2025-05-10
-    ### Added
-    - New action: `lint-project` for running VI Analyzer (no breaking changes).
-
-    ### Changed
-    - `run-unit-tests` now outputs a summary table (format improved, but no input changes).
-
-    ### Fixed
-    - `apply-vipc` now correctly throws on file-not-found (was returning 0 before).
-
-    ## [1.2.2] - 2025-04-01
-    ### Fixed
-    - Resolved an issue where `build-lvlibp` would throw a null error if Build_Spec was not found (now provides a clear error message).
-
-Keep the tone consistent and mention contributors if applicable.
-
-## Maintaining Compatibility
-
-When making changes: - If you think a change might break existing
-workflows, consider gating it behind a new parameter or clearly call it
-out in release notes and plan it for a major release. - For
-deprecations, you can implement a change in a minor (e.g., log a warning
-that a parameter will be removed in next major) to give users notice.
-
-## Version Bump Workflow
-
-Typically: - During development, the version in psd1 stays at the
-upcoming target (e.g., "1.3.0-dev" or just "1.3.0" if we know next is
-minor). You could append a suffix like -beta for pre-releases if needed,
-but PowerShell might not like non-numeric versions in ModuleVersion. -
-Right before release, ensure all changes since last release are
-accounted for, then set the final version and tag the release. - After
-release, if you start working on next version, you can increment in psd1
-immediately or keep the same until you have something significant. Just
-don't forget to bump when releasing.
-
-## Composite Action Versioning
-
-The composite GitHub Action shares the versioning. We will likely tag
-the repository with the same version, so users can use `@v1.3.0` or if
-we have a moving tag `@v1` for latest minor. Keep in mind: - If you
-change the composite action inputs or its logic in a breaking way, that
-might also require a major (but that’s unlikely; composite is thin). -
-We might maintain a major branch tag (like `v1` tag that points to
-latest 1.x). Typically, create a Git tag for each release.
-
-Document in the release notes how users should reference the action
-(especially if a major bump happened: e.g., "Update your workflow to use
-`uses: ...@v2` for version 2.x").
-
-## Examples of Changes and Their Impact
-
-- **Example 1:** Add `lint-project` action. This is new functionality,
-  doesn’t break anything existing. -\> Bump MINOR.
-- **Example 2:** Change `build-vi-package` so that it requires a new
-  param that previously was optional (say we decide ReleaseNotesFile
-  should be mandatory – hypothetical). That breaks old usage not
-  providing it. -\> Bump MAJOR.
-- **Example 3:** Fix `run-unit-tests` parsing to correctly handle
-  special characters in test names. This fix doesn’t change how you call
-  it. -\> Bump PATCH.
-- **Example 4:** Rename `set-development-mode` to `enter-dev-mode`.
-  That’s a breaking interface change (action_name different). Even if we
-  keep an alias temporarily, it’s effectively breaking. -\> Bump MAJOR.
-- **Example 5:** Underlying script of `apply-vipc` now supports LabVIEW
-  2025, but no interface change. -\> Bump MINOR (if we consider new
-  LabVIEW support a feature) or maybe PATCH (if it's just an internal
-  update with no user-facing impact besides it now works where it maybe
-  didn’t).
-- **Example 6:** Remove deprecated action or parameter. -\> Bump MAJOR.
-
-We try to batch removals or big changes to avoid frequent major bumps.
-Minor bumps can be more frequent.
-
-## Communication
-
-Communicate version changes via: - Release notes (as discussed). -
-Possibly README badge or note about latest version. - If a major change,
-consider also an upgrade/migration note (the docs/migration.md can be
-updated if needed).
-
-By following this versioning policy, users can pin to a major version
-for stability or track minor updates for new features, with confidence
-about the impact of updating. It also helps maintainers plan and merge
-changes appropriately, grouping breaking changes when necessary.
-
 # Migration Guide
 
 So you have been using the individual PowerShell scripts in your CI
@@ -3244,7 +2706,6 @@ documentation indicate the direction.
   wrong in a clear way (including underlying script output).
 - Use `log_level: DEBUG` on the composite to get verbose logs if needed:
 
-<!-- -->
 
 - with:
         action_name: build-lvlibp
@@ -3253,7 +2714,6 @@ documentation indicate the direction.
 
   This might show more internal info.
 
-<!-- -->
 
 - Ensure the working_directory is correct. Many actions use RelativePath
   in their params, which typically should be `.` if you want them
@@ -3327,7 +2787,6 @@ cleaner and leverages improvements of the unified system.
 - If confused about JSON structure, create a small PowerShell snippet to
   build the hashtable and convert to JSON, to ensure formatting. E.g.:
 
-<!-- -->
 
 - $h = @{ MinimumSupportedLVVersion="2020"; SupportedBitness="64"; RelativePath="." }
       $h | ConvertTo-Json
@@ -3336,7 +2795,6 @@ cleaner and leverages improvements of the unified system.
   actions (e.g., DisplayInformationJSON itself is a JSON string inside
   the args JSON).
 
-<!-- -->
 
 - Keep an eye on release notes of this project; migration might
   introduce new optional params that you can take advantage of, etc.
