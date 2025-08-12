@@ -14,12 +14,23 @@ $ErrorActionPreference = 'Stop'
 
 Import-Module (Join-Path $PSScriptRoot 'OpenSourceActions.psm1') -Force
 
-# Ordered, lower-case registry of action names → adapter functions
+# Ordered registry of action name to adapter function
 $Registry = [ordered]@{
-  'apply-vipc'         = 'InvokeApplyVIPC'
-  'build-lvlibp'       = 'InvokeBuildLvlibp'
-  'missing-in-project' = 'InvokeMissingInProject'
-  'run-unit-tests'     = 'InvokeRunUnitTests'
+    'add-token-to-labview'      = 'InvokeAddTokenToLabVIEW'
+    'apply-vipc'               = 'InvokeApplyVIPC'
+    'build'                    = 'InvokeBuild'
+    'build-lvlibp'             = 'InvokeBuildLvlibp'
+    'build-vi-package'         = 'InvokeBuildViPackage'
+    'close-labview'            = 'InvokeCloseLabVIEW'
+    'generate-release-notes'   = 'InvokeGenerateReleaseNotes'
+    'missing-in-project'       = 'InvokeMissingInProject'
+    'modify-vipb-display-info' = 'InvokeModifyVIPBDisplayInfo'
+    'prepare-labview-source'   = 'InvokePrepareLabVIEWSource'
+    'rename-file'              = 'InvokeRenameFile'
+    'restore-setup-lv-source'  = 'InvokeRestoreSetupLVSource'
+    'revert-development-mode'  = 'InvokeRevertDevelopmentMode'
+    'run-unit-tests'           = 'InvokeRunUnitTests'
+    'set-development-mode'     = 'InvokeSetDevelopmentMode'
 }
 
 function Set-LogLevel {
