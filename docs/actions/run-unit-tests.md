@@ -1,7 +1,7 @@
 # run-unit-tests
 
 ## Purpose
-Run LabVIEW unit tests and report pass/fail/error using standard exit codes.
+Run LabVIEW unit tests via the LabVIEW Unit Test Framework CLI and report pass/fail/error using standard exit codes.
 
 ## Parameters
 
@@ -34,3 +34,13 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson '{
         "SupportedBitness": "64"
       }
 ```
+
+## Outputs and Exit Codes
+
+Parses `UnitTestReport.xml` to summarize results.
+
+- `0` – all tests passed
+- `2` – tests failed
+- `3` – g-cli or test run error
+
+Use `-DryRun` to log the sequence without executing.
