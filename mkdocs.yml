@@ -7,6 +7,7 @@ nav:
   - Unified Dispatcher: UnifiedDispatcher.md
   - Adapter Authoring: adapter-authoring.md
   - Versioning: versioning.md
+  - Changelog: CHANGELOG.md
   - Contributing: contributing-docs.md
   - Actions:
       - Apply VIPC: actions/apply-vipc.md
