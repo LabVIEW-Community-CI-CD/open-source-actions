@@ -8,7 +8,7 @@ When adding a new action, copy `docs/actions/_template.md` to `docs/actions/<act
 
 ## Markdown linting
 
-- Run a Markdown linter such as [`markdownlint`](https://github.com/DavidAnson/markdownlint) before submitting changes.
+- Run `pwsh scripts/lint-docs.ps1` to lint Markdown and check links before submitting changes.
 - Keep one `#`-level heading at the top of each file and increment heading levels sequentially; do not skip levels.
 
 ## Heading levels
