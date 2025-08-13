@@ -6,6 +6,8 @@ Update VIPB display information and build a VI package using g-cli.
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **MinimumSupportedLVVersion** (`string`): Minimum LabVIEW version supported by the package.

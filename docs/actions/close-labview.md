@@ -6,6 +6,8 @@ Gracefully close a running LabVIEW instance via g-cli.
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **MinimumSupportedLVVersion** (`string`): LabVIEW version to close.

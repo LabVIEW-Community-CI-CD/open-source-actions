@@ -6,6 +6,8 @@ Run PrepareIESource.vi via g-cli to unzip components and configure LabVIEW for b
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **MinimumSupportedLVVersion** (`string`): LabVIEW version used to run g-cli.

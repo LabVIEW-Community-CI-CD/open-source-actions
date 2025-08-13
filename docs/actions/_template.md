@@ -6,6 +6,8 @@ Briefly describe the action's goal.
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **Param1** (`type`): Description.

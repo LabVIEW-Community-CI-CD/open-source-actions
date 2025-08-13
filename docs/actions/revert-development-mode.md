@@ -6,6 +6,8 @@ Restore the repository from development mode by restoring packaged sources and c
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **RelativePath** (`string`): Path to the repository root.

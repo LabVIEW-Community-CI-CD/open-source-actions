@@ -6,6 +6,8 @@ Build a LabVIEW project’s build specification into a Packed Project Library (.
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **MinimumSupportedLVVersion** (`string`): LabVIEW version used for the build.

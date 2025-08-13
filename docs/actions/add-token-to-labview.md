@@ -6,6 +6,8 @@ Add a custom library path token to the LabVIEW INI file so LabVIEW can locate pr
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **MinimumSupportedLVVersion** (`string`): LabVIEW version used to run g-cli.

@@ -6,6 +6,8 @@ Generate release notes from the git history and write them to a markdown file.
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 None.
