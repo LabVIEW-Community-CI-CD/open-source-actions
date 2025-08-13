@@ -67,7 +67,11 @@ function Filter-Args([hashtable]$InputArgs, [string]$FuncName, [string]$ActionNa
   foreach ($k in @($InputArgs.Keys)) {
     if ($paramNames -contains $k) { $filtered[$k] = $InputArgs[$k] } else { $unknown += $k }
   }
-  if ($unknown.Count) { Write-Warning "Ignored unknown parameters for '$ActionNameForWarn': $($unknown -join ', ')" }
+  if ($unknown.Count) {
+    $msg = "Ignored unknown parameters for '$ActionNameForWarn': $($unknown -join ', ')"
+    Write-Warning $msg
+    Write-Output $msg
+  }
   return $filtered
 }
 
