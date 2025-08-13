@@ -51,25 +51,30 @@ function Show-List {
 
 function Show-Description([string]$Name) {
   $key = $Name.ToLowerInvariant()
-  if (-not $Registry.ContainsKey($key)) { throw "Unknown action '$Name'" }
+  if (-not $Registry.Contains($key)) { throw "Unknown action '$Name'" }
   $funcName = $Registry[$key]
   $cmd = Get-Command $funcName -ErrorAction Stop
   Write-Host "$key parameters:"
   foreach ($p in $cmd.Parameters.Values) {
-    $req = if ($p.IsMandatory) { '(required)' } else { '(optional)' }
-    $def = if ($null -ne $p.DefaultValue) { " [default: $($p.DefaultValue)]" } else { '' }
-    Write-Host " - $($p.Name): $($p.ParameterType.Name) $req$def"
+    Write-Host " - $($p.Name): $($p.ParameterType.Name)"
   }
 }
 
-function Filter-Args([hashtable]$InputArgs, [string]$FuncName, [string]$ActionNameForWarn) {
+function Filter-Args([hashtable]$InputArgs, [string]$FuncName, [string]$ActionNameForWarn, [switch]$ReturnUnknownParams) {
   $paramNames = (Get-Command $FuncName -ErrorAction Stop).Parameters.Keys
   $unknown = @()
   $filtered = @{}
   foreach ($k in @($InputArgs.Keys)) {
     if ($paramNames -contains $k) { $filtered[$k] = $InputArgs[$k] } else { $unknown += $k }
   }
-  if ($unknown.Count) { Write-Warning "Ignored unknown parameters for '$ActionNameForWarn': $($unknown -join ', ')" }
+  $msg = $null
+  if ($unknown.Count) {
+    $msg = "Ignored unknown parameters for '$ActionNameForWarn': $($unknown -join ', ')"
+    Write-Warning $msg
+  }
+  if ($ReturnUnknownParams) {
+    return [pscustomobject]@{ Args = $filtered; UnknownParams = $msg }
+  }
   return $filtered
 }
 
@@ -80,7 +85,7 @@ try {
 
   if (-not $ActionName) { throw 'ActionName is required unless using -ListActions or -Describe' }
   $key = $ActionName.ToLowerInvariant()
-  if (-not $Registry.ContainsKey($key)) { throw "Unknown ActionName '$ActionName'. Use -ListActions to see options." }
+  if (-not $Registry.Contains($key)) { throw "Unknown ActionName '$ActionName'. Use -ListActions to see options." }
   $funcName = $Registry[$key]
 
   # Parse ArgsJson → case-insensitive hashtable

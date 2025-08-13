@@ -34,8 +34,8 @@ runs:
 
         # Capture JSON exactly as provided by the caller, without quoting/escaping issues.
         $json = @'
-        ${{ inputs.args_json }}
-        '@
+${{ inputs.args_json }}
+'@
 
         # Build parameters via hashtable splatting to avoid fragile CLI string quoting.
         $params = @{
@@ -51,8 +51,8 @@ runs:
           $params['DryRun'] = $true
         }
 
-        # Locate the dispatcher script relative to this action folder.
-        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'Invoke-OSAction.ps1'
+        # Locate the dispatcher script relative to this repository root.
+        $script = Join-Path $env:GITHUB_ACTION_PATH 'actions' 'Invoke-OSAction.ps1'
 
         & $script @params
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
