@@ -2,8 +2,9 @@
   "name": "open-source-actions",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "license": "MIT",
   "scripts": {
-    "test": "echo \"No JS tests configured\" && exit 0"
+    "test": "node --test scripts/**/*.test.js"
   }
 }
