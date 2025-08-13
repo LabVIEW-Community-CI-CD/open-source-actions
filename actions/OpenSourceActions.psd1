@@ -9,13 +9,7 @@
   PowerShellVersion     = '7.0'
   CompatiblePSEditions  = @('Core')
 
-  FunctionsToExport = @(
-    'InvokeApplyVIPC',
-    'InvokeBuildLvlibp',
-    'InvokeMissingInProject',
-    'InvokeRunUnitTests',
-    'Format-UnitTestReport'
-  )
+  FunctionsToExport = '*'
 
   PrivateData = @{
     PSData = @{

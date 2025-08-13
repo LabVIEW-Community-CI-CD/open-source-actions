@@ -51,14 +51,12 @@ function Show-List {
 
 function Show-Description([string]$Name) {
   $key = $Name.ToLowerInvariant()
-  if (-not $Registry.ContainsKey($key)) { throw "Unknown action '$Name'" }
+  if (-not $Registry.Contains($key)) { throw "Unknown action '$Name'" }
   $funcName = $Registry[$key]
   $cmd = Get-Command $funcName -ErrorAction Stop
   Write-Host "$key parameters:"
   foreach ($p in $cmd.Parameters.Values) {
-    $req = if ($p.IsMandatory) { '(required)' } else { '(optional)' }
-    $def = if ($null -ne $p.DefaultValue) { " [default: $($p.DefaultValue)]" } else { '' }
-    Write-Host " - $($p.Name): $($p.ParameterType.Name) $req$def"
+    Write-Host " - $($p.Name): $($p.ParameterType.Name)"
   }
 }
 
@@ -80,7 +78,7 @@ try {
 
   if (-not $ActionName) { throw 'ActionName is required unless using -ListActions or -Describe' }
   $key = $ActionName.ToLowerInvariant()
-  if (-not $Registry.ContainsKey($key)) { throw "Unknown ActionName '$ActionName'. Use -ListActions to see options." }
+  if (-not $Registry.Contains($key)) { throw "Unknown ActionName '$ActionName'. Use -ListActions to see options." }
   $funcName = $Registry[$key]
 
   # Parse ArgsJson → case-insensitive hashtable
