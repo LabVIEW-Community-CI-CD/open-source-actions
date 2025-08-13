@@ -11,6 +11,14 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Install PowerShell 7
+        shell: bash
+        run: |
+          wget -q https://packages.microsoft.com/config/ubuntu/22.04/packages-microsoft-prod.deb
+          sudo dpkg -i packages-microsoft-prod.deb
+          sudo apt-get update
+          sudo apt-get install -y powershell
+
       - name: Install Pester
         shell: pwsh
         run: Install-Module Pester -Force -Scope CurrentUser
