@@ -67,3 +67,5 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName build -ArgsJson '{
 - non‑zero – build script or g-cli error
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+Source: [scripts/build/](../../scripts/build/)
