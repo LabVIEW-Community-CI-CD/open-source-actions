@@ -46,3 +46,5 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName rename-file -ArgsJson '{
 - non‑zero – file not found or rename failed
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+Source: [scripts/rename-file/](../../scripts/rename-file/)

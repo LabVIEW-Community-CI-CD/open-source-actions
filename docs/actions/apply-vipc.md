@@ -55,3 +55,5 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName apply-vipc -ArgsJson '{
 - `1` – error applying VIPC or invalid input
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+Source: [scripts/apply-vipc/](../../scripts/apply-vipc/)
