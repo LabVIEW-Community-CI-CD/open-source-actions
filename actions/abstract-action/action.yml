@@ -34,8 +34,8 @@ runs:
 
         # Capture JSON exactly as provided by the caller, without quoting/escaping issues.
         $json = @'
-${{ inputs.args_json }}
-'@
+        ${{ inputs.args_json }}
+        '@
 
         # Build parameters via hashtable splatting to avoid fragile CLI string quoting.
         $params = @{
