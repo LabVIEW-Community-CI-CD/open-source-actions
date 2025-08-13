@@ -48,3 +48,20 @@ Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for general gu
 pip install mkdocs mkdocs-material
 mkdocs serve
 ```
+
+## Running Pester tests locally on Windows
+
+1. Open a PowerShell 7 terminal.
+2. Install the Pester module if it's not already installed:
+
+   ```powershell
+   Install-Module Pester -Scope CurrentUser -Force
+   ```
+
+3. From the repository root, run the test suite:
+
+   ```powershell
+   Invoke-Pester -CI -Path tests/pester
+   ```
+
+These tests exercise the dispatcher and do not require LabVIEW or g-cli.
