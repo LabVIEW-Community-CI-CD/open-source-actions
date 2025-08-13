@@ -1,4 +1,4 @@
-# \<action-name>
+# `<action-name>`
 
 ## Purpose
 
@@ -46,4 +46,4 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName <action-name> -ArgsJson '{
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
 
-Source: [scripts/<action-name>/](../../scripts/<action-name>/)
+Source: [scripts/`<action-name>`/](../../scripts/<action-name>/) <!-- markdown-link-check-disable-line -->

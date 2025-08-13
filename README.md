@@ -42,7 +42,15 @@ pwsh actions/Invoke-OSAction.ps1 -Describe run-unit-tests
 
 ## Contributing
 
-Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for general guidelines and [docs/contributing-docs.md](docs/contributing-docs.md) for documentation rules. To preview docs locally:
+Contributions are welcome! See [CONTRIBUTING.md](CONTRIBUTING.md) for general guidelines and [docs/contributing-docs.md](docs/contributing-docs.md) for documentation rules.
+
+Run the JavaScript tests with:
+
+```bash
+npm test
+```
+
+To preview docs locally:
 
 ```bash
 pip install mkdocs mkdocs-material
