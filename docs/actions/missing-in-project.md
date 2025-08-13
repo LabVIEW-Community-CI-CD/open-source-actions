@@ -6,6 +6,8 @@ Check that all files in a LabVIEW project are present by scanning for items miss
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **LVVersion** (`string`): LabVIEW version used to open the project.

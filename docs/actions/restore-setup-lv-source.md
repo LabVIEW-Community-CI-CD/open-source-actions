@@ -6,6 +6,8 @@ Restore the LabVIEW source setup by unzipping the LabVIEW Icon API and removing 
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **MinimumSupportedLVVersion** (`string`): LabVIEW version used to run g-cli.

@@ -6,6 +6,8 @@ Configure the repository for development mode by removing packed libraries, addi
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **RelativePath** (`string`): Path to the repository root.

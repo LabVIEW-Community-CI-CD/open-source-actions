@@ -6,6 +6,8 @@ Automate building the LabVIEW Icon Editor project, including cleaning, building 
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **RelativePath** (`string`): Path to the repository root.

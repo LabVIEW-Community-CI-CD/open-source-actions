@@ -6,6 +6,8 @@ Run LabVIEW unit tests via the LabVIEW Unit Test Framework CLI and report pass/f
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **MinimumSupportedLVVersion** (`string`): LabVIEW version for the test run.

@@ -6,6 +6,8 @@ Update display information in a VIPB file and rebuild the VI package.
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **SupportedBitness** (`string`): "32" or "64" bitness of LabVIEW.

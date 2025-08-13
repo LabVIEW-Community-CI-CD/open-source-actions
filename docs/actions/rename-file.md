@@ -6,6 +6,8 @@ Rename a file if it exists.
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **CurrentFilename** (`string`): Full path to the file to rename.

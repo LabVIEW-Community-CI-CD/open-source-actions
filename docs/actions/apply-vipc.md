@@ -6,6 +6,8 @@ Apply a VI Package Configuration (.vipc) file to a specific LabVIEW installation
 
 ## Parameters
 
+Common parameters are described in [Common parameters](../common-parameters.md).
+
 ### Required
 
 - **MinimumSupportedLVVersion** (`string`): LabVIEW version used to apply the VIPC.
