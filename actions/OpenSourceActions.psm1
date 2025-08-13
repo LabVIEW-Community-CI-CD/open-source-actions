@@ -9,7 +9,7 @@ function InvokeAddTokenToLabVIEW {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing AddTokenToLabVIEW (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'add-token-to-labview/AddTokenToLabVIEW.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'add-token-to-labview', 'AddTokenToLabVIEW.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
@@ -40,7 +40,7 @@ function InvokeApplyVIPC {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing ApplyVIPC (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'apply-vipc/ApplyVIPC.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'apply-vipc', 'ApplyVIPC.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         VIP_LVVersion             = $VIP_LVVersion
@@ -80,7 +80,7 @@ function InvokeBuildViPackage {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing BuildViPackage version $Major.$Minor.$Patch-$Build (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'build-vi-package/build_vip.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'build-vi-package', 'build_vip.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
@@ -124,7 +124,7 @@ function InvokeBuild {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing Build version $Major.$Minor.$Patch-$Build (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'build/Build.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'build', 'Build.ps1')
     $args = @{
         RelativePath         = $RelativePath
         Major                = $Major
@@ -166,7 +166,7 @@ function InvokeBuildLvlibp {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing BuildLvlibp version $Major.$Minor.$Patch-$Build (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'build-lvlibp/Build_lvlibp.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'build-lvlibp', 'Build_lvlibp.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
@@ -201,7 +201,7 @@ function InvokeCloseLabVIEW {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing CloseLabVIEW (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'close-labview/Close_LabVIEW.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'close-labview', 'Close_LabVIEW.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
@@ -227,7 +227,7 @@ function InvokeGenerateReleaseNotes {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing GenerateReleaseNotes (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'generate-release-notes/GenerateReleaseNotes.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'generate-release-notes', 'GenerateReleaseNotes.ps1')
     $args = @{ OutputPath = $OutputPath }
     if ($DryRun) {
         Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
@@ -252,7 +252,7 @@ function InvokeMissingInProject {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing MissingInProject (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'missing-in-project/CheckMissingInProject.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'missing-in-project', 'Invoke-MissingInProjectCLI.ps1')
     $args = @{
         LVVersion   = $LVVersion
         Arch        = $Arch
@@ -290,7 +290,7 @@ function InvokeModifyVIPBDisplayInfo {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing ModifyVIPBDisplayInfo (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'modify-vipb-display-info/ModifyVIPBDisplayInfo.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'modify-vipb-display-info', 'ModifyVIPBDisplayInfo.ps1')
     $args = @{
         SupportedBitness       = $SupportedBitness
         RelativePath           = $RelativePath
@@ -330,7 +330,7 @@ function InvokePrepareLabVIEWSource {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing PrepareLabVIEWSource (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'prepare-labview-source/Prepare_LabVIEW_source.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'prepare-labview-source', 'Prepare_LabVIEW_source.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
@@ -360,7 +360,7 @@ function InvokeRenameFile {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing RenameFile (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'rename-file/Rename-file.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'rename-file', 'Rename-file.ps1')
     $args = @{
         CurrentFilename = $CurrentFilename
         NewFilename     = $NewFilename
@@ -390,7 +390,7 @@ function InvokeRestoreSetupLVSource {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing RestoreSetupLVSource (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'restore-setup-lv-source/RestoreSetupLVSource.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'restore-setup-lv-source', 'RestoreSetupLVSource.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
@@ -419,7 +419,7 @@ function InvokeRevertDevelopmentMode {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing RevertDevelopmentMode (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'revert-development-mode/RevertDevelopmentMode.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'revert-development-mode', 'RevertDevelopmentMode.ps1')
     $args = @{ RelativePath = $RelativePath }
     if ($DryRun) {
         Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
@@ -443,7 +443,7 @@ function InvokeRunUnitTests {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing RunUnitTests (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'run-unit-tests/RunUnitTests.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'run-unit-tests', 'RunUnitTests.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
@@ -469,7 +469,7 @@ function InvokeSetDevelopmentMode {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing SetDevelopmentMode (DryRun=$DryRun)"
-    $scriptPath = Join-Path $PSScriptRoot 'set-development-mode/Set_Development_Mode.ps1'
+    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'set-development-mode', 'Set_Development_Mode.ps1')
     $args = @{ RelativePath = $RelativePath }
     if ($DryRun) {
         Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"

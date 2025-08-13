@@ -10,7 +10,7 @@ $dispatcher = Join-Path $repoRoot 'actions' 'Invoke-OSAction.ps1'
 
 Describe 'Unified Dispatcher — discovery and validation' {
   It 'lists available actions' {
-    $out = pwsh -NoProfile -Command "& '$dispatcher' -ListActions"
+    $out = pwsh -NoProfile -File $dispatcher -ListActions
     $out | Should -Match 'apply-vipc'
     $out | Should -Match 'build-lvlibp'
     $out | Should -Match 'missing-in-project'
@@ -18,7 +18,7 @@ Describe 'Unified Dispatcher — discovery and validation' {
   }
 
   It 'describes a known action (build-lvlibp)' {
-    $out = pwsh -NoProfile -Command "& '$dispatcher' -Describe build-lvlibp"
+    $out = pwsh -NoProfile -File $dispatcher -Describe build-lvlibp
     $out | Should -Match 'Major'
     $out | Should -Match 'Minor'
     $out | Should -Match 'Patch'
@@ -27,7 +27,7 @@ Describe 'Unified Dispatcher — discovery and validation' {
   }
 
   It 'fails gracefully on unknown action' {
-    pwsh -NoProfile -Command "& '$dispatcher' -ActionName no-such-action -ArgsJson '{}'" *>$null
+    pwsh -NoProfile -File $dispatcher -ActionName no-such-action -ArgsJson '{}' *>$null
     $LASTEXITCODE | Should -Be 1
   }
 }
@@ -35,7 +35,7 @@ Describe 'Unified Dispatcher — discovery and validation' {
 Describe 'Unified Dispatcher — DryRun behavior' {
   It 'apply-vipc honors DryRun and returns 0' {
     $json = '{"MinimumSupportedLVVersion":"2021","VIP_LVVersion":"2021","SupportedBitness":"64","RelativePath":".","VIPCPath":"dummy.vipc"}'
-    pwsh -NoProfile -Command "& '$dispatcher' -ActionName apply-vipc -ArgsJson '$json' -DryRun" *>$null
+    pwsh -NoProfile -File $dispatcher -ActionName apply-vipc -ArgsJson $json -DryRun *>$null
     $LASTEXITCODE | Should -Be 0
   }
 
@@ -48,13 +48,13 @@ Describe 'Unified Dispatcher — DryRun behavior' {
       "Build_Spec":"MyBuild",
       "Major":1,"Minor":0,"Patch":0,"Build":1,"Commit":"deadbeef"
     }'
-    pwsh -NoProfile -Command "& '$dispatcher' -ActionName build-lvlibp -ArgsJson '$json' -DryRun" *>$null
+    pwsh -NoProfile -File $dispatcher -ActionName build-lvlibp -ArgsJson $json -DryRun *>$null
     $LASTEXITCODE | Should -Be 0
   }
 
   It 'filters unknown args without crashing' {
     $json = '{"UnknownParam":123}'
-    $out = pwsh -NoProfile -Command "& '$dispatcher' -ActionName build-lvlibp -ArgsJson '$json' -DryRun"
+    $out = pwsh -NoProfile -File $dispatcher -ActionName build-lvlibp -ArgsJson $json -DryRun
     $LASTEXITCODE | Should -Be 0
     $out | Should -Match 'Ignored unknown parameters'
   }
