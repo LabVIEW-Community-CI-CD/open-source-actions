@@ -5,5 +5,5 @@ param(
     [string]$RelativePath,
     [string]$VIPCPath
 )
-$script = Join-Path $PSScriptRoot '..' '..' 'scripts' 'apply-vipc' 'ApplyVIPC.ps1'
+$script = [System.IO.Path]::Combine($PSScriptRoot, '..', '..', 'scripts', 'apply-vipc', 'ApplyVIPC.ps1')
 & $script @PSBoundParameters

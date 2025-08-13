@@ -10,5 +10,5 @@ param(
     [int]$Build,
     [string]$Commit
 )
-$script = Join-Path $PSScriptRoot '..' '..' 'scripts' 'build-lvlibp' 'Build_lvlibp.ps1'
+$script = [System.IO.Path]::Combine($PSScriptRoot, '..', '..', 'scripts', 'build-lvlibp', 'Build_lvlibp.ps1')
 & $script @PSBoundParameters

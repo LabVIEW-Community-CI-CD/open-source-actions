@@ -3,5 +3,5 @@ param(
     [string]$Arch,
     [string]$ProjectFile
 )
-$script = Join-Path $PSScriptRoot '..' '..' 'scripts' 'missing-in-project' 'Invoke-MissingInProjectCLI.ps1'
+$script = [System.IO.Path]::Combine($PSScriptRoot, '..', '..', 'scripts', 'missing-in-project', 'Invoke-MissingInProjectCLI.ps1')
 & $script @PSBoundParameters
