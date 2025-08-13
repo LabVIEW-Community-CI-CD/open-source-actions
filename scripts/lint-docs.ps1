@@ -13,12 +13,21 @@ $ErrorActionPreference = 'Stop'
 Write-Host 'Running markdownlint...'
 # Lint README and documentation Markdown files
 npx --yes markdownlint-cli README.md docs/**/*.md
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
 
 Write-Host 'Running markdown-link-check...'
 # Check links in README
 npx --yes markdown-link-check -q -c .markdown-link-check.json README.md
+if ($LASTEXITCODE -ne 0) {
+    exit $LASTEXITCODE
+}
 
 # Check links in docs
 Get-ChildItem -Path 'docs' -Recurse -Filter '*.md' | ForEach-Object {
     npx --yes markdown-link-check -q -c .markdown-link-check.json $_.FullName
+    if ($LASTEXITCODE -ne 0) {
+        exit $LASTEXITCODE
+    }
 }
