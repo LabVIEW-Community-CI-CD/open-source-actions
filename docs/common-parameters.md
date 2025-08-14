@@ -20,8 +20,8 @@ Example:
 pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson '{}' -DryRun
 ```
 
-### `-WorkingDirectory`
-Runs the adapter after changing to the specified directory.
+### `WorkingDirectory`
+Runs the adapter after changing to the specified directory using `-WorkingDirectory`.
 
 Example:
 ```powershell
