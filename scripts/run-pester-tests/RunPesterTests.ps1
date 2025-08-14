@@ -17,7 +17,14 @@ $pesterDir = Join-Path $repoRoot 'tests' 'pester'
 
 # Run Pester and capture results
 $pesterResult = Invoke-Pester -Path $pesterDir -PassThru
-$tests = if ($pesterResult.Tests) { $pesterResult.Tests } else { $pesterResult.TestResult }
+$tests = $null
+if ($pesterResult.PSObject.Properties['TestResult']) {
+    $tests = $pesterResult.TestResult
+}
+if (-not $tests -and $pesterResult.PSObject.Properties['Tests']) {
+    $tests = $pesterResult.Tests
+}
+$tests = @($tests)  # ensure array
 
 $col1 = 'Describe'; $col2 = 'Name'; $col3 = 'Result'; $col4 = 'Duration'; $col5 = 'Data'
 $max1 = $col1.Length; $max2 = $col2.Length; $max3 = $col3.Length; $max4 = $col4.Length; $max5 = $col5.Length
@@ -25,11 +32,14 @@ $rows = @()
 $hadFail = $false
 
 foreach ($t in $tests) {
-    $describe = $t.Describe
-    $name     = $t.Name
-    $result   = $t.Result
-    $duration = '{0:N3}' -f $t.Duration.TotalSeconds
-    $data     = if ($null -ne $t.Data) { $t.Data | ConvertTo-Json -Compress } else { '' }
+    $describe = if ($t.PSObject.Properties['Describe']) { $t.Describe } else { '' }
+    $name     = if ($t.PSObject.Properties['Name'])     { $t.Name }     else { '' }
+    $result   = if ($t.PSObject.Properties['Result'])   { $t.Result }   else { '' }
+    $duration = if ($t.PSObject.Properties['Duration']) { '{0:N3}' -f $t.Duration.TotalSeconds } else { '' }
+    $data     = ''
+    if ($t.PSObject.Properties['Data'] -and $null -ne $t.Data) {
+        $data = $t.Data | ConvertTo-Json -Compress
+    }
 
     if ($describe.Length -gt $max1) { $max1 = $describe.Length }
     if ($name.Length     -gt $max2) { $max2 = $name.Length }
