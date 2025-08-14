@@ -99,7 +99,7 @@ try {
       # attempt to escape all single backslashes and parse again. This allows
       # callers to provide paths like C:\repo without manually double-escaping
       # each separator.
-      $escapedJson = $ArgsJson -replace '\', '\\'
+        $escapedJson = $ArgsJson.Replace('\', '\\')
       try {
         $argsHash = ConvertFrom-Json -InputObject $escapedJson -AsHashtable -ErrorAction Stop
         Write-Warning 'ArgsJson contained unescaped backslashes. They were automatically escaped.'
