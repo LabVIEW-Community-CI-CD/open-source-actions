@@ -65,5 +65,5 @@ Access to the path '/opt/labview/Tooling' is denied.
 
 **Resolution**
 
-1. Verify the working directory is correct or set [`-WorkingDirectory`](common-parameters.md#workingdirectory).
+1. Verify the working directory is correct or set [`-WorkingDirectory`](common-parameters.md#-workingdirectory).
 2. Ensure the runner has permission to read/write the necessary paths.
