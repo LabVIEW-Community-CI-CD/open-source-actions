@@ -18,16 +18,21 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host 'Running markdown-link-check...'
+# Initialize accumulator for markdown-link-check
+$exitCode = 0
+
 # Check links in README
 npx --yes markdown-link-check -q -c .markdown-link-check.json README.md
 if ($LASTEXITCODE -ne 0) {
-    exit $LASTEXITCODE
+    $exitCode = $LASTEXITCODE
 }
 
 # Check links in docs
 Get-ChildItem -Path 'docs' -Recurse -Filter '*.md' | ForEach-Object {
     npx --yes markdown-link-check -q -c .markdown-link-check.json $_.FullName
     if ($LASTEXITCODE -ne 0) {
-        exit $LASTEXITCODE
+        $exitCode = $LASTEXITCODE
     }
 }
+
+exit $exitCode
