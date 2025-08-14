@@ -54,9 +54,19 @@ function Show-Description([string]$Name) {
   if (-not $Registry.Contains($key)) { throw "Unknown action '$Name'" }
   $funcName = $Registry[$key]
   $cmd = Get-Command $funcName -ErrorAction Stop
-  Write-Host "$key parameters:"
+
+  $consoleLines = @("$key parameters:")
+  $summaryLines = @("### $key parameters")
   foreach ($p in $cmd.Parameters.Values) {
-    Write-Host " - $($p.Name): $($p.ParameterType.Name)"
+    $consoleLines += " - $($p.Name): $($p.ParameterType.Name)"
+    $summaryLines += "- ``$($p.Name)``: ``$($p.ParameterType.Name)``"
+  }
+
+  $consoleLines | ForEach-Object { Write-Host $_ }
+
+  if ($env:GITHUB_STEP_SUMMARY) {
+    $summary = ($summaryLines -join [Environment]::NewLine) + [Environment]::NewLine
+    Add-Content -Path $env:GITHUB_STEP_SUMMARY -Value $summary
   }
 }
 
