@@ -25,6 +25,7 @@ $cases = foreach ($name in $actionNames) {
 Describe 'Action script paths' {
     It 'has script for <Name>' -TestCases $cases {
         param($Name, $Path)
+        Write-Host "Checking $Path"
         Test-Path $Path | Should -BeTrue
     }
 }
