@@ -61,5 +61,4 @@ jobs:
 - **MAJOR**: breaking parameter/type changes, removing or renaming actions.
 - **MINOR**: adding new adapter actions or optional parameters.
 - **PATCH**: backwards‑compatible fixes and docs.
-
-For the current module version, refer to [`actions/OpenSourceActions.psd1`](../actions/OpenSourceActions.psd1).
+For the current module version, refer to `actions/OpenSourceActions.psd1`.
