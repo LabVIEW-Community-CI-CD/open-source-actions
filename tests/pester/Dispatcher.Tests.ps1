@@ -32,6 +32,14 @@ Describe 'Unified Dispatcher — discovery and validation' {
   }
 }
 
+Describe 'ArgsJson path handling' {
+  It 'handles Windows paths without manual escaping' {
+    $json = '{ "RelativePath": "C:\path\foo" }'
+    & $global:dispatcher -ActionName set-development-mode -ArgsJson $json -DryRun *> $null
+    $LASTEXITCODE | Should -Be 0
+  }
+}
+
 Describe 'Unified Dispatcher — DryRun behavior for all actions' {
   $script:argsJson = (
     @{ MinimumSupportedLVVersion = '2021'
