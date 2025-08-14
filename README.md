@@ -1,6 +1,6 @@
-# Unified LabVIEW Action
+# Open Source LabVIEW Actions
 
-Unified LabVIEW Action is a composite GitHub Action that dispatches LabVIEW CI/CD tasks via PowerShell. See the [documentation site](https://open-source-actions.github.io/open-source-actions/) for setup and action reference. The [quickstart](docs/quickstart.md) shows a full example and [Unified Dispatcher](docs/UnifiedDispatcher.md) describes how the dispatcher works. For an overview of the project's architecture, see [docs/architecture.md](docs/architecture.md).
+Open Source LabVIEW Actions is a composite GitHub Action that dispatches LabVIEW CI/CD tasks via PowerShell. See the [documentation site](https://open-source-actions.github.io/open-source-actions/) for setup and action reference. The [quickstart](docs/quickstart.md) shows a full example and [Unified Dispatcher](docs/UnifiedDispatcher.md) describes how the dispatcher works. For an overview of the project's architecture, see [docs/architecture.md](docs/architecture.md).
 
 To inspect the action's source and full schema, see [action.yml](action.yml).
 

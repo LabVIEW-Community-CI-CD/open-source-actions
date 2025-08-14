@@ -1,6 +1,6 @@
 # Architecture
 
-The Open Source Actions project exposes multiple LabVIEW CI/CD steps through a single dispatcher and a set of adapter scripts.
+The Open Source LabVIEW Actions project exposes multiple LabVIEW CI/CD steps through a single dispatcher and a set of adapter scripts.
 
 ## Dispatcher
 
