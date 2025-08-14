@@ -123,3 +123,37 @@ Describe 'Filter-Args helper' {
       $out | Should -Not -Match 'Missing an argument'
     }
   }
+
+Describe 'Composite action simulation' {
+  It 'prints description header and exits 0 on dry-run' {
+    try {
+      $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
+      $env:GITHUB_ACTION_PATH = $repoRoot
+
+      $body = @'
+$ErrorActionPreference = 'Stop'
+$json = '{ "MinimumSupportedLVVersion": "2021", "SupportedBitness": "64" }'
+$params = @{ ActionName = 'close-labview'; ArgsJson = $json; LogLevel = 'INFO'; DryRun = $true }
+$dispatcher = Join-Path $env:GITHUB_ACTION_PATH 'actions' 'Invoke-OSAction.ps1'
+try {
+  & $dispatcher -Describe 'close-labview'
+} catch {
+  Write-Host 'Describe command failed but continuing.'
+}
+& $dispatcher @params
+if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+'@
+      $script = "`$env:GITHUB_ACTION_PATH = '$repoRoot'`n$body"
+
+      $temp = New-TemporaryFile
+      Set-Content -Path $temp -Value $script
+      $out = pwsh -NoProfile -File $temp *>&1 | Out-String
+      $LASTEXITCODE | Should -Be 0
+      $out | Should -Match 'close-labview parameters:'
+    }
+    finally {
+      Remove-Item env:GITHUB_ACTION_PATH -ErrorAction SilentlyContinue
+      if ($temp) { Remove-Item $temp -ErrorAction SilentlyContinue }
+    }
+  }
+}
