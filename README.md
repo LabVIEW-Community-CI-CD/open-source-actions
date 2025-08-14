@@ -8,9 +8,7 @@ Unified LabVIEW Action is a composite GitHub Action that dispatches LabVIEW CI/C
 - NI LabVIEW with command-line interface support (g-cli) for LabVIEW-based actions
 - Supported platforms: Windows for LabVIEW tasks; PowerShell-only scripts also run on macOS and Linux
 
-## Usage
-
-**Composite action**
+## GitHub Action usage
 
 ```yaml
 - name: Run tests
@@ -20,11 +18,7 @@ Unified LabVIEW Action is a composite GitHub Action that dispatches LabVIEW CI/C
     args_json: '{ "MinimumSupportedLVVersion": "2021", "SupportedBitness": "64" }'
 ```
 
-**CLI**
-
-```powershell
-pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson '{ "MinimumSupportedLVVersion": "2021", "SupportedBitness": "64" }'
-```
+This composite action wraps the dispatcher script [`actions/Invoke-OSAction.ps1`](actions/Invoke-OSAction.ps1). When the action runs it calls this script behind the scenes to execute the selected task.
 
 ### Inputs
 
@@ -57,6 +51,14 @@ Enable debug logging and perform a dry run:
     action_name: run-unit-tests
     log_level: DEBUG
     dry_run: true
+```
+
+## CLI/dispatcher usage
+
+If you prefer or need to run tasks directly, call the dispatcher script yourself:
+
+```powershell
+pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson '{ "MinimumSupportedLVVersion": "2021", "SupportedBitness": "64" }'
 ```
 
 ### Discovering actions
