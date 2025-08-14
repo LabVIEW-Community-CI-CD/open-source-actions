@@ -53,6 +53,10 @@ Enable debug logging and perform a dry run:
     dry_run: true
 ```
 
+### Outputs
+
+This action does not emit outputs. Check logs or uploaded artifacts for results.
+
 ## CLI/dispatcher usage
 
 If you prefer or need to run tasks directly, call the dispatcher script yourself:
