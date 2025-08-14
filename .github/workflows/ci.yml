@@ -35,13 +35,23 @@ jobs:
           node-version: '20'
       - run: npm test
 
-  pester-tests:
+  dispatcher-tests:
+    name: dispatcher-tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Run Pester tests
+      - name: Run dispatcher tests
         shell: pwsh
-        run: Invoke-Pester -CI -Path ./tests/pester
+        run: Invoke-Pester -CI -Path tests/pester/Dispatcher.Tests.ps1
+
+  scriptpath-tests:
+    name: scriptpath-tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run scriptpath tests
+        shell: pwsh
+        run: Invoke-Pester -CI -Path tests/pester/ScriptPath.Tests.ps1
 
   deploy-docs:
     if: github.ref == 'refs/heads/actions'
