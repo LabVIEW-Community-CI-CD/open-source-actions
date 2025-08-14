@@ -79,6 +79,14 @@ Describe 'Unified Dispatcher — DryRun behavior for all actions' {
     $LASTEXITCODE | Should -Be 0
   }
 
+  It "prints description before dry-run <Action>" -ForEach $actions {
+    param($Action, $ArgsJson)
+    $describeOut = & $global:dispatcher -Describe $Action 6>&1 | Out-String
+    & $global:dispatcher -ActionName $Action -ArgsJson $ArgsJson -DryRun *> $null
+    $LASTEXITCODE | Should -Be 0
+    $describeOut | Should -Match "$Action parameters:"
+  }
+
   It "dry-runs <Action> and warns on unknown args" -ForEach $actions {
     param($Action, $ArgsJson)
     $out = & $global:dispatcher -ActionName $Action -ArgsJson $ArgsJson -DryRun *>&1 | Out-String
