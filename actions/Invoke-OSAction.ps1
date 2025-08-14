@@ -91,8 +91,23 @@ try {
   # Parse ArgsJson → case-insensitive hashtable
   $argsHash = @{}
   if ($ArgsJson -and $ArgsJson.Trim()) {
-    try { $argsHash = ConvertFrom-Json -InputObject $ArgsJson -AsHashtable -ErrorAction Stop }
-    catch { throw "ArgsJson is not valid JSON: $($_.Exception.Message)" }
+    try {
+      $argsHash = ConvertFrom-Json -InputObject $ArgsJson -AsHashtable -ErrorAction Stop
+    }
+    catch {
+      # If parsing fails (commonly due to unescaped Windows backslashes),
+      # attempt to escape all single backslashes and parse again. This allows
+      # callers to provide paths like C:\repo without manually double-escaping
+      # each separator.
+        $escapedJson = $ArgsJson.Replace('\', '\\')
+      try {
+        $argsHash = ConvertFrom-Json -InputObject $escapedJson -AsHashtable -ErrorAction Stop
+        Write-Warning 'ArgsJson contained unescaped backslashes. They were automatically escaped.'
+      }
+      catch {
+        throw "ArgsJson is not valid JSON: $($_.Exception.Message)"
+      }
+    }
   }
   if ($DryRun)   { $argsHash['DryRun']   = $true }
   if ($LogLevel) { $argsHash['LogLevel'] = $LogLevel }
