@@ -62,15 +62,26 @@ function Show-Description([string]$Name) {
 
 function Filter-Args([hashtable]$InputArgs, [string]$FuncName, [string]$ActionNameForWarn, [switch]$ReturnUnknownParams) {
   $cmd = Get-Command $FuncName -ErrorAction Stop
-  $paramNames = @()
+
+  # Map each alias to its canonical parameter name for the target function
+  $aliasMap = @{}
   foreach ($p in $cmd.Parameters.Values) {
-    $paramNames += $p.Name
-    if ($p.Aliases) { $paramNames += $p.Aliases }
+    foreach ($a in $p.Aliases) { $aliasMap[$a] = $p.Name }
   }
+
   $unknown = @()
   $filtered = @{}
   foreach ($k in @($InputArgs.Keys)) {
-    if ($paramNames -contains $k) { $filtered[$k] = $InputArgs[$k] } else { $unknown += $k }
+    if ($cmd.Parameters.ContainsKey($k)) {
+      $filtered[$k] = $InputArgs[$k]
+    }
+    elseif ($aliasMap.ContainsKey($k)) {
+      $canonical = $aliasMap[$k]
+      if (-not $filtered.ContainsKey($canonical)) { $filtered[$canonical] = $InputArgs[$k] }
+    }
+    else {
+      $unknown += $k
+    }
   }
   $msg = $null
   if ($unknown.Count) {
