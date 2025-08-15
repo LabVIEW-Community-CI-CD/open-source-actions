@@ -105,6 +105,19 @@ export async function writeTraceability(results: SuiteResult[], mapping: Require
   await fs.writeFile(path.join('artifacts', 'traceability.json'), JSON.stringify(trace, null, 2));
 }
 
+export async function writeTraceabilityMarkdown(results: SuiteResult[], mapping: Requirement[]): Promise<void> {
+  const lines: string[] = ['| Requirement ID | Description | Test | Result |', '| --- | --- | --- | --- |'];
+  for (const req of mapping) {
+    for (const test of req.tests) {
+      const suite = results.find((r) => r.name === test);
+      const status = suite ? (suite.failures > 0 ? 'Fail' : 'Pass') : 'Not Run';
+      lines.push(`| ${req.id} | ${req.description} | ${test} | ${status} |`);
+    }
+  }
+  await fs.mkdir('artifacts', { recursive: true });
+  await fs.writeFile(path.join('artifacts', 'traceability.md'), lines.join('\n'));
+}
+
 interface ActionParameter {
   name: string;
   type: string;
@@ -191,13 +204,54 @@ async function zipDirectory(sourceDir: string, outPath: string): Promise<void> {
   await fs.writeFile(outPath, content);
 }
 
+async function getDispatcherActions(dispatcherPath: string): Promise<Set<string>> {
+  const actions = new Set<string>();
+  try {
+    const content = await fs.readFile(dispatcherPath, 'utf8');
+    const match = content.match(/\$Registry\s*=\s*\[ordered\]@{([\s\S]*?)}/);
+    if (match) {
+      const body = match[1];
+      for (const m of body.matchAll(/'([^']+)'\s*=/g)) {
+        actions.add(m[1]);
+      }
+    }
+  } catch {
+    /* ignore */
+  }
+  return actions;
+}
+
+export async function copyEvidence(): Promise<void> {
+  const src = process.env.EVIDENCE_DIR;
+  if (!src) return;
+  try {
+    const stats = await fs.stat(src);
+    if (!stats.isDirectory()) return;
+  } catch {
+    return;
+  }
+  const dest = path.join('artifacts', 'evidence');
+  await fs.mkdir(dest, { recursive: true });
+  await fs.cp(src, dest, { recursive: true });
+}
+
 export async function generateActionDocs(): Promise<void> {
   const scripts = await glob('scripts/*/*.ps1');
   if (scripts.length === 0) return;
+  const dispatcher = process.env.DISPATCHER_SCRIPT;
+  let allowed: Set<string> | undefined;
+  if (dispatcher) {
+    const actions = await getDispatcherActions(dispatcher);
+    if (actions.size) {
+      allowed = actions;
+    }
+  }
   const template = await fs.readFile(path.join('doc-templates', 'action-doc-template.md'), 'utf8');
   const outDir = path.join('artifacts', 'action-docs');
   await fs.mkdir(outDir, { recursive: true });
   for (const script of scripts) {
+    const actionName = path.basename(path.dirname(script));
+    if (allowed && !allowed.has(actionName)) continue;
     try {
       const info = await getActionInfo(script);
       const md = renderActionDoc(template, info);
@@ -242,8 +296,11 @@ export async function main() {
   let artifactError = false;
   try {
     await writeTraceability(results, mapping);
+    await writeTraceabilityMarkdown(results, mapping);
     await generateActionDocs();
+    await copyEvidence();
     await fs.access(path.join('artifacts', 'traceability.json'));
+    await fs.access(path.join('artifacts', 'traceability.md'));
     await fs.access(path.join('artifacts', 'action-docs.zip'));
   } catch (err: any) {
     console.error(`Artifact generation failed: ${err.message}`);
