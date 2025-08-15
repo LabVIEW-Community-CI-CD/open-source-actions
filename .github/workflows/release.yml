@@ -56,9 +56,9 @@ jobs:
           echo "target: ${{ github.event.release.target_commitish }}"
           echo "tests result: ${{ needs.tests.result }}"
       - uses: actions/checkout@v4
-        if: github.event.release.target_commitish == 'main'
+        if: github.event.release.target_commitish == 'actions'
       - uses: dorny/paths-filter@v2
-        if: github.event.release.target_commitish == 'main'
+        if: github.event.release.target_commitish == 'actions'
         id: changes
         with:
           filters: |
@@ -66,27 +66,27 @@ jobs:
               - 'docs/**'
               - 'README.md'
       - uses: actions/setup-node@v4
-        if: github.event.release.target_commitish == 'main' && steps.changes.outputs.docs == 'true'
+        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
         with:
           node-version: '20'
       - name: Lint documentation
-        if: github.event.release.target_commitish == 'main' && steps.changes.outputs.docs == 'true'
+        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
         shell: pwsh
         run: scripts/lint-docs.ps1
       - uses: ./actions/setup-mkdocs
-        if: github.event.release.target_commitish == 'main' && steps.changes.outputs.docs == 'true'
+        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
       - run: mkdocs build --strict
-        if: github.event.release.target_commitish == 'main' && steps.changes.outputs.docs == 'true'
+        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
       - uses: actions/upload-artifact@v4
-        if: github.event.release.target_commitish == 'main' && steps.changes.outputs.docs == 'true'
+        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
         with:
           name: docs-site
           path: site
           if-no-files-found: error
       - uses: actions/upload-pages-artifact@v3
-        if: github.event.release.target_commitish == 'main' && steps.changes.outputs.docs == 'true'
+        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
         with:
           path: site
       - id: deploy
         uses: actions/deploy-pages@v4
-        if: github.event.release.target_commitish == 'main' && steps.changes.outputs.docs == 'true'
+        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'

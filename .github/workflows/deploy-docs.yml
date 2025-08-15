@@ -21,21 +21,21 @@ jobs:
       - name: Log deploy conditions
         run: echo "branch: ${{ github.ref }}"
       - uses: actions/checkout@v4
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/actions'
       - uses: ./actions/setup-mkdocs
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/actions'
       - run: mkdocs build --strict
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/actions'
       - uses: actions/upload-artifact@v4
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/actions'
         with:
           name: docs-site
           path: site
           if-no-files-found: error
       - uses: actions/upload-pages-artifact@v3
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/actions'
         with:
           path: site
       - id: deploy
         uses: actions/deploy-pages@v4
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/actions'
