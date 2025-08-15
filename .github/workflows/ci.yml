@@ -2,8 +2,12 @@ name: CI
 
 on:
   push:
-    branches: [actions]
+    branches: [ actions, main, master ]
   pull_request:
+    branches: [ actions, main, master ]
+
+# NOTE: This patch appends steps/jobs to enable JUnit, TTM, and Action Docs.
+# If your job ids differ, adjust 'needs:' in the 'report' job accordingly.
 
 jobs:
   docs-lint:
@@ -34,6 +38,14 @@ jobs:
         with:
           node-version: '20'
       - run: npm test
+      # Optional: if node tests can emit JUnit, include:
+      # - run: npm run test:ci
+      # - uses: actions/upload-artifact@v4
+      #   if: always()
+      #   with:
+      #     name: node-junit
+      #     path: test-results/**/*.xml
+      #     if-no-files-found: ignore
 
   dispatcher-tests:
     name: dispatcher-tests
@@ -43,11 +55,30 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Run dispatcher tests
+      - name: Install Pester (if needed)
         shell: pwsh
         run: |
-          $testPath = Join-Path -Path 'tests/pester' -ChildPath 'Dispatcher.Tests.ps1'
-          Invoke-Pester -CI -Path $testPath
+          if (-not (Get-Module -ListAvailable -Name Pester)) {
+            Install-Module Pester -Force -Scope CurrentUser -SkipPublisherCheck
+          }
+      - name: Run Pester with JUnit output
+        shell: pwsh
+        run: |
+          $OutDir = Join-Path $env:GITHUB_WORKSPACE 'pester-results'
+          New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
+          $cfg = [PesterConfiguration]::Default
+          $cfg.Run.Path = './tests/pester'
+          $cfg.TestResult.Enabled = $true
+          $cfg.TestResult.OutputFormat = 'JUnitXml'
+          $cfg.TestResult.OutputPath = (Join-Path $OutDir 'pester-junit.xml')
+          Invoke-Pester -Configuration $cfg -CI
+      - name: Upload Pester JUnit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pester-junit-${{ matrix.os }}
+          path: pester-results/pester-junit.xml
+          if-no-files-found: error
 
   dispatcher-dryrun-tests:
     name: dispatcher-dryrun-tests
@@ -77,6 +108,62 @@ jobs:
         run: |
           $testPath = Join-Path -Path 'tests/pester' -ChildPath 'ScriptPath.Tests.ps1'
           Invoke-Pester -CI -Path $testPath
+
+  report:
+    name: Generate TTM & Action Docs
+    runs-on: ubuntu-latest
+    needs: [dispatcher-tests, node-tests]
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install generator runtime deps
+        # ad-hoc install to avoid repo package.json changes
+        run: |
+          npm i -D ts-node typescript xml2js js-yaml glob
+
+      - name: Download test result artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./downloaded
+
+      - name: Generate Summary & Artifacts
+        env:
+          TEST_RESULTS_GLOBS: "downloaded/**/*.xml;**/junit*.xml"
+          REQ_MAPPING_FILE: "requirements.json"
+          DISPATCHER_SCRIPT: "actions/Invoke-OSAction.ps1"
+          EVIDENCE_DIR: "test-screenshots"
+        run: npx ts-node scripts/generate-ci-summary.ts
+
+      - name: Upload traceability
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: traceability
+          path: artifacts/traceability.*
+          if-no-files-found: error
+
+      - name: Upload action-docs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: action-docs
+          path: artifacts/action-docs.*
+          if-no-files-found: error
+
+      - name: Upload evidence (optional)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence
+          path: artifacts/evidence/**
+          if-no-files-found: ignore
 
   deploy-docs:
     if: github.ref == 'refs/heads/actions'
