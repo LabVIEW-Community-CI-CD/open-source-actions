@@ -1,9 +1,8 @@
 # Open Source LabVIEW Actions
 
-Open Source LabVIEW Actions is a composite GitHub Action that dispatches LabVIEW CI/CD tasks via PowerShell. See the [documentation site](https://open-source-actions.github.io/open-source-actions/) for setup and action reference. The [quickstart](docs/quickstart.md) shows a full example and [Unified Dispatcher](docs/UnifiedDispatcher.md) describes how the dispatcher works. For an overview of the project's architecture, see [docs/architecture.md](docs/architecture.md).
-For a mapping of high-level requirements to the tests that verify them, see [docs/requirements.md](docs/requirements.md).
+Open Source LabVIEW Actions provides typed GitHub Action wrappers around a unified PowerShell dispatcher for LabVIEW CI/CD tasks. Each adapter (for example `run-unit-tests`) is exposed as its own action and can be called from workflows with `uses: LabVIEW-Community-CI-CD/open-source-actions/<action>@v1`.
 
-To inspect the action's source and full schema, see [action.yml](action.yml).
+See the [documentation site](https://open-source-actions.github.io/open-source-actions/) for setup and action reference. The [quickstart](docs/quickstart.md) shows a full example and [Unified Dispatcher](docs/UnifiedDispatcher.md) describes how the dispatcher works. For an overview of the project's architecture, see [docs/architecture.md](docs/architecture.md). For a mapping of high-level requirements to the tests that verify them, see [docs/requirements.md](docs/requirements.md).
 
 ## Prerequisites
 
@@ -15,86 +14,47 @@ To inspect the action's source and full schema, see [action.yml](action.yml).
 
 ```yaml
 - name: Run tests
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  uses: LabVIEW-Community-CI-CD/open-source-actions/run-unit-tests@v1
   with:
-    action_name: run-unit-tests
-    args_yaml: |
-      MinimumSupportedLVVersion: '2021'
-      SupportedBitness: '64'
+    minimum_supported_lv_version: '2021'
+    supported_bitness: '64'
 ```
 
-This composite action wraps the dispatcher script [`actions/Invoke-OSAction.ps1`](actions/Invoke-OSAction.ps1). When the action runs it calls this script behind the scenes to execute the selected task.
+Each adapter has its own wrapper. Replace `run-unit-tests` with any action name listed in the [action reference](docs/index.md#action-reference). The wrappers translate the typed inputs above into the dispatcher.
 
-### Inputs
+Common optional inputs available on all wrappers:
 
-| Name | Required | Default | Description |
-| ---- | -------- | ------- | ----------- |
-| `action_name` | yes | – | Name of the action to execute (e.g. `run-unit-tests`). |
-| `args_yaml` | no | _(none)_ | YAML string of arguments for the selected action. |
-| `args_json` | no | `{}` | **Legacy.** JSON string of arguments for the selected action. |
-| `args_file` | no | _(none)_ | Path to a YAML or JSON file containing arguments. Values from `args_yaml`/`args_json` override file entries. |
-| `working_directory` | no | _(none)_ | Directory where the action runs. Set when your project files are not at the repository root. |
-| `log_level` | no | `INFO` | Verbosity level (`ERROR`, `WARN`, `INFO`, `DEBUG`). Increase to `DEBUG` for troubleshooting. |
-| `dry_run` | no | `false` | Simulate the action without side effects. Helpful for verifying inputs. |
+| Name | Description |
+| ---- | ----------- |
+| `gcli_path` | Path to the g-cli executable when it is not on `PATH`. |
+| `working_directory` | Directory where the action runs. |
+| `log_level` | Verbosity level (`ERROR`, `WARN`, `INFO`, `DEBUG`). |
+| `dry_run` | Simulate the action without side effects. |
 
-#### Examples
+### Examples
 
 Run tests from a subfolder:
 
 ```yaml
-- name: Run tests in module
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/run-unit-tests@v1
   with:
-    action_name: run-unit-tests
+    minimum_supported_lv_version: '2021'
+    supported_bitness: '64'
     working_directory: src
 ```
 
 Enable debug logging and perform a dry run:
 
 ```yaml
-- name: Dry run with debug logs
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/run-unit-tests@v1
   with:
-    action_name: run-unit-tests
+    minimum_supported_lv_version: '2021'
+    supported_bitness: '64'
     log_level: DEBUG
     dry_run: true
 ```
 
-Use arguments from a separate YAML file:
-
-```yaml
-# .github/os-action.yml
-MinimumSupportedLVVersion: "2021"
-SupportedBitness: "64"
-
-- name: Run tests with file args
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
-  with:
-    action_name: run-unit-tests
-    args_file: .github/os-action.yml
-```
-
-Use a JSON file and override a value inline:
-
-```yaml
-# .github/os-action.json
-{
-  "MinimumSupportedLVVersion": "2021",
-  "SupportedBitness": "32"
-}
-
-- name: Override file args
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
-  with:
-    action_name: run-unit-tests
-    args_file: .github/os-action.json
-    args_yaml: |
-      SupportedBitness: '64'
-```
-
-### Outputs
-
-This action does not emit outputs. Check logs or uploaded artifacts for results.
+> **Note**: The legacy top-level action using `action_name` and `args_json` is deprecated. Prefer the adapter-specific wrappers shown above.
 
 ## CLI/dispatcher usage
 

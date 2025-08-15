@@ -1,6 +1,6 @@
 # Open Source LabVIEW Actions
 
-Open Source LabVIEW Actions unifies LabVIEW CI/CD scripts behind a single PowerShell dispatcher. Use `Invoke-OSAction.ps1` to call actions by name with JSON arguments. The dispatcher exposes discovery commands (`-ListActions` and `-Describe`) and preserves each action's exit codes. It runs on Windows or Linux runners with LabVIEW and g-cli available, and supports `-DryRun` for safe previews.
+Open Source LabVIEW Actions unifies LabVIEW CI/CD scripts behind a single PowerShell dispatcher. Most users should call the adapter-specific GitHub Actions (for example `run-unit-tests`) directly in workflows. The dispatcher script (`Invoke-OSAction.ps1`) remains available for CLI scenarios. Discovery commands (`-ListActions` and `-Describe`) and standard exit codes are preserved, and `-DryRun` is supported for safe previews on Windows or Linux runners with LabVIEW and g-cli available.
 
 ## Get Started
 

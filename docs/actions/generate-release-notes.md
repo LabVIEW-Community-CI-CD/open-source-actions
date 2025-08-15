@@ -28,13 +28,9 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName generate-release-notes -ArgsJ
 
 ```yaml
 - name: Generate release notes
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  uses: LabVIEW-Community-CI-CD/open-source-actions/generate-release-notes@v1
   with:
-    action_name: generate-release-notes
-    args_json: >-
-      {
-        "OutputPath": "Tooling/deployment/release_notes.md"
-      }
+    output_path: 'Tooling/deployment/release_notes.md'
 ```
 
 ## Return Codes

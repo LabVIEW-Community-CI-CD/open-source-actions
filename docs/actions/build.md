@@ -44,21 +44,17 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName build -ArgsJson '{
 
 ```yaml
 - name: Build project
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  uses: LabVIEW-Community-CI-CD/open-source-actions/build@v1
   with:
-    action_name: build
-    args_json: >-
-      {
-        "RelativePath": ".",
-        "Major": 1,
-        "Minor": 0,
-        "Patch": 0,
-        "Build": 1,
-        "Commit": "abcdef",
-        "LabVIEWMinorRevision": "3",
-        "CompanyName": "Acme Corp",
-        "AuthorName": "Jane Doe"
-      }
+    relative_path: '.'
+    major: 1
+    minor: 0
+    patch: 0
+    build: 1
+    commit: abcdef
+    labview_minor_revision: '3'
+    company_name: 'Acme Corp'
+    author_name: 'Jane Doe'
 ```
 
 ## Return Codes

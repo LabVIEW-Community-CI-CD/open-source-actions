@@ -28,13 +28,9 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName revert-development-mode -Args
 
 ```yaml
 - name: Revert development mode
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  uses: LabVIEW-Community-CI-CD/open-source-actions/revert-development-mode@v1
   with:
-    action_name: revert-development-mode
-    args_json: >-
-      {
-        "RelativePath": "."
-      }
+    relative_path: '.'
 ```
 
 ## Return Codes

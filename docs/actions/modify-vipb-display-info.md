@@ -48,23 +48,19 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName modify-vipb-display-info -Arg
 
 ```yaml
 - name: Modify VIPB display info
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  uses: LabVIEW-Community-CI-CD/open-source-actions/modify-vipb-display-info@v1
   with:
-    action_name: modify-vipb-display-info
-    args_json: >-
-      {
-        "SupportedBitness": "64",
-        "RelativePath": ".",
-        "VIPBPath": "Tooling/deployment/NI Icon editor.vipb",
-        "MinimumSupportedLVVersion": "2023",
-        "LabVIEWMinorRevision": "3",
-        "Major": 1,
-        "Minor": 0,
-        "Patch": 0,
-        "Build": 2,
-        "Commit": "abcdef",
-        "DisplayInformationJSON": "{\"Package Version\":{\"major\":1,\"minor\":0,\"patch\":0,\"build\":2}}"
-      }
+    supported_bitness: '64'
+    relative_path: '.'
+    vipb_path: 'Tooling/deployment/NI Icon editor.vipb'
+    minimum_supported_lv_version: '2023'
+    labview_minor_revision: '3'
+    major: 1
+    minor: 0
+    patch: 0
+    build: 2
+    commit: abcdef
+    display_information_json: '{"Package Version":{"major":1,"minor":0,"patch":0,"build":2}}'
 ```
 
 ## Return Codes

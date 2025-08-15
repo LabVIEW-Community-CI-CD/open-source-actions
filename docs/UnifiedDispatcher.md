@@ -14,7 +14,7 @@ See [Common Parameters](common-parameters.md) for a complete list of dispatcher 
 
 ## Cross‑platform
 
-Works on **Windows and Linux** as long as LabVIEW and [g-cli](https://github.com/ni/g-cli) are installed and available on `PATH`. For non‑standard installs, pass `gcliPath` in `args_yaml` (legacy `args_json` is also supported; adapters will prepend it to `PATH`).
+Works on **Windows and Linux** as long as LabVIEW and [g-cli](https://github.com/ni/g-cli) are installed and available on `PATH`. For non‑standard installs, pass `gcliPath` in `args_yaml`. Legacy `args_json` is deprecated but still supported; adapters will prepend it to `PATH`.
 
 ## Example (CLI)
 
@@ -30,13 +30,11 @@ pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsYaml (Convert
 ## Composite Action usage
 
 ```yaml
-- uses: ./
+- uses: ./run-unit-tests
   with:
-    action_name: run-unit-tests
-    args_yaml: |
-      MinimumSupportedLVVersion: '2021'
-      SupportedBitness: '64'
-      gcliPath: /opt/gcli/bin
+    minimum_supported_lv_version: '2021'
+    supported_bitness: '64'
+    gcli_path: /opt/gcli/bin
 ```
 
 ## Matrix example (Windows and Linux)
@@ -50,13 +48,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./
+      - uses: ./run-unit-tests
         with:
-          action_name: run-unit-tests
-          args_yaml: |
-            MinimumSupportedLVVersion: '2021'
-            SupportedBitness: '64'
-            gcliPath: /opt/gcli/bin
+          minimum_supported_lv_version: '2021'
+          supported_bitness: '64'
+          gcli_path: /opt/gcli/bin
 ```
 
 ## SemVer policy

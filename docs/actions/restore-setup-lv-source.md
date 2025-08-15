@@ -36,17 +36,13 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName restore-setup-lv-source -Args
 
 ```yaml
 - name: Restore LabVIEW setup
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  uses: LabVIEW-Community-CI-CD/open-source-actions/restore-setup-lv-source@v1
   with:
-    action_name: restore-setup-lv-source
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2021",
-        "SupportedBitness": "64",
-        "RelativePath": ".",
-        "LabVIEW_Project": "lv_icon_editor",
-        "Build_Spec": "Editor Packed Library"
-      }
+    minimum_supported_lv_version: '2021'
+    supported_bitness: '64'
+    relative_path: '.'
+    labview_project: 'lv_icon_editor'
+    build_spec: 'Editor Packed Library'
 ```
 
 ## Return Codes

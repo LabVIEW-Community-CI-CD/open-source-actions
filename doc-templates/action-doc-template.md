@@ -31,16 +31,9 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName <action-name> -ArgsYaml (Conv
 
 ```yaml
 - name: <action description>
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  uses: LabVIEW-Community-CI-CD/open-source-actions/<action-name>@v1
   with:
-    action_name: <action-name>
-    args_yaml: |
-      Param1: value
-    # Legacy JSON format:
-    # args_json: >-
-    #   {
-    #     "Param1": "value"
-    #   }
+    param1: value
 ```
 
 ## Return Codes
