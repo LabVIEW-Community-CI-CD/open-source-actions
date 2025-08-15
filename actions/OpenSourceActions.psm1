@@ -4,7 +4,6 @@ function InvokeAddTokenToLabVIEW {
         [Parameter(Mandatory)] [string] $MinimumSupportedLVVersion,
         [Parameter(Mandatory)] [string] $SupportedBitness,
         [Parameter(Mandatory)] [string] $RelativePath,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -35,7 +34,6 @@ function InvokeApplyVIPC {
         [Parameter(Mandatory)] [string] $SupportedBitness,
         [Parameter(Mandatory)] [string] $RelativePath,
         [Parameter()] [string] $VIPCPath,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -75,7 +73,6 @@ function InvokeBuildViPackage {
         [Parameter(Mandatory)] [string] $Commit,
         [Parameter(Mandatory)] [string] $DisplayInformationJSON,
         [Parameter()] [string] $ReleaseNotesFile,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -119,7 +116,6 @@ function InvokeBuild {
         [Parameter(Mandatory)] [string] $LabVIEWMinorRevision,
         [Parameter(Mandatory)] [string] $CompanyName,
         [Parameter(Mandatory)] [string] $AuthorName,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -161,7 +157,6 @@ function InvokeBuildLvlibp {
         [Parameter(Mandatory)] [int] $Patch,
         [Parameter(Mandatory)] [int] $Build,
         [Parameter(Mandatory)] [string] $Commit,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -196,7 +191,6 @@ function InvokeCloseLabVIEW {
     param(
         [Parameter(Mandatory)][Alias('minimum_supported_lv_version')] [string] $MinimumSupportedLVVersion,
         [Parameter(Mandatory)][Alias('supported_bitness')]          [string] $SupportedBitness,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -222,7 +216,6 @@ function InvokeGenerateReleaseNotes {
     [CmdletBinding()]
     param(
         [Parameter()] [string] $OutputPath = 'Tooling/deployment/release_notes.md',
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -247,7 +240,6 @@ function InvokeMissingInProject {
         [Parameter(Mandatory)] [string] $LVVersion,
         [Parameter(Mandatory)] [string] $Arch,
         [Parameter(Mandatory)] [string] $ProjectFile,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -285,7 +277,6 @@ function InvokeModifyVIPBDisplayInfo {
         [Parameter(Mandatory)] [string] $Commit,
         [Parameter(Mandatory)] [string] $DisplayInformationJSON,
         [Parameter()] [string] $ReleaseNotesFile,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -325,7 +316,6 @@ function InvokePrepareLabVIEWSource {
         [Parameter(Mandatory)] [string] $RelativePath,
         [Parameter(Mandatory)] [string] $LabVIEW_Project,
         [Parameter(Mandatory)] [string] $Build_Spec,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -355,7 +345,6 @@ function InvokeRenameFile {
     param(
         [Parameter(Mandatory)] [string] $CurrentFilename,
         [Parameter(Mandatory)] [string] $NewFilename,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -385,7 +374,6 @@ function InvokeRestoreSetupLVSource {
         [Parameter(Mandatory)] [string] $RelativePath,
         [Parameter(Mandatory)] [string] $LabVIEW_Project,
         [Parameter(Mandatory)] [string] $Build_Spec,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -414,7 +402,6 @@ function InvokeRevertDevelopmentMode {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $RelativePath,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -438,7 +425,6 @@ function InvokeRunUnitTests {
     param(
         [Parameter(Mandatory)] [string] $MinimumSupportedLVVersion,
         [Parameter(Mandatory)] [string] $SupportedBitness,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
@@ -464,7 +450,6 @@ function InvokeSetDevelopmentMode {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $RelativePath,
-        [Parameter()] [string] $LogLevel = 'INFO',
         [Parameter()] [switch] $DryRun,
         [Parameter()] [string] $gcliPath
     )
