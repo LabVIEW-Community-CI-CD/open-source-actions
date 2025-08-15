@@ -31,6 +31,10 @@ jobs:
         name: Lint documentation
         shell: pwsh
         run: scripts/lint-docs.ps1
+      - if: ${{ steps.changes.outputs.docs == 'true' }}
+        uses: ./setup-mkdocs
+      - if: ${{ steps.changes.outputs.docs == 'true' }}
+        run: mkdocs build --strict
 
   node-tests:
     runs-on: ubuntu-latest
