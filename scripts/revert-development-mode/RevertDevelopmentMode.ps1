@@ -38,12 +38,14 @@ function Execute-Script {
         # Check for errors in the script execution
         if ($LASTEXITCODE -ne 0) {
             Write-Error "Error occurred while executing: $ScriptCommand. Exit code: $LASTEXITCODE"
-            exit $LASTEXITCODE
+            throw "Script failed with exit code $LASTEXITCODE"
         }
     } catch {
-        Write-Error "Error occurred while executing: $ScriptCommand. Exiting."
-        Write-Error $_.Exception.Message
-        exit 1
+        Write-Error "Error occurred while executing: $ScriptCommand. $_"
+        if (-not $LASTEXITCODE) {
+            $global:LASTEXITCODE = 1
+        }
+        throw
     }
 }
 
@@ -75,7 +77,8 @@ try {
 
 } catch {
     Write-Error "An unexpected error occurred during script execution: $($_.Exception.Message)"
-    exit 1
+    $code = if ($LASTEXITCODE -ne 0) { $LASTEXITCODE } else { 1 }
+    exit $code
 }
 
 Write-Host "All scripts executed successfully." -ForegroundColor Green

@@ -2,8 +2,12 @@ name: CI
 
 on:
   push:
-    branches: [actions]
+    branches: [ actions, main, master ]
   pull_request:
+    branches: [ actions, main, master ]
+
+# NOTE: This patch appends steps/jobs to enable JUnit, TTM, and Action Docs.
+# If your job ids differ, adjust 'needs:' in the 'report' job accordingly.
 
 jobs:
   docs-lint:
@@ -33,7 +37,14 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm test
+      - run: npm install
+      - run: npm run test:ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: node-junit
+          path: test-results/node-junit.xml
+          if-no-files-found: error
 
   dispatcher-tests:
     name: dispatcher-tests
@@ -43,11 +54,34 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - name: Run dispatcher tests
+      - name: Install Pester
         shell: pwsh
         run: |
-          $testPath = Join-Path -Path 'tests/pester' -ChildPath 'Dispatcher.Tests.ps1'
-          Invoke-Pester -CI -Path $testPath
+          if (-not (Get-Module -ListAvailable -Name Pester |
+                    Where-Object { $_.Version -ge [Version]'5.0.0' })) {
+            Remove-Module Pester -ErrorAction SilentlyContinue
+            Install-Module -Name Pester -MinimumVersion 5.0.0 -Scope CurrentUser -Force -SkipPublisherCheck
+          }
+      - name: Run Pester with JUnit output
+        shell: pwsh
+        run: |
+          $OutDir = Join-Path $env:GITHUB_WORKSPACE 'pester-results'
+          New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
+          Import-Module Pester -MinimumVersion 5.0.0
+          $cfg = [PesterConfiguration]::Default
+          $cfg.Run.Path = './tests/pester'
+          $cfg.Run.Exit = $true
+          $cfg.TestResult.Enabled = $true
+          $cfg.TestResult.OutputFormat = 'JUnitXml'
+          $cfg.TestResult.OutputPath = (Join-Path $OutDir 'pester-junit.xml')
+          Invoke-Pester -Configuration $cfg
+      - name: Upload Pester JUnit
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pester-junit-${{ matrix.os }}
+          path: pester-results/pester-junit.xml
+          if-no-files-found: error
 
   dispatcher-dryrun-tests:
     name: dispatcher-dryrun-tests
@@ -58,6 +92,14 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
+      - name: Install Pester
+        shell: pwsh
+        run: |
+          if (-not (Get-Module -ListAvailable -Name Pester |
+                    Where-Object { $_.Version -ge [Version]'5.0.0' })) {
+            Remove-Module Pester -ErrorAction SilentlyContinue
+            Install-Module -Name Pester -MinimumVersion 5.0.0 -Scope CurrentUser -Force -SkipPublisherCheck
+          }
       - name: Run dispatcher dry-run tests
         shell: pwsh
         run: |
@@ -78,8 +120,73 @@ jobs:
           $testPath = Join-Path -Path 'tests/pester' -ChildPath 'ScriptPath.Tests.ps1'
           Invoke-Pester -CI -Path $testPath
 
+  report:
+    name: Generate TTM & Action Docs
+    runs-on: ubuntu-latest
+    needs: [docs-lint, dispatcher-tests, dispatcher-dryrun-tests, scriptpath-tests, node-tests]
+    if: always()
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install generator runtime deps
+        # ad-hoc install to avoid repo package.json changes
+        run: |
+          npm i -D ts-node typescript xml2js js-yaml glob
+
+      - name: Download test result artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: ./downloaded
+
+      - name: Generate Summary & Artifacts
+        env:
+          TEST_RESULTS_GLOBS: |
+            downloaded/**/*.xml
+            **/junit*.xml
+          REQ_MAPPING_FILE: "requirements.json"
+          DISPATCHER_SCRIPT: "actions/Invoke-OSAction.ps1"
+          EVIDENCE_DIR: "test-screenshots"
+        run: node --loader ts-node/esm scripts/generate-ci-summary.ts
+
+      - name: Upload traceability
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: traceability
+          path: |
+            artifacts/traceability.json
+            artifacts/traceability.md
+          if-no-files-found: warn
+
+      - name: Upload action-docs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: action-docs
+          path: artifacts/action-docs.zip
+          if-no-files-found: warn
+
+      - name: Upload evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidence
+          path: artifacts/evidence/**
+          if-no-files-found: ignore
+
+      - name: Verify required jobs
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        run: exit 1
+
   deploy-docs:
-    if: github.ref == 'refs/heads/actions'
+    needs: report
+    if: github.ref == 'refs/heads/actions' && needs.report.result == 'success'
     runs-on: ubuntu-latest
     environment:
       name: github-pages
