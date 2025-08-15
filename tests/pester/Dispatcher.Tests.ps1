@@ -45,6 +45,19 @@ Describe 'ArgsJson path handling' {
   }
 }
 
+Describe 'ArgsFile handling' {
+  It 'merges file arguments with inline overrides' {
+    $jsonFile = Join-Path $TestDrive 'args.json'
+    @{ MinimumSupportedLVVersion = '2021'; SupportedBitness = '32' } | ConvertTo-Json -Compress | Set-Content -Path $jsonFile
+
+    $override = @{ SupportedBitness = '64' }
+
+    $out = & $global:dispatcher -ActionName close-labview -ArgsFile $jsonFile -ArgsYaml $override -DryRun *>&1 | Out-String
+    $LASTEXITCODE | Should -Be 0
+    $out | Should -Match '"SupportedBitness":"64"'
+  }
+}
+
 
 Describe 'Filter-Args helper' {
   It 'returns UnknownParams when requested' {

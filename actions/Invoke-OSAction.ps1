@@ -3,6 +3,7 @@ param(
   [Parameter(Position=0)] [string] $ActionName,
   [Parameter()] [string] $ArgsJson = '{}',
   [Parameter()] [hashtable] $ArgsYaml,
+  [Parameter()] [string] $ArgsFile,
   [Parameter()] [string] $WorkingDirectory,
   [Parameter()] [ValidateSet('ERROR','WARN','INFO','DEBUG')] [string] $LogLevel = 'INFO',
   [switch] $DryRun,
@@ -115,11 +116,37 @@ try {
   if (-not $Registry.Contains($key)) { throw "Unknown ActionName '$ActionName'. Use -ListActions to see options." }
   $funcName = $Registry[$key]
 
-  # Parse ArgsJson → case-insensitive hashtable
+  # Parse ArgsFile/ArgsJson/ArgsYaml → case-insensitive hashtable
   $argsHash = @{}
+  if ($ArgsFile) {
+    if (-not (Test-Path $ArgsFile)) { throw "ArgsFile '$ArgsFile' not found" }
+    $ext = [System.IO.Path]::GetExtension($ArgsFile).ToLowerInvariant()
+    $content = Get-Content -Path $ArgsFile -Raw
+    try {
+      switch ($ext) {
+        '.json' {
+          $fileArgs = ConvertFrom-Json -InputObject $content -AsHashtable -ErrorAction Stop
+        }
+        '.yaml' {
+          $fileArgs = ConvertFrom-Yaml -Yaml $content -ErrorAction Stop | ConvertTo-Json -Depth 32 | ConvertFrom-Json -AsHashtable
+        }
+        '.yml' {
+          $fileArgs = ConvertFrom-Yaml -Yaml $content -ErrorAction Stop | ConvertTo-Json -Depth 32 | ConvertFrom-Json -AsHashtable
+        }
+        default {
+          throw "Unsupported ArgsFile extension '$ext'. Use .json, .yaml, or .yml."
+        }
+      }
+    }
+    catch {
+      throw "ArgsFile could not be parsed: $($_.Exception.Message)"
+    }
+    foreach ($k in $fileArgs.Keys) { $argsHash[$k] = $fileArgs[$k] }
+  }
+
   if ($ArgsJson -and $ArgsJson.Trim()) {
     try {
-      $argsHash = ConvertFrom-Json -InputObject $ArgsJson -AsHashtable -ErrorAction Stop
+      $jsonHash = ConvertFrom-Json -InputObject $ArgsJson -AsHashtable -ErrorAction Stop
     }
     catch {
       # If parsing fails (commonly due to unescaped Windows backslashes),
@@ -128,13 +155,14 @@ try {
       # each separator.
         $escapedJson = $ArgsJson.Replace('\', '\\')
       try {
-        $argsHash = ConvertFrom-Json -InputObject $escapedJson -AsHashtable -ErrorAction Stop
+        $jsonHash = ConvertFrom-Json -InputObject $escapedJson -AsHashtable -ErrorAction Stop
         Write-Warning 'ArgsJson contained unescaped backslashes. They were automatically escaped.'
       }
       catch {
         throw "ArgsJson is not valid JSON: $($_.Exception.Message)"
       }
     }
+    foreach ($k in $jsonHash.Keys) { $argsHash[$k] = $jsonHash[$k] }
   }
   if ($ArgsYaml) {
     foreach ($k in $ArgsYaml.Keys) {

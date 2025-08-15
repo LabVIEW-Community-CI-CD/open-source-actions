@@ -15,6 +15,11 @@ inputs:
     required: false
     default: ''
     type: string
+  args_file:
+    description: 'Path to a JSON or YAML file containing arguments for the selected action.'
+    required: false
+    default: ''
+    type: string
   working_directory:
     description: 'Working directory where the action will run.'
     required: false
@@ -50,6 +55,10 @@ runs:
         $params = @{
           ActionName = '${{ inputs.action_name }}'
           LogLevel   = '${{ inputs.log_level }}'
+        }
+
+        if ('${{ inputs.args_file }}' -ne '') {
+          $params['ArgsFile'] = '${{ inputs.args_file }}'
         }
 
         if ($yaml.Trim()) {
