@@ -32,6 +32,7 @@ This composite action wraps the dispatcher script [`actions/Invoke-OSAction.ps1`
 | `action_name` | yes | – | Name of the action to execute (e.g. `run-unit-tests`). |
 | `args_yaml` | no | _(none)_ | YAML string of arguments for the selected action. |
 | `args_json` | no | `{}` | **Legacy.** JSON string of arguments for the selected action. |
+| `args_file` | no | _(none)_ | Path to a YAML or JSON file containing arguments. Values from `args_yaml`/`args_json` override file entries. |
 | `working_directory` | no | _(none)_ | Directory where the action runs. Set when your project files are not at the repository root. |
 | `log_level` | no | `INFO` | Verbosity level (`ERROR`, `WARN`, `INFO`, `DEBUG`). Increase to `DEBUG` for troubleshooting. |
 | `dry_run` | no | `false` | Simulate the action without side effects. Helpful for verifying inputs. |
@@ -59,6 +60,38 @@ Enable debug logging and perform a dry run:
     dry_run: true
 ```
 
+Use arguments from a separate YAML file:
+
+```yaml
+# .github/os-action.yml
+MinimumSupportedLVVersion: "2021"
+SupportedBitness: "64"
+
+- name: Run tests with file args
+  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  with:
+    action_name: run-unit-tests
+    args_file: .github/os-action.yml
+```
+
+Use a JSON file and override a value inline:
+
+```yaml
+# .github/os-action.json
+{
+  "MinimumSupportedLVVersion": "2021",
+  "SupportedBitness": "32"
+}
+
+- name: Override file args
+  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  with:
+    action_name: run-unit-tests
+    args_file: .github/os-action.json
+    args_yaml: |
+      SupportedBitness: '64'
+```
+
 ### Outputs
 
 This action does not emit outputs. Check logs or uploaded artifacts for results.
@@ -73,6 +106,12 @@ MinimumSupportedLVVersion: "2021"
 SupportedBitness: "64"
 '@
 pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsYaml (ConvertFrom-Yaml $yaml)
+```
+
+You can also load arguments from a file:
+
+```powershell
+pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsFile ./config/run-tests.yaml
 ```
 
 ### Discovering actions
