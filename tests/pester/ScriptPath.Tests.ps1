@@ -12,13 +12,19 @@ $actionNames = pwsh -NoProfile -File $dispatcher -ListActions |
     Where-Object { $_ -match '^\s+- ' } |
     ForEach-Object { $_.Trim().Substring(2) }
 
+$scriptMap = @{ 'missing-in-project' = 'Invoke-MissingInProjectCLI.ps1' }
+
 $cases = foreach ($name in $actionNames) {
     $dir = Join-Path $scriptRoot $name
-    $scriptFile = Get-ChildItem -Path $dir -Filter '*.ps1' -File | Select-Object -First 1
-    if ($null -eq $scriptFile) {
-        @{ Name = $name; Path = Join-Path $dir "$name.ps1" }
+    if ($scriptMap.ContainsKey($name)) {
+        @{ Name = $name; Path = Join-Path $dir $scriptMap[$name] }
     } else {
-        @{ Name = $name; Path = $scriptFile.FullName }
+        $scriptFile = Get-ChildItem -Path $dir -Filter '*.ps1' -File | Select-Object -First 1
+        if ($null -eq $scriptFile) {
+            @{ Name = $name; Path = Join-Path $dir "$name.ps1" }
+        } else {
+            @{ Name = $name; Path = $scriptFile.FullName }
+        }
     }
 }
 
