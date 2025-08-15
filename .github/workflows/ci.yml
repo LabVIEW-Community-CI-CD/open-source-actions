@@ -37,15 +37,13 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - run: npm test
-      # Optional: if node tests can emit JUnit, include:
-      # - run: npm run test:ci
-      # - uses: actions/upload-artifact@v4
-      #   if: always()
-      #   with:
-      #     name: node-junit
-      #     path: test-results/**/*.xml
-      #     if-no-files-found: ignore
+      - run: npm run test:ci
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: node-junit
+          path: test-results/node-junit.xml
+          if-no-files-found: error
 
   dispatcher-tests:
     name: dispatcher-tests
