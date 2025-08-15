@@ -1,0 +1,73 @@
+name: Docs
+
+on:
+  pull_request:
+    branches: [actions]
+  push:
+    branches: [actions]
+
+jobs:
+  lint-docs:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            docs:
+              - 'docs/**'
+              - 'doc-templates/**'
+              - 'scripts/**'
+              - 'README.md'
+      - if: ${{ steps.changes.outputs.docs == 'true' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - if: ${{ steps.changes.outputs.docs == 'true' }}
+        name: Lint documentation
+        shell: pwsh
+        run: scripts/lint-docs.ps1
+
+  deploy-docs:
+    if: github.event_name == 'push'
+    needs: lint-docs
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: true
+    steps:
+      - name: Log deploy conditions
+        run: echo "branch: ${{ github.ref }}"
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            docs:
+              - 'docs/**'
+              - 'README.md'
+      - uses: ./actions/setup-mkdocs
+        if: steps.changes.outputs.docs == 'true'
+      - run: mkdocs build --strict
+        if: steps.changes.outputs.docs == 'true'
+      - uses: actions/upload-artifact@v4
+        if: steps.changes.outputs.docs == 'true'
+        with:
+          name: docs-site
+          path: site
+          if-no-files-found: error
+      - uses: actions/upload-pages-artifact@v3
+        if: steps.changes.outputs.docs == 'true'
+        with:
+          path: site
+      - id: deploy
+        uses: actions/deploy-pages@v4
+        if: steps.changes.outputs.docs == 'true'
+

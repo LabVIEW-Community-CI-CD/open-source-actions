@@ -10,27 +10,6 @@ on:
 # If your job ids differ, adjust 'needs:' in the 'report' job accordingly.
 
 jobs:
-  docs-lint:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: dorny/paths-filter@v2
-        id: changes
-        with:
-          filters: |
-            docs:
-              - 'docs/**'
-              - 'doc-templates/**'
-              - 'scripts/**'
-              - 'README.md'
-      - if: ${{ steps.changes.outputs.docs == 'true' }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - if: ${{ steps.changes.outputs.docs == 'true' }}
-        name: Lint documentation
-        shell: pwsh
-        run: scripts/lint-docs.ps1
 
   node-tests:
     runs-on: ubuntu-latest
@@ -125,7 +104,7 @@ jobs:
   report:
     name: Generate TTM & Action Docs
     runs-on: ubuntu-latest
-    needs: [docs-lint, dispatcher-tests, dispatcher-dryrun-tests, scriptpath-tests, node-tests]
+    needs: [dispatcher-tests, dispatcher-dryrun-tests, scriptpath-tests, node-tests]
     if: always()
     steps:
       - name: Checkout
@@ -185,49 +164,3 @@ jobs:
       - name: Verify required jobs
         if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
         run: exit 1
-
-  deploy-docs:
-    needs: report
-    if: always()
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-    permissions:
-      contents: read
-      pages: write
-      id-token: write
-    concurrency:
-      group: pages
-      cancel-in-progress: true
-    steps:
-      - name: Log deploy conditions
-        run: |
-          echo "branch: ${{ github.ref }}"
-          echo "report result: ${{ needs.report.result }}"
-      - uses: actions/checkout@v4
-        if: github.ref == 'refs/heads/actions'
-      - uses: dorny/paths-filter@v2
-        if: github.ref == 'refs/heads/actions'
-        id: changes
-        with:
-          filters: |
-            docs:
-              - 'docs/**'
-              - 'README.md'
-      - uses: ./actions/setup-mkdocs
-        if: github.ref == 'refs/heads/actions' && needs.report.result == 'success' && steps.changes.outputs.docs == 'true'
-      - run: mkdocs build --strict
-        if: github.ref == 'refs/heads/actions' && needs.report.result == 'success' && steps.changes.outputs.docs == 'true'
-      - uses: actions/upload-artifact@v4
-        if: github.ref == 'refs/heads/actions' && needs.report.result == 'success' && steps.changes.outputs.docs == 'true'
-        with:
-          name: docs-site
-          path: site
-          if-no-files-found: error
-      - uses: actions/upload-pages-artifact@v3
-        if: github.ref == 'refs/heads/actions' && needs.report.result == 'success' && steps.changes.outputs.docs == 'true'
-        with:
-          path: site
-      - id: deploy
-        uses: actions/deploy-pages@v4
-        if: github.ref == 'refs/heads/actions' && needs.report.result == 'success' && steps.changes.outputs.docs == 'true'
