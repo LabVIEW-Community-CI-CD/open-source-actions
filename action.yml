@@ -10,6 +10,11 @@ inputs:
     required: false
     default: '{}'
     type: string
+  args_yaml:
+    description: 'YAML string of arguments for the selected action. Overrides args_json when set.'
+    required: false
+    default: ''
+    type: string
   working_directory:
     description: 'Working directory where the action will run.'
     required: false
@@ -37,16 +42,30 @@ runs:
       run: |
         $ErrorActionPreference = 'Stop'
 
-        # Capture JSON exactly as provided by the caller, without quoting/escaping issues.
-        $json = @'
-        ${{ inputs.args_json }}
+        # Prefer YAML args when provided; otherwise fall back to JSON.
+        $yaml = @'
+        ${{ inputs.args_yaml }}
         '@
 
-        # Build parameters via hashtable splatting to avoid fragile CLI string quoting.
         $params = @{
           ActionName = '${{ inputs.action_name }}'
-          ArgsJson   = $json
           LogLevel   = '${{ inputs.log_level }}'
+        }
+
+        if ($yaml.Trim()) {
+          try {
+            $params['ArgsYaml'] = ConvertFrom-Yaml -Yaml $yaml -ErrorAction Stop
+          }
+          catch {
+            throw "args_yaml is not valid YAML: $($_.Exception.Message)"
+          }
+        }
+        else {
+          # Capture JSON exactly as provided by the caller, without quoting/escaping issues.
+          $json = @'
+          ${{ inputs.args_json }}
+          '@
+          $params['ArgsJson'] = $json
         }
 
         if ('${{ inputs.working_directory }}' -ne '') {

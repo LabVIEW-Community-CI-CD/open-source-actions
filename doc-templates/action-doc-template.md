@@ -21,9 +21,10 @@ Common parameters are described in [Common parameters](../docs/common-parameters
 ## CLI example
 
 ```powershell
-pwsh -File actions/Invoke-OSAction.ps1 -ActionName <action-name> -ArgsJson '{
-  "Param1": "value"
-}'
+$yaml = @'
+Param1: value
+'@
+pwsh -File actions/Invoke-OSAction.ps1 -ActionName <action-name> -ArgsYaml (ConvertFrom-Yaml $yaml)
 ```
 
 ## GitHub Action example
@@ -33,10 +34,13 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName <action-name> -ArgsJson '{
   uses: LabVIEW-Community-CI-CD/open-source-actions@v1
   with:
     action_name: <action-name>
-    args_json: >-
-      {
-        "Param1": "value"
-      }
+    args_yaml: |
+      Param1: value
+    # Legacy JSON format:
+    # args_json: >-
+    #   {
+    #     "Param1": "value"
+    #   }
 ```
 
 ## Return Codes
