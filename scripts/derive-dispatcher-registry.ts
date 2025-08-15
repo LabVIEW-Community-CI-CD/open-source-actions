@@ -30,8 +30,11 @@ function parseParams(block: string): Record<string, ParamInfo> {
     const defVal = defMatch ? defMatch[1].trim().replace(/^['"]|['"]$/g,'') : undefined;
     params[name] = { type, required, default: defVal, description: '' };
   }
+  const collator = new Intl.Collator('en');
   const sorted: Record<string, ParamInfo> = {};
-  for (const k of Object.keys(params).sort()) sorted[k] = params[k];
+  for (const [k, v] of Object.entries(params).sort((a, b) => collator.compare(a[0], b[0]))) {
+    sorted[k] = v;
+  }
   return sorted;
 }
 
@@ -61,8 +64,9 @@ async function main() {
       registry[fn] = { description, parameters: parseParams(paramsBlock) };
     }
   }
+  const collator = new Intl.Collator('en');
   const sorted: Record<string, FuncInfo> = {};
-  for (const fn of Object.keys(registry).sort()) sorted[fn] = registry[fn];
+  for (const fn of Object.keys(registry).sort(collator.compare)) sorted[fn] = registry[fn];
   await fs.writeFile('dispatchers.json', JSON.stringify(sorted, null, 2));
 }
 

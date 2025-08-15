@@ -281,7 +281,8 @@ async function main() {
   const matrixMd = groupToMarkdown(groups, tests.length > 100 ? 100 : undefined);
   const summary = `${summaryLines.join('\n')}` + `\n\n### Test Traceability Matrix\n\n${matrixMd}`;
 
-  const wrapperDirs = ['add-token-to-labview','apply-vipc','build-lvlibp','build-vi-package','build','close-labview','generate-release-notes','missing-in-project','modify-vipb-display-info','prepare-labview-source','rename-file','restore-setup-lv-source','revert-development-mode','run-unit-tests','set-development-mode','setup-mkdocs'];
+  const wrapperFiles = await glob('*/action.yml', { nodir: true });
+  const wrapperDirs = wrapperFiles.map(f => path.dirname(f)).sort();
   const { docs, markdown } = await generateActionDocs(dispatcherRegistryFile, wrapperDirs);
 
   const actionDocMd = `### Action Documentation\n\n${markdown}`;
