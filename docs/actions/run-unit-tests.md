@@ -20,10 +20,11 @@ None.
 ## CLI example
 
 ```powershell
-pwsh -File actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson '{
-  "MinimumSupportedLVVersion": "2020",
-  "SupportedBitness": "64"
-}'
+$yaml = @'
+MinimumSupportedLVVersion: "2020"
+SupportedBitness: "64"
+'@
+pwsh -File actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsYaml (ConvertFrom-Yaml $yaml)
 ```
 
 ## GitHub Action example
@@ -33,11 +34,15 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson '{
   uses: LabVIEW-Community-CI-CD/open-source-actions@v1
   with:
     action_name: run-unit-tests
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2020",
-        "SupportedBitness": "64"
-      }
+    args_yaml: |
+      MinimumSupportedLVVersion: '2020'
+      SupportedBitness: '64'
+    # Legacy JSON format:
+    # args_json: >-
+    #   {
+    #     "MinimumSupportedLVVersion": "2020",
+    #     "SupportedBitness": "64"
+    #   }
 ```
 
 ## Return Codes

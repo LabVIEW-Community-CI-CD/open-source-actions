@@ -18,7 +18,9 @@ To inspect the action's source and full schema, see [action.yml](action.yml).
   uses: LabVIEW-Community-CI-CD/open-source-actions@v1
   with:
     action_name: run-unit-tests
-    args_json: '{ "MinimumSupportedLVVersion": "2021", "SupportedBitness": "64" }'
+    args_yaml: |
+      MinimumSupportedLVVersion: '2021'
+      SupportedBitness: '64'
 ```
 
 This composite action wraps the dispatcher script [`actions/Invoke-OSAction.ps1`](actions/Invoke-OSAction.ps1). When the action runs it calls this script behind the scenes to execute the selected task.
@@ -28,7 +30,8 @@ This composite action wraps the dispatcher script [`actions/Invoke-OSAction.ps1`
 | Name | Required | Default | Description |
 | ---- | -------- | ------- | ----------- |
 | `action_name` | yes | – | Name of the action to execute (e.g. `run-unit-tests`). |
-| `args_json` | no | `{}` | JSON string of arguments for the selected action. Use to pass parameters to the action. |
+| `args_yaml` | no | _(none)_ | YAML string of arguments for the selected action. |
+| `args_json` | no | `{}` | **Legacy.** JSON string of arguments for the selected action. |
 | `working_directory` | no | _(none)_ | Directory where the action runs. Set when your project files are not at the repository root. |
 | `log_level` | no | `INFO` | Verbosity level (`ERROR`, `WARN`, `INFO`, `DEBUG`). Increase to `DEBUG` for troubleshooting. |
 | `dry_run` | no | `false` | Simulate the action without side effects. Helpful for verifying inputs. |
@@ -65,7 +68,11 @@ This action does not emit outputs. Check logs or uploaded artifacts for results.
 If you prefer or need to run tasks directly, call the dispatcher script yourself:
 
 ```powershell
-pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson '{ "MinimumSupportedLVVersion": "2021", "SupportedBitness": "64" }'
+$yaml = @'
+MinimumSupportedLVVersion: "2021"
+SupportedBitness: "64"
+'@
+pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsYaml (ConvertFrom-Yaml $yaml)
 ```
 
 ### Discovering actions

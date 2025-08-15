@@ -13,37 +13,36 @@ jobs:
         uses: LabVIEW-Community-CI-CD/open-source-actions@v1
         with:
           action_name: build-lvlibp
-          args_json: >
-            {
-              "MinimumSupportedLVVersion": "2019",
-              "SupportedBitness": "32",
-              "RelativePath": ".",
-              "LabVIEW_Project": "MyProject.lvproj",
-              "Build_Spec": "My Build",
-              "Major": 1,
-              "Minor": 0,
-              "Patch": 0,
-              "Build": 123,
-              "Commit": "abcdef"
-            }
+          args_yaml: |
+            MinimumSupportedLVVersion: '2019'
+            SupportedBitness: '32'
+            RelativePath: .
+            LabVIEW_Project: MyProject.lvproj
+            Build_Spec: My Build
+            Major: 1
+            Minor: 0
+            Patch: 0
+            Build: 123
+            Commit: abcdef
 ```
 
-In this step, the composite action invokes the dispatcher to run the **Build** task. The `args_json` contains all parameters the action needs (here, to build a 32-bit LV library). The dispatcher will locate the appropriate script and execute it, failing the step if a problem occurs (non-zero exit).
+In this step, the composite action invokes the dispatcher to run the **Build** task. The `args_yaml` contains all parameters the action needs (here, to build a 32-bit LV library). The dispatcher will locate the appropriate script and execute it, failing the step if a problem occurs (non-zero exit). The legacy `args_json` input remains available.
 3. **Invoke via PowerShell (CLI):** You can also call the dispatcher script directly. For example, the above build can be run in a PowerShell session or script:
 
 ```powershell
-pwsh -File actions/Invoke-OSAction.ps1 -ActionName build-lvlibp -ArgsJson '{
-  "MinimumSupportedLVVersion": "2019",
-  "SupportedBitness": "32",
-  "RelativePath": ".",
-  "LabVIEW_Project": "MyProject.lvproj",
-  "Build_Spec": "My Build",
-  "Major": 1,
-  "Minor": 0,
-  "Patch": 0,
-  "Build": 123,
-  "Commit": "abcdef"
-}'
+$yaml = @'
+MinimumSupportedLVVersion: "2019"
+SupportedBitness: "32"
+RelativePath: .
+LabVIEW_Project: MyProject.lvproj
+Build_Spec: "My Build"
+Major: 1
+Minor: 0
+Patch: 0
+Build: 123
+Commit: abcdef
+'@
+pwsh -File actions/Invoke-OSAction.ps1 -ActionName build-lvlibp -ArgsYaml (ConvertFrom-Yaml $yaml)
 ```
 
 This will import the **OpenSourceActions** module and run the **Build** adapter. On completion, the script returns with an exit code (0 for success or a non-zero error code). You can include optional flags like `-WorkingDirectory` to change directory before execution, or `-DryRun` to simulate the action (see below). For details on these and other dispatcher flags, see [Common Parameters](common-parameters.md).

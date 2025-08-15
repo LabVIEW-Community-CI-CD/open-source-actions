@@ -2,6 +2,7 @@
 param(
   [Parameter(Position=0)] [string] $ActionName,
   [Parameter()] [string] $ArgsJson = '{}',
+  [Parameter()] [hashtable] $ArgsYaml,
   [Parameter()] [string] $WorkingDirectory,
   [Parameter()] [ValidateSet('ERROR','WARN','INFO','DEBUG')] [string] $LogLevel = 'INFO',
   [switch] $DryRun,
@@ -135,6 +136,12 @@ try {
       }
     }
   }
+  if ($ArgsYaml) {
+    foreach ($k in $ArgsYaml.Keys) {
+      $argsHash[$k] = $ArgsYaml[$k]
+    }
+  }
+
   if ($DryRun)   { $argsHash['DryRun']   = $true }
   if ($LogLevel) { $argsHash['LogLevel'] = $LogLevel }
 
