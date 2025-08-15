@@ -54,13 +54,16 @@ test('main writes artifacts to artifacts directory', async () => {
     const junitPath = path.join(__dirname, 'ci-junit.xml');
     await fs.writeFile(junitPath, junitXml);
     process.env.TEST_RESULTS_GLOBS = junitPath;
+    process.env.DISPATCHER_SCRIPT = path.resolve('actions', 'Invoke-OSAction.ps1');
     await fs.rm('artifacts', { recursive: true, force: true });
     await main();
     await fs.access(path.join('artifacts', 'traceability.json'));
+    await fs.access(path.join('artifacts', 'traceability.md'));
     await fs.access(path.join('artifacts', 'action-docs.zip'));
     await fs.unlink(junitPath);
   } finally {
     delete process.env.TEST_RESULTS_GLOBS;
+    delete process.env.DISPATCHER_SCRIPT;
     await fs.rm(path.join(process.cwd(), 'artifacts'), { recursive: true, force: true });
     process.chdir(cwd);
   }
