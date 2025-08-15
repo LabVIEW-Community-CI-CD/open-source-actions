@@ -177,6 +177,10 @@ jobs:
           path: artifacts/evidence/**
           if-no-files-found: ignore
 
+      - name: Verify required jobs
+        if: ${{ contains(needs.*.result, 'failure') || contains(needs.*.result, 'cancelled') }}
+        run: exit 1
+
   deploy-docs:
     needs: report
     if: github.ref == 'refs/heads/actions' && needs.report.result == 'success'
