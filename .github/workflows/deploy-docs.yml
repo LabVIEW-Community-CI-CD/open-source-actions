@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: ./actions/setup-mkdocs
+      - uses: ./setup-mkdocs
       - run: mkdocs build --strict
 
   deploy-docs:
@@ -30,7 +30,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - uses: actions/checkout@v4
-      - uses: ./actions/setup-mkdocs
+      - uses: ./setup-mkdocs
       - run: mkdocs build --strict
       - uses: actions/upload-pages-artifact@v3
         with:
