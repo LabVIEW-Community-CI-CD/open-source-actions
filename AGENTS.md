@@ -8,4 +8,6 @@
 
 ## Development Notes
 - Composite actions live at the repository root (e.g., `run-unit-tests/action.yml`) and dispatch to scripts in `actions/`.
+- When referencing these composite actions in workflows, use their root-level path (for example, `./setup-mkdocs`).
+  Prefixing with `actions/` (such as `./actions/setup-mkdocs`) will fail to resolve the action and can break jobs like `deploy-docs`.
 - Use a single commit; do not create new branches.
