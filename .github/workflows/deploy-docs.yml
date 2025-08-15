@@ -19,7 +19,7 @@ jobs:
       cancel-in-progress: true
     steps:
       - name: Log deploy conditions
-        run: echo "branch: ${{ github.ref }}"
+        run: 'echo "branch: ${{ github.ref }}"'
       - uses: actions/checkout@v4
         if: github.ref == 'refs/heads/actions'
       - uses: ./actions/setup-mkdocs
