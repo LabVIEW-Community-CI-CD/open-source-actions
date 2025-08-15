@@ -3,7 +3,7 @@
 ## Testing
 - Run `npm install` to ensure Node dependencies are available.
 - Execute `npm test`.
-- Install PowerShell 7.5.2 and the Pester module, then run `pwsh -NoLogo -Command "Invoke-Pester -CI -Path ./tests/pester"`.
+- Install PowerShell 7.5.2 and the Pester module. If `pwsh` is not available, install it with `apt-get update && apt-get install -y powershell`. Then run `pwsh -NoLogo -Command "Invoke-Pester -CI -Path ./tests/pester"`.
 - All tests above are mandatory; they must pass before committing.
 
 ## Development Notes
