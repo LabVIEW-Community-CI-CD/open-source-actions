@@ -214,7 +214,7 @@ jobs:
             docs:
               - 'docs/**'
               - 'README.md'
-      - uses: ./actions/setup-mkdocs
+      - uses: ./setup-mkdocs
         if: github.ref == 'refs/heads/actions' && needs.report.result == 'success' && steps.changes.outputs.docs == 'true'
       - run: mkdocs build --strict
         if: github.ref == 'refs/heads/actions' && needs.report.result == 'success' && steps.changes.outputs.docs == 'true'
