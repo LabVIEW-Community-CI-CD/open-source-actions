@@ -42,7 +42,8 @@ try {
     if ($LASTEXITCODE -eq 0) {
         Write-Host "Create localhost.library path from ini file"
     }
+    exit $LASTEXITCODE
 } catch {
-    Write-Host ""
-    exit 0
+    Write-Error "Failed to add localhost.library path to INI file: $_"
+    exit 1
 }
