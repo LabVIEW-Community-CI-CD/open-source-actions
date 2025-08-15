@@ -3,316 +3,369 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { glob } from 'glob';
 import { parseStringPromise } from 'xml2js';
-import { execFile } from 'child_process';
-import { promisify } from 'util';
-import JSZip from 'jszip';
+import yaml from 'js-yaml';
 
-const execFileAsync = promisify(execFile);
-
-interface Requirement {
+interface TestCase {
   id: string;
-  description: string;
-  tests: string[];
-}
-
-/**
- * Load requirement mappings from a JSON file. Returns empty array when file
- * cannot be parsed or does not exist.
- */
-export async function loadRequirementMapping(mappingPath: string): Promise<Requirement[]> {
-  try {
-    const contents = await fs.readFile(mappingPath, 'utf8');
-    const parsed = JSON.parse(contents);
-    return Array.isArray(parsed.requirements) ? (parsed.requirements as Requirement[]) : [];
-  } catch (err: any) {
-    console.warn(`Unable to read requirement mapping file at ${mappingPath}: ${err.message}`);
-    return [];
-  }
-}
-
-/**
- * Find the requirement identifier for a given test name. Returns undefined if
- * the test name is not associated with any requirement.
- */
-export function findRequirementId(testName: string, mapping: Requirement[]): string | undefined {
-  for (const req of mapping) {
-    if (req.tests.includes(testName)) {
-      return req.id;
-    }
-  }
-  return undefined;
-}
-
-interface SuiteResult {
   name: string;
-  tests: number;
-  failures: number;
-  passed: number;
+  status: 'passed' | 'failed' | 'skipped';
+  duration: number;
+  requirements: string[];
+  owner?: string;
+  evidence?: string;
 }
 
-export async function parseJUnitFile(file: string): Promise<SuiteResult[]> {
+interface RequirementGroup {
+  id: string;
+  description?: string;
+  owner?: string;
+  tests: TestCase[];
+}
+
+interface Totals {
+  total: number;
+  passed: number;
+  failed: number;
+  skipped: number;
+  duration: number;
+}
+
+interface Mapping {
+  reqInfo: Record<string, { description?: string; owner?: string }>;
+  testMap: Map<string, { id: string; owner?: string }[]>;
+}
+
+const COLLATOR = new Intl.Collator('en', { numeric: true, sensitivity: 'base' });
+
+function redact(text: string): string {
+  return text.replace(/[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi, '<redacted>');
+}
+
+function normalizeTestId(id: string): string {
+  return id.toLowerCase().replace(/::/g, '-').replace(/\s+/g, '-');
+}
+
+function parseTags(name: string): { clean: string; reqs: string[]; owner?: string } {
+  const reqs: string[] = [];
+  let owner: string | undefined;
+  name = name.replace(/\[REQ-([^\]]+)\]/gi, (_, id) => {
+    reqs.push(`REQ-${id.toUpperCase()}`);
+    return '';
+  });
+  name = name.replace(/\[Owner:([^\]]+)\]/i, (_, o) => {
+    owner = o.trim();
+    return '';
+  });
+  return { clean: name.trim(), reqs, owner };
+}
+
+async function parseJUnitFile(file: string): Promise<TestCase[]> {
   const xml = await fs.readFile(file, 'utf8');
   const data = await parseStringPromise(xml);
-  const suites: any[] = [];
-  if (data.testsuite) {
-    suites.push(data.testsuite);
-  } else if (data.testsuites && Array.isArray(data.testsuites.testsuite)) {
-    suites.push(...data.testsuites.testsuite);
-  } else if (data.testsuites && data.testsuites.testsuite) {
-    suites.push(data.testsuites.testsuite);
-  } else if (data.testsuites && data.testsuites.testcase) {
-    const cases = Array.isArray(data.testsuites.testcase)
-      ? data.testsuites.testcase
-      : [data.testsuites.testcase];
-    const failures = cases.filter((c: any) => c.failure || c.error).length;
-    suites.push({
-      $: {
-        name: path.basename(file),
-        tests: String(cases.length),
-        failures: String(failures),
-      },
-    });
-  }
-  return suites.map((suite) => {
-    const attrs = suite.$ || {};
-    const tests = parseInt(attrs.tests ?? '0', 10);
-    const failures = parseInt(attrs.failures ?? '0', 10) + parseInt(attrs.errors ?? '0', 10);
-    const skipped = parseInt(attrs.skipped ?? attrs.disabled ?? '0', 10);
-    const passed = tests - failures - skipped;
-    return { name: attrs.name ?? path.basename(file), tests, failures, passed } as SuiteResult;
-  });
-}
-
-async function appendSummary(results: SuiteResult[]): Promise<void> {
-  const summaryPath = process.env.GITHUB_STEP_SUMMARY;
-  if (!summaryPath) return;
-  let md = '| Test Suite | Passed | Failed |\n| --- | --- | --- |\n';
-  for (const r of results) {
-    md += `| ${r.name} | ${r.passed} | ${r.failures} |\n`;
-  }
-  await fs.appendFile(summaryPath, md);
-}
-
-export async function writeTraceability(results: SuiteResult[], mapping: Requirement[]): Promise<void> {
-  const trace: Record<string, unknown> = {};
-  for (const r of results) {
-    const req = findRequirementId(r.name, mapping);
-    if (req) {
-      trace[req] = { test: r.name, passed: r.failures === 0, failed: r.failures, passedTests: r.passed, total: r.tests };
+  const cases: TestCase[] = [];
+  function walk(node: any) {
+    if (!node) return;
+    const suites = node.testsuite || node.testsuites;
+    if (Array.isArray(suites)) {
+      for (const s of suites) walk(s);
+    } else if (suites) {
+      walk(suites);
     }
-  }
-  await fs.mkdir('artifacts', { recursive: true });
-  await fs.writeFile(path.join('artifacts', 'traceability.json'), JSON.stringify(trace, null, 2));
-}
-
-export async function writeTraceabilityMarkdown(results: SuiteResult[], mapping: Requirement[]): Promise<void> {
-  const lines: string[] = ['| Requirement ID | Description | Test | Result |', '| --- | --- | --- | --- |'];
-  for (const req of mapping) {
-    for (const test of req.tests) {
-      const suite = results.find((r) => r.name === test);
-      const status = suite ? (suite.failures > 0 ? 'Fail' : 'Pass') : 'Not Run';
-      lines.push(`| ${req.id} | ${req.description} | ${test} | ${status} |`);
-    }
-  }
-  await fs.mkdir('artifacts', { recursive: true });
-  await fs.writeFile(path.join('artifacts', 'traceability.md'), lines.join('\n'));
-}
-
-interface ActionParameter {
-  name: string;
-  type: string;
-  required: boolean;
-  description: string;
-}
-
-interface ActionInfo {
-  name: string;
-  synopsis: string;
-  description: string;
-  parameters: ActionParameter[];
-}
-
-async function getActionInfo(scriptPath: string): Promise<ActionInfo> {
-  const psCommand = `Get-Help -Full -Path \"${scriptPath}\" | ConvertTo-Json -Depth 4`;
-  const { stdout } = await execFileAsync('pwsh', ['-NoLogo', '-NoProfile', '-Command', psCommand], { maxBuffer: 10 * 1024 * 1024 });
-  const help = JSON.parse(stdout);
-  const synopsis = help.Synopsis ?? '';
-  const description = Array.isArray(help.Description?.Text) ? help.Description.Text.join(' ') : (help.Description?.Text ?? '');
-  const paramsRaw = help.Parameters?.Parameter ?? [];
-  const paramsArr = Array.isArray(paramsRaw) ? paramsRaw : [paramsRaw];
-  const parameters: ActionParameter[] = paramsArr
-    .filter((p: any) => p)
-    .map((p: any) => ({
-      name: p.Name ?? '',
-      type: p.ParameterType?.Name ?? '',
-      required: String(p.Required).toLowerCase() === 'true',
-      description: Array.isArray(p.Description?.Text) ? p.Description.Text.join(' ') : (p.Description?.Text ?? ''),
-    }));
-  return { name: path.basename(path.dirname(scriptPath)), synopsis, description, parameters };
-}
-
-export function renderActionDoc(template: string, info: ActionInfo): string {
-  const required = info.parameters.filter((p) => p.required);
-  const optional = info.parameters.filter((p) => !p.required);
-  const reqLines = required.length ? required.map((p) => `- **${p.name}** (\`${p.type}\`): ${p.description}`).join('\n') : 'None.';
-  const optLines = optional.length ? optional.map((p) => `- **${p.name}** (\`${p.type}\`): ${p.description}`).join('\n') : 'None.';
-  const exampleArgs: Record<string, string> = {};
-  for (const p of info.parameters) {
-    exampleArgs[p.name] = 'value';
-  }
-  const argsJson = JSON.stringify(exampleArgs);
-  const cliExample = ['```powershell', `pwsh -File actions/Invoke-OSAction.ps1 -ActionName ${info.name} -ArgsJson '${argsJson}'`, '```'].join('\n');
-  const yamlExample = [
-    '```yaml',
-    `- name: ${info.synopsis || info.name}`,
-    '  uses: LabVIEW-Community-CI-CD/open-source-actions@v1',
-    '  with:',
-    `    action_name: ${info.name}`,
-    '    args_json: >-',
-    `      ${argsJson}`,
-    '```',
-  ].join('\n');
-
-  let md = template.replace(/<action-name>/g, info.name);
-  md = md.replace('Briefly describe the action\'s goal.', info.synopsis || info.description || '');
-  md = md.replace('### Required\n\n- **Param1** (`type`): Description.\n\n', `### Required\n\n${reqLines}\n\n`);
-  md = md.replace('### Optional\n\n- **Param2** (`type`): Description.\n\n', `### Optional\n\n${optLines}\n\n`);
-  md = md.replace(/```powershell[\s\S]*?```/, cliExample);
-  md = md.replace(/```yaml[\s\S]*?```/, yamlExample);
-  return md;
-}
-
-async function zipDirectory(sourceDir: string, outPath: string): Promise<void> {
-  const zip = new JSZip();
-  const root = zip.folder(path.basename(sourceDir));
-  if (!root) throw new Error('Unable to create zip folder');
-  async function addDir(dir: string, folder: JSZip): Promise<void> {
-    const entries = await fs.readdir(dir, { withFileTypes: true });
-    for (const entry of entries) {
-      const full = path.join(dir, entry.name);
-      if (entry.isDirectory()) {
-        const sub = folder.folder(entry.name);
-        if (sub) await addDir(full, sub);
-      } else if (entry.isFile()) {
-        const data = await fs.readFile(full);
-        folder.file(entry.name, data);
+    const tcs = node.testcase;
+    if (Array.isArray(tcs)) {
+      for (const tc of tcs) {
+        const attrs = tc.$ || {};
+        const { clean, reqs, owner } = parseTags(attrs.name || '');
+        const classname = attrs.classname ? `${attrs.classname}::` : '';
+        const id = (classname + clean).trim();
+        const time = parseFloat(attrs.time || '0');
+        const status: TestCase['status'] = tc.skipped
+          ? 'skipped'
+          : tc.failure || tc.error
+          ? 'failed'
+          : 'passed';
+        cases.push({
+          id,
+          name: clean,
+          status,
+          duration: isNaN(time) ? 0 : time,
+          requirements: reqs,
+          owner,
+        });
       }
     }
   }
-  await addDir(sourceDir, root);
-  const content = await zip.generateAsync({ type: 'nodebuffer' });
-  await fs.writeFile(outPath, content);
+  walk(data);
+  return cases;
 }
 
-async function getDispatcherActions(dispatcherPath: string): Promise<Set<string>> {
-  const actions = new Set<string>();
+async function loadRequirementMapping(file: string): Promise<Mapping> {
+  const reqInfo: Record<string, { description?: string; owner?: string }> = {};
+  const testMap = new Map<string, { id: string; owner?: string }[]>();
   try {
-    const content = await fs.readFile(dispatcherPath, 'utf8');
-    const match = content.match(/\$Registry\s*=\s*\[ordered\]@{([\s\S]*?)}/);
-    if (match) {
-      const body = match[1];
-      for (const m of body.matchAll(/'([^']+)'\s*=/g)) {
-        actions.add(m[1]);
+    const text = await fs.readFile(file, 'utf8');
+    const data = JSON.parse(text);
+    const arr: any[] = Array.isArray(data?.requirements) ? data.requirements : Array.isArray(data) ? data : [];
+    for (const r of arr) {
+      reqInfo[r.id] = { description: r.description, owner: r.owner };
+      for (const t of r.tests || []) {
+        const obj = typeof t === 'string' ? { id: t } : t;
+        if (!testMap.has(obj.id)) testMap.set(obj.id, []);
+        testMap.get(obj.id)!.push({ id: r.id, owner: obj.owner || r.owner });
       }
     }
   } catch {
     /* ignore */
   }
-  return actions;
+  return { reqInfo, testMap };
 }
 
-export async function copyEvidence(): Promise<void> {
-  const src = process.env.EVIDENCE_DIR;
-  if (!src) return;
+async function gatherEvidence(dir: string): Promise<Map<string, string>> {
+  const map = new Map<string, string>();
   try {
-    const stats = await fs.stat(src);
-    if (!stats.isDirectory()) return;
+    const files = await glob(`${dir}/**/*`, { nodir: true });
+    for (const f of files) {
+      map.set(path.basename(f), path.join('artifacts', 'evidence', path.relative(dir, f)));
+    }
   } catch {
-    return;
+    /* ignore */
   }
-  const dest = path.join('artifacts', 'evidence');
-  await fs.mkdir(dest, { recursive: true });
-  await fs.cp(src, dest, { recursive: true });
+  return map;
 }
 
-export async function generateActionDocs(): Promise<void> {
-  const scripts = await glob('scripts/*/*.ps1');
-  if (scripts.length === 0) return;
-  const dispatcher = process.env.DISPATCHER_SCRIPT;
-  let allowed: Set<string> | undefined;
-  if (dispatcher) {
-    const actions = await getDispatcherActions(dispatcher);
-    if (actions.size) {
-      allowed = actions;
-    }
-  }
-  const template = await fs.readFile(path.join('doc-templates', 'action-doc-template.md'), 'utf8');
-  const outDir = path.join('artifacts', 'action-docs');
-  await fs.mkdir(outDir, { recursive: true });
-  for (const script of scripts) {
-    const actionName = path.basename(path.dirname(script));
-    if (allowed && !allowed.has(actionName)) continue;
-    try {
-      const info = await getActionInfo(script);
-      const md = renderActionDoc(template, info);
-      await fs.writeFile(path.join(outDir, `${info.name}.md`), md);
-    } catch (err: any) {
-      console.warn(`Failed to document ${script}: ${err.message}`);
-    }
-  }
+async function copyEvidence(dir: string) {
   try {
-    await zipDirectory(outDir, path.join('artifacts', 'action-docs.zip'));
-  } catch (err: any) {
-    throw new Error(`Failed to zip action docs: ${err.message}`);
+    await fs.access(dir);
+    await fs.mkdir('artifacts', { recursive: true });
+    await fs.cp(dir, path.join('artifacts', 'evidence'), { recursive: true });
+  } catch {
+    /* ignore */
   }
+}
+
+function buildGroups(tests: TestCase[], mapping: Mapping, evidence: Map<string, string>): RequirementGroup[] {
+  const groups = new Map<string, RequirementGroup>();
+  for (const test of tests) {
+    const mapped = mapping.testMap.get(test.id);
+    if (mapped) {
+      for (const m of mapped) {
+        test.requirements.push(m.id);
+        if (!test.owner && m.owner) test.owner = m.owner;
+      }
+    }
+    const key = normalizeTestId(test.id);
+    for (const [file, dest] of evidence.entries()) {
+      if (file === key || file.startsWith(key + '.')) {
+        test.evidence = dest;
+        break;
+      }
+    }
+    const reqs = test.requirements.length ? Array.from(new Set(test.requirements)) : ['Unmapped'];
+    for (const req of reqs) {
+      const info = mapping.reqInfo[req] || {};
+      const g = groups.get(req) || { id: req, description: info.description, owner: info.owner, tests: [] };
+      g.tests.push(test);
+      groups.set(req, g);
+    }
+  }
+  const arr = Array.from(groups.values());
+  arr.sort((a, b) => COLLATOR.compare(a.id, b.id));
+  const order: Record<TestCase['status'], number> = { failed: 0, passed: 1, skipped: 2 };
+  for (const g of arr) {
+    g.tests.sort((a, b) => {
+      const diff = order[a.status] - order[b.status];
+      if (diff !== 0) return diff;
+      return a.id.localeCompare(b.id);
+    });
+  }
+  return arr;
+}
+
+function computeTotals(tests: TestCase[]): Totals {
+  let passed = 0,
+    failed = 0,
+    skipped = 0,
+    duration = 0;
+  for (const t of tests) {
+    duration += t.duration;
+    if (t.status === 'passed') passed++;
+    else if (t.status === 'failed') failed++;
+    else skipped++;
+  }
+  return { total: tests.length, passed, failed, skipped, duration };
+}
+
+function requirementPassRate(g: RequirementGroup): number {
+  const p = g.tests.filter((t) => t.status === 'passed').length;
+  const f = g.tests.filter((t) => t.status === 'failed').length;
+  return p + f === 0 ? 0 : (p / (p + f)) * 100;
+}
+
+function matrixMarkdown(groups: RequirementGroup[], truncate: boolean): string {
+  const header =
+    '| Requirement | Test ID | Status | Duration (s) | Owner | Evidence |\n| --- | --- | --- | --- | --- | --- |\n';
+  let md = '';
+  let count = 0;
+  for (const g of groups) {
+    const rate = requirementPassRate(g).toFixed(0);
+    const rows = truncate && count + g.tests.length > 100 ? g.tests.slice(0, 100 - count) : g.tests;
+    const openDetails = g.tests.length > 5;
+    const title = `${g.id} (${rate}% passed)`;
+    if (openDetails) md += `<details><summary>${title}</summary>\n\n${header}`;
+    else md += `#### ${title}\n\n${header}`;
+    for (const t of rows) {
+      const evidenceCell = t.evidence
+        ? t.evidence.length <= 60
+          ? `[✔️](${t.evidence})`
+          : '✔️'
+        : '';
+      md += `| ${g.id} | ${redact(t.id)} | ${t.status.charAt(0).toUpperCase() + t.status.slice(1)} | ${t.duration.toFixed(
+        2
+      )} | ${redact(t.owner || '')} | ${evidenceCell} |\n`;
+    }
+    if (openDetails) md += '\n</details>\n\n';
+    else md += '\n';
+    count += rows.length;
+    if (truncate && count >= 100) break;
+  }
+  if (truncate && groups.reduce((a, g) => a + g.tests.length, 0) > 100) {
+    md += '\n_List truncated; see artifact for full details._\n';
+  }
+  return md;
+}
+
+async function writeStepSummary(content: string) {
+  const summaryPath = process.env.GITHUB_STEP_SUMMARY;
+  if (summaryPath) {
+    await fs.appendFile(summaryPath, content);
+  }
+}
+
+async function appendError(message: string) {
+  await writeStepSummary(`\n\n### Errors\n\n\u0060\u0060\u0060\n${redact(message)}\n\u0060\u0060\u0060\n`);
+}
+
+async function writeTraceability(groups: RequirementGroup[], totals: Totals) {
+  const json = { summary: totals, requirements: groups };
+  await fs.writeFile(path.join('artifacts', 'traceability.json'), redact(JSON.stringify(json, null, 2)));
+  const md = '# Test Traceability Matrix\n\n' + matrixMarkdown(groups, false);
+  await fs.writeFile(path.join('artifacts', 'traceability.md'), redact(md));
+}
+
+interface ActionDocResult {
+  md: string;
+  json: any;
+}
+
+async function generateActionDocs(registryPath: string): Promise<ActionDocResult> {
+  const actionYaml = yaml.load(await fs.readFile('action.yml', 'utf8')) as any;
+  const inputs = Object.entries(actionYaml.inputs || {}).map(([name, info]: [string, any]) => ({
+    name,
+    description: info.description || '',
+    required: !!info.required,
+    default: info.default ?? '',
+    type: info.type || 'string',
+  }));
+  const triggerInput = ['mode', 'command', 'function'].find((n) => inputs.some((i) => i.name === n));
+  let registry: any = {};
+  try {
+    const full = path.resolve(registryPath);
+    if (full.endsWith('.ts')) {
+      const mod = await import(full);
+      registry = mod.default ?? mod;
+    } else {
+      registry = JSON.parse(await fs.readFile(full, 'utf8'));
+    }
+  } catch {
+    registry = {};
+  }
+
+  let md = '### Parameters\n';
+  md += '| Name | Description | Required | Default | Type |\n| --- | --- | --- | --- | --- |\n';
+  for (const inp of inputs) {
+    md += `| ${inp.name} | ${redact(inp.description)} | ${inp.required ? 'Yes' : 'No'} | ${redact(
+      String(inp.default)
+    )} | ${inp.type} |\n`;
+  }
+  md += '\n### Dispatchers\n';
+  for (const fname of Object.keys(registry).sort((a, b) => a.localeCompare(b))) {
+    const info = registry[fname];
+    md += `\n#### ${fname}\n`;
+    if (info.description) md += `${redact(info.description)}\n\n`;
+    md += '| Parameter | Type | Required | Default | Description |\n| --- | --- | --- | --- | --- |\n';
+    const params = info.parameters || {};
+    for (const pname of Object.keys(params).sort((a, b) => a.localeCompare(b))) {
+      const p = params[pname];
+      md += `| ${pname} | ${p.type} | ${p.required ? 'Yes' : 'No'} | ${redact(p.default ?? '')} | ${redact(
+        p.description || ''
+      )} |\n`;
+    }
+    if (triggerInput) {
+      md += '\n```yaml\n- uses: ./\n  with:\n';
+      md += `    ${triggerInput}: ${fname}\n`;
+      md += '```\n';
+    }
+  }
+  const json = { inputs, functions: registry };
+  return { md: redact(md), json };
+}
+
+function buildSummary(totals: Totals, groups: RequirementGroup[], actionDocsMd: string): string {
+  const passRate =
+    totals.passed + totals.failed === 0 ? 0 : (totals.passed / (totals.passed + totals.failed)) * 100;
+  const sha = (process.env.GITHUB_SHA || '').slice(0, 7);
+  const runId = process.env.GITHUB_RUN_ID || '';
+  let md = `## Summary\n\n`;
+  md += `- Total: ${totals.total}\n`;
+  md += `- Passed: ${totals.passed}\n`;
+  md += `- Failed: ${totals.failed}\n`;
+  md += `- Skipped: ${totals.skipped}\n`;
+  md += `- Pass rate: ${passRate.toFixed(2)}%\n`;
+  md += `- Duration: ${totals.duration.toFixed(2)}s\n`;
+  md += `- Commit: ${sha}\n`;
+  md += `- Run: ${runId}\n\n`;
+  md += `## Test Traceability Matrix\n\n`;
+  md += matrixMarkdown(groups, true);
+  md += `\n## Action Documentation\n\n`;
+  md += actionDocsMd;
+  return md;
+}
+
+async function writeActionDocs(data: ActionDocResult) {
+  await fs.writeFile(path.join('artifacts', 'action-docs.json'), redact(JSON.stringify(data.json, null, 2)));
+  await fs.writeFile(path.join('artifacts', 'action-docs.md'), data.md);
 }
 
 export async function main() {
-  const patternsEnv = process.env.TEST_RESULTS_GLOBS;
-  if (!patternsEnv) {
-    console.warn('TEST_RESULTS_GLOBS not set');
-    return;
-  }
-
-  const patterns = patternsEnv.split(/\r?\n|[ ,]+/).filter(Boolean);
-  const files = new Set<string>();
-  for (const pattern of patterns) {
-    const matches = await glob(pattern);
-    for (const m of matches) {
-      files.add(m);
-    }
-  }
-
-  const results: SuiteResult[] = [];
-  for (const file of files) {
-    const suites = await parseJUnitFile(file);
-    results.push(...suites);
-  }
-
-  await appendSummary(results);
-
-  const mappingFile = process.env.REQ_MAPPING_FILE ?? 'requirements.json';
-  const mapping = await loadRequirementMapping(path.resolve(mappingFile));
-  let artifactError = false;
+  const globPattern = process.env.TEST_RESULTS_GLOB || '**/junit*.xml';
+  const mappingFile = process.env.REQ_MAPPING_FILE || 'requirements.json';
+  const registryFile = process.env.DISPATCHER_REGISTRY || 'dispatchers.json';
+  const evidenceDir = process.env.EVIDENCE_DIR || 'test-screenshots';
   try {
-    await writeTraceability(results, mapping);
-    await writeTraceabilityMarkdown(results, mapping);
-    await generateActionDocs();
-    await copyEvidence();
-    await fs.access(path.join('artifacts', 'traceability.json'));
-    await fs.access(path.join('artifacts', 'traceability.md'));
-    await fs.access(path.join('artifacts', 'action-docs.zip'));
+    const files = await glob(globPattern);
+    if (files.length === 0) throw new Error('No JUnit files found');
+    let tests: TestCase[] = [];
+    for (const f of files) {
+      const arr = await parseJUnitFile(f);
+      tests = tests.concat(arr);
+    }
+    const mapping = await loadRequirementMapping(mappingFile);
+    const evidence = await gatherEvidence(evidenceDir);
+    await fs.mkdir('artifacts', { recursive: true });
+    await copyEvidence(evidenceDir);
+    const groups = buildGroups(tests, mapping, evidence);
+    const totals = computeTotals(tests);
+    const actionDocs = await generateActionDocs(registryFile);
+    await writeTraceability(groups, totals);
+    await writeActionDocs(actionDocs);
+    const summary = buildSummary(totals, groups, actionDocs.md);
+    await writeStepSummary(redact(summary));
   } catch (err: any) {
-    console.error(`Artifact generation failed: ${err.message}`);
-    artifactError = true;
-  }
-
-  if (results.some((r) => r.failures > 0) || artifactError) {
+    await appendError(err.message || String(err));
     process.exitCode = 1;
   }
 }
 
-// Only run main when executed directly (not when imported for tests)
-if (process.argv[1] && process.argv[1].endsWith('generate-ci-summary.ts')) {
+if (import.meta.url === `file://${process.argv[1]}`) {
   main();
 }
