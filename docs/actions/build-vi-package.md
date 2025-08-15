@@ -48,23 +48,19 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName build-vi-package -ArgsJson '{
 
 ```yaml
 - name: Build VI Package
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  uses: LabVIEW-Community-CI-CD/open-source-actions/build-vi-package@v1
   with:
-    action_name: build-vi-package
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2023",
-        "SupportedBitness": "64",
-        "LabVIEWMinorRevision": "3",
-        "RelativePath": ".",
-        "VIPBPath": "Tooling/deployment/NI Icon editor.vipb",
-        "Major": 1,
-        "Minor": 0,
-        "Patch": 0,
-        "Build": 2,
-        "Commit": "abcdef",
-        "DisplayInformationJSON": "{\"Package Version\":{\"major\":1,\"minor\":0,\"patch\":0,\"build\":2}}"
-      }
+    minimum_supported_lv_version: '2023'
+    supported_bitness: '64'
+    labview_minor_revision: '3'
+    relative_path: '.'
+    vipb_path: 'Tooling/deployment/NI Icon editor.vipb'
+    major: 1
+    minor: 0
+    patch: 0
+    build: 2
+    commit: abcdef
+    display_information_json: '{"Package Version":{"major":1,"minor":0,"patch":0,"build":2}}'
 ```
 
 ## Return Codes

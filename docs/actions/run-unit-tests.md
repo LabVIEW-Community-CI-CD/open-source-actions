@@ -31,18 +31,10 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsYaml (Con
 
 ```yaml
 - name: Run LabVIEW Unit Tests
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  uses: LabVIEW-Community-CI-CD/open-source-actions/run-unit-tests@v1
   with:
-    action_name: run-unit-tests
-    args_yaml: |
-      MinimumSupportedLVVersion: '2020'
-      SupportedBitness: '64'
-    # Legacy JSON format:
-    # args_json: >-
-    #   {
-    #     "MinimumSupportedLVVersion": "2020",
-    #     "SupportedBitness": "64"
-    #   }
+    minimum_supported_lv_version: '2020'
+    supported_bitness: '64'
 ```
 
 ## Return Codes

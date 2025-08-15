@@ -30,14 +30,10 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName rename-file -ArgsJson '{
 
 ```yaml
 - name: Rename file
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  uses: LabVIEW-Community-CI-CD/open-source-actions/rename-file@v1
   with:
-    action_name: rename-file
-    args_json: >-
-      {
-        "CurrentFilename": "C:/path/lv_icon.lvlibp",
-        "NewFilename": "lv_icon_x64.lvlibp"
-      }
+    current_filename: 'C:/path/lv_icon.lvlibp'
+    new_filename: 'lv_icon_x64.lvlibp'
 ```
 
 ## Return Codes

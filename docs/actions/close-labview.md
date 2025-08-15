@@ -30,14 +30,10 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName close-labview -ArgsJson '{
 
 ```yaml
 - name: Close LabVIEW
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  uses: LabVIEW-Community-CI-CD/open-source-actions/close-labview@v1
   with:
-    action_name: close-labview
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2021",
-        "SupportedBitness": "64"
-      }
+    minimum_supported_lv_version: '2021'
+    supported_bitness: '64'
 ```
 
 ## Return Codes

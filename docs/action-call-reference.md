@@ -1,21 +1,17 @@
 # Action Call Reference
 
-Use the composite action to invoke any adapter by specifying its `action_name` and YAML arguments. Legacy JSON via `args_json` is still supported. The examples below retain the JSON format for brevity; convert them to `args_yaml` as needed. Refer to the linked action documentation for YAML examples, parameter details, and return codes. See [common parameters](common-parameters.md) for options shared across actions.
+Each adapter in this repository is available as its own GitHub Action. Call them using `uses: LabVIEW-Community-CI-CD/open-source-actions/<action>@v1` with the required inputs shown below. Refer to the linked documentation for full parameter details.
 
 ## add-token-to-labview
 
 See [add-token-to-labview](actions/add-token-to-labview.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/add-token-to-labview@v1
   with:
-    action_name: add-token-to-labview
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2021",
-        "SupportedBitness": "64",
-        "RelativePath": "."
-      }
+    minimum_supported_lv_version: '2021'
+    supported_bitness: '64'
+    relative_path: '.'
 ```
 
 ## apply-vipc
@@ -23,17 +19,12 @@ See [add-token-to-labview](actions/add-token-to-labview.md) for all parameters.
 See [apply-vipc](actions/apply-vipc.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/apply-vipc@v1
   with:
-    action_name: apply-vipc
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2019",
-        "VIP_LVVersion": "2019",
-        "SupportedBitness": "64",
-        "RelativePath": ".",
-        "VIPCPath": "MyProject.vipc"
-      }
+    minimum_supported_lv_version: '2019'
+    vip_lv_version: '2019'
+    supported_bitness: '64'
+    relative_path: '.'
 ```
 
 ## build
@@ -41,21 +32,17 @@ See [apply-vipc](actions/apply-vipc.md) for all parameters.
 See [build](actions/build.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/build@v1
   with:
-    action_name: build
-    args_json: >-
-      {
-        "RelativePath": ".",
-        "Major": 1,
-        "Minor": 0,
-        "Patch": 0,
-        "Build": 1,
-        "Commit": "abcdef",
-        "LabVIEWMinorRevision": "3",
-        "CompanyName": "Acme Corp",
-        "AuthorName": "Jane Doe"
-      }
+    relative_path: '.'
+    major: 1
+    minor: 0
+    patch: 0
+    build: 1
+    commit: abcdef
+    labview_minor_revision: '3'
+    company_name: 'Acme Corp'
+    author_name: 'Jane Doe'
 ```
 
 ## build-lvlibp
@@ -63,22 +50,18 @@ See [build](actions/build.md) for all parameters.
 See [build-lvlibp](actions/build-lvlibp.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/build-lvlibp@v1
   with:
-    action_name: build-lvlibp
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2020",
-        "SupportedBitness": "64",
-        "RelativePath": ".",
-        "LabVIEW_Project": "Source/MyProject.lvproj",
-        "Build_Spec": "PackedLib Build",
-        "Major": 1,
-        "Minor": 0,
-        "Patch": 0,
-        "Build": 123,
-        "Commit": "abcdef"
-      }
+    minimum_supported_lv_version: '2020'
+    supported_bitness: '64'
+    relative_path: '.'
+    labview_project: 'Source/MyProject.lvproj'
+    build_spec: 'PackedLib Build'
+    major: 1
+    minor: 0
+    patch: 0
+    build: 123
+    commit: abcdef
 ```
 
 ## build-vi-package
@@ -86,23 +69,19 @@ See [build-lvlibp](actions/build-lvlibp.md) for all parameters.
 See [build-vi-package](actions/build-vi-package.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/build-vi-package@v1
   with:
-    action_name: build-vi-package
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2023",
-        "SupportedBitness": "64",
-        "LabVIEWMinorRevision": "3",
-        "RelativePath": ".",
-        "VIPBPath": "Tooling/deployment/NI Icon editor.vipb",
-        "Major": 1,
-        "Minor": 0,
-        "Patch": 0,
-        "Build": 2,
-        "Commit": "abcdef",
-        "DisplayInformationJSON": "{\"Package Version\":{\"major\":1,\"minor\":0,\"patch\":0,\"build\":2}}"
-      }
+    minimum_supported_lv_version: '2023'
+    supported_bitness: '64'
+    labview_minor_revision: '3'
+    relative_path: '.'
+    vipb_path: 'Tooling/deployment/NI Icon editor.vipb'
+    major: 1
+    minor: 0
+    patch: 0
+    build: 2
+    commit: abcdef
+    display_information_json: '{"Package Version":{"major":1,"minor":0,"patch":0,"build":2}}'
 ```
 
 ## close-labview
@@ -110,14 +89,10 @@ See [build-vi-package](actions/build-vi-package.md) for all parameters.
 See [close-labview](actions/close-labview.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/close-labview@v1
   with:
-    action_name: close-labview
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2021",
-        "SupportedBitness": "64"
-      }
+    minimum_supported_lv_version: '2021'
+    supported_bitness: '64'
 ```
 
 ## generate-release-notes
@@ -125,13 +100,7 @@ See [close-labview](actions/close-labview.md) for all parameters.
 See [generate-release-notes](actions/generate-release-notes.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
-  with:
-    action_name: generate-release-notes
-    args_json: >-
-      {
-        "OutputPath": "Tooling/deployment/release_notes.md"
-      }
+- uses: LabVIEW-Community-CI-CD/open-source-actions/generate-release-notes@v1
 ```
 
 ## missing-in-project
@@ -139,15 +108,11 @@ See [generate-release-notes](actions/generate-release-notes.md) for all paramete
 See [missing-in-project](actions/missing-in-project.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/missing-in-project@v1
   with:
-    action_name: missing-in-project
-    args_json: >-
-      {
-        "LVVersion": "2020",
-        "Arch": "64",
-        "ProjectFile": "MyProject.lvproj"
-      }
+    lv_version: '2020'
+    arch: '64'
+    project_file: 'MyProject.lvproj'
 ```
 
 ## modify-vipb-display-info
@@ -155,23 +120,19 @@ See [missing-in-project](actions/missing-in-project.md) for all parameters.
 See [modify-vipb-display-info](actions/modify-vipb-display-info.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/modify-vipb-display-info@v1
   with:
-    action_name: modify-vipb-display-info
-    args_json: >-
-      {
-        "SupportedBitness": "64",
-        "RelativePath": ".",
-        "VIPBPath": "Tooling/deployment/NI Icon editor.vipb",
-        "MinimumSupportedLVVersion": "2023",
-        "LabVIEWMinorRevision": "3",
-        "Major": 1,
-        "Minor": 0,
-        "Patch": 0,
-        "Build": 2,
-        "Commit": "abcdef",
-        "DisplayInformationJSON": "{\"Package Version\":{\"major\":1,\"minor\":0,\"patch\":0,\"build\":2}}"
-      }
+    supported_bitness: '64'
+    relative_path: '.'
+    vipb_path: 'Tooling/deployment/NI Icon editor.vipb'
+    minimum_supported_lv_version: '2023'
+    labview_minor_revision: '3'
+    major: 1
+    minor: 0
+    patch: 0
+    build: 2
+    commit: abcdef
+    display_information_json: '{"Package Version":{"major":1,"minor":0,"patch":0,"build":2}}'
 ```
 
 ## prepare-labview-source
@@ -179,17 +140,13 @@ See [modify-vipb-display-info](actions/modify-vipb-display-info.md) for all para
 See [prepare-labview-source](actions/prepare-labview-source.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/prepare-labview-source@v1
   with:
-    action_name: prepare-labview-source
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2021",
-        "SupportedBitness": "64",
-        "RelativePath": ".",
-        "LabVIEW_Project": "lv_icon_editor",
-        "Build_Spec": "Editor Packed Library"
-      }
+    minimum_supported_lv_version: '2021'
+    supported_bitness: '64'
+    relative_path: '.'
+    labview_project: 'lv_icon_editor'
+    build_spec: 'Editor Packed Library'
 ```
 
 ## rename-file
@@ -197,14 +154,10 @@ See [prepare-labview-source](actions/prepare-labview-source.md) for all paramete
 See [rename-file](actions/rename-file.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/rename-file@v1
   with:
-    action_name: rename-file
-    args_json: >-
-      {
-        "CurrentFilename": "C:/path/lv_icon.lvlibp",
-        "NewFilename": "lv_icon_x64.lvlibp"
-      }
+    current_filename: 'C:/path/lv_icon.lvlibp'
+    new_filename: 'lv_icon_x64.lvlibp'
 ```
 
 ## restore-setup-lv-source
@@ -212,17 +165,13 @@ See [rename-file](actions/rename-file.md) for all parameters.
 See [restore-setup-lv-source](actions/restore-setup-lv-source.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/restore-setup-lv-source@v1
   with:
-    action_name: restore-setup-lv-source
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2021",
-        "SupportedBitness": "64",
-        "RelativePath": ".",
-        "LabVIEW_Project": "lv_icon_editor",
-        "Build_Spec": "Editor Packed Library"
-      }
+    minimum_supported_lv_version: '2021'
+    supported_bitness: '64'
+    relative_path: '.'
+    labview_project: 'lv_icon_editor'
+    build_spec: 'Editor Packed Library'
 ```
 
 ## revert-development-mode
@@ -230,13 +179,9 @@ See [restore-setup-lv-source](actions/restore-setup-lv-source.md) for all parame
 See [revert-development-mode](actions/revert-development-mode.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/revert-development-mode@v1
   with:
-    action_name: revert-development-mode
-    args_json: >-
-      {
-        "RelativePath": "."
-      }
+    relative_path: '.'
 ```
 
 ## run-unit-tests
@@ -244,14 +189,10 @@ See [revert-development-mode](actions/revert-development-mode.md) for all parame
 See [run-unit-tests](actions/run-unit-tests.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/run-unit-tests@v1
   with:
-    action_name: run-unit-tests
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2020",
-        "SupportedBitness": "64"
-      }
+    minimum_supported_lv_version: '2020'
+    supported_bitness: '64'
 ```
 
 ## set-development-mode
@@ -259,11 +200,7 @@ See [run-unit-tests](actions/run-unit-tests.md) for all parameters.
 See [set-development-mode](actions/set-development-mode.md) for all parameters.
 
 ```yaml
-- uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+- uses: LabVIEW-Community-CI-CD/open-source-actions/set-development-mode@v1
   with:
-    action_name: set-development-mode
-    args_json: >-
-      {
-        "RelativePath": "."
-      }
+    relative_path: '.'
 ```

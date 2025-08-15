@@ -1,7 +1,7 @@
 # Quickstart
 
 1. **Install Requirements:** Ensure you have **NI LabVIEW** (with command-line interface support, often via *g-cli*) installed on the target runner. Most actions require LabVIEW and the NI g-cli tool to be available (Windows runners are recommended). Also verify PowerShell 7+ (`pwsh`) is available for cross-platform script execution.
-2. **Invoke via Composite Action (GitHub):** Use the provided composite action in your workflow. For example, to **build a LabVIEW Packed Library** using this unified dispatcher:
+2. **Invoke via Composite Action (GitHub):** Use the adapter-specific action in your workflow. For example, to **build a LabVIEW Packed Library**:
 
 ```yaml
 jobs:
@@ -10,23 +10,21 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Build Packed Library (32-bit)
-        uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+        uses: LabVIEW-Community-CI-CD/open-source-actions/build-lvlibp@v1
         with:
-          action_name: build-lvlibp
-          args_yaml: |
-            MinimumSupportedLVVersion: '2019'
-            SupportedBitness: '32'
-            RelativePath: .
-            LabVIEW_Project: MyProject.lvproj
-            Build_Spec: My Build
-            Major: 1
-            Minor: 0
-            Patch: 0
-            Build: 123
-            Commit: abcdef
+          minimum_supported_lv_version: '2019'
+          supported_bitness: '32'
+          relative_path: .
+          labview_project: MyProject.lvproj
+          build_spec: My Build
+          major: 1
+          minor: 0
+          patch: 0
+          build: 123
+          commit: abcdef
 ```
 
-In this step, the composite action invokes the dispatcher to run the **Build** task. The `args_yaml` contains all parameters the action needs (here, to build a 32-bit LV library). The dispatcher will locate the appropriate script and execute it, failing the step if a problem occurs (non-zero exit). The legacy `args_json` input remains available.
+In this step, the wrapper action invokes the dispatcher to run the **build-lvlibp** task. The typed inputs provide the required parameters to build a 32-bit LV library. The dispatcher locates the appropriate script and executes it, failing the step if a problem occurs.
 3. **Invoke via PowerShell (CLI):** You can also call the dispatcher script directly. For example, the above build can be run in a PowerShell session or script:
 
 ```powershell

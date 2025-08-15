@@ -30,13 +30,11 @@ pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsYaml (Convert
 ## Composite Action usage
 
 ```yaml
-- uses: ./
+- uses: ./run-unit-tests
   with:
-    action_name: run-unit-tests
-    args_yaml: |
-      MinimumSupportedLVVersion: '2021'
-      SupportedBitness: '64'
-      gcliPath: /opt/gcli/bin
+    minimum_supported_lv_version: '2021'
+    supported_bitness: '64'
+    gcli_path: /opt/gcli/bin
 ```
 
 ## Matrix example (Windows and Linux)
@@ -50,13 +48,11 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
-      - uses: ./
+      - uses: ./run-unit-tests
         with:
-          action_name: run-unit-tests
-          args_yaml: |
-            MinimumSupportedLVVersion: '2021'
-            SupportedBitness: '64'
-            gcliPath: /opt/gcli/bin
+          minimum_supported_lv_version: '2021'
+          supported_bitness: '64'
+          gcli_path: /opt/gcli/bin
 ```
 
 ## SemVer policy

@@ -46,22 +46,18 @@ pwsh -File actions/Invoke-OSAction.ps1 -ActionName build-lvlibp -ArgsJson '{
 
 ```yaml
 - name: Build Packed Library
-  uses: LabVIEW-Community-CI-CD/open-source-actions@v1
+  uses: LabVIEW-Community-CI-CD/open-source-actions/build-lvlibp@v1
   with:
-    action_name: build-lvlibp
-    args_json: >-
-      {
-        "MinimumSupportedLVVersion": "2020",
-        "SupportedBitness": "64",
-        "RelativePath": ".",
-        "LabVIEW_Project": "Source/MyProject.lvproj",
-        "Build_Spec": "PackedLib Build",
-        "Major": 1,
-        "Minor": 0,
-        "Patch": 0,
-        "Build": 123,
-        "Commit": "abcdef"
-      }
+    minimum_supported_lv_version: '2020'
+    supported_bitness: '64'
+    relative_path: '.'
+    labview_project: 'Source/MyProject.lvproj'
+    build_spec: 'PackedLib Build'
+    major: 1
+    minor: 0
+    patch: 0
+    build: 123
+    commit: abcdef
 ```
 
 ## Return Codes
