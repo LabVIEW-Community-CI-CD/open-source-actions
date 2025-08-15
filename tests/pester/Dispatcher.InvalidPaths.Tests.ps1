@@ -19,7 +19,7 @@ Describe 'Invalid RelativePath handling' {
     It 'fails when RelativePath is missing' {
         $out = pwsh -NonInteractive -NoProfile -File $global:dispatcher -ActionName set-development-mode -ArgsJson '{}' *>&1 | Out-String
         $LASTEXITCODE | Should -Not -Be 0
-        $out | Should -Match 'missing mandatory'
+        $out | Should -Match 'Missing an argument for parameter'
         $out | Should -Match 'RelativePath'
     }
 }
