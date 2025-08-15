@@ -186,7 +186,7 @@ jobs:
 
   deploy-docs:
     needs: report
-    if: github.ref == 'refs/heads/actions' && needs.report.result == 'success'
+    if: always()
     runs-on: ubuntu-latest
     environment:
       name: github-pages
@@ -198,14 +198,34 @@ jobs:
       group: pages
       cancel-in-progress: true
     steps:
+      - name: Log deploy conditions
+        run: |
+          echo "branch: ${{ github.ref }}"
+          echo "report result: ${{ needs.report.result }}"
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v4
+        if: github.ref == 'refs/heads/main'
+      - uses: dorny/paths-filter@v2
+        if: github.ref == 'refs/heads/main'
+        id: changes
         with:
-          python-version: '3.x'
-      - run: pip install mkdocs
+          filters: |
+            docs:
+              - 'docs/**'
+              - 'README.md'
+      - uses: ./actions/setup-mkdocs
+        if: github.ref == 'refs/heads/main' && needs.report.result == 'success' && steps.changes.outputs.docs == 'true'
       - run: mkdocs build --strict
+        if: github.ref == 'refs/heads/main' && needs.report.result == 'success' && steps.changes.outputs.docs == 'true'
+      - uses: actions/upload-artifact@v4
+        if: github.ref == 'refs/heads/main' && needs.report.result == 'success' && steps.changes.outputs.docs == 'true'
+        with:
+          name: docs-site
+          path: site
+          if-no-files-found: error
       - uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main' && needs.report.result == 'success' && steps.changes.outputs.docs == 'true'
         with:
           path: site
       - id: deploy
         uses: actions/deploy-pages@v4
+        if: github.ref == 'refs/heads/main' && needs.report.result == 'success' && steps.changes.outputs.docs == 'true'
