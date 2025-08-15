@@ -170,8 +170,7 @@ try {
     }
   }
 
-  if ($DryRun)   { $argsHash['DryRun']   = $true }
-  if ($LogLevel) { $argsHash['LogLevel'] = $LogLevel }
+  if ($DryRun) { $argsHash['DryRun'] = $true }
 
   Set-LogLevel -Level $LogLevel
 

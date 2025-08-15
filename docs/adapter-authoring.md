@@ -35,7 +35,6 @@ function InvokeMyNewAction {
         [Parameter(Mandatory)] [string] $Param1,
         [Parameter(Mandatory)] [int] $Param2,
         [Parameter()] [string] $OptionalParam = "default",
-        [Parameter()] [string] $LogLevel = 'INFO',
         [switch] $DryRun
     )
     Write-Information "Invoking MyNewAction with Param1=$Param1 ..." -InformationAction Continue
@@ -72,7 +71,7 @@ $registry = @{
 
 ## Logging and Verbosity
 
-Use `Write-Information` for normal logs and `Write-Verbose` for debug details. Respect the `-LogLevel` parameter set by the dispatcher.
+Use `Write-Information` for normal logs and `Write-Verbose` for debug details. The dispatcher’s `-LogLevel` parameter sets verbosity before your adapter runs.
 
 ## DryRun Considerations
 
