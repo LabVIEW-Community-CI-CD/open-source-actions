@@ -20,7 +20,7 @@ function InvokeAddTokenToLabVIEW {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -53,7 +53,7 @@ function InvokeApplyVIPC {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -100,7 +100,7 @@ function InvokeBuildViPackage {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -141,7 +141,7 @@ function InvokeBuild {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -184,7 +184,7 @@ function InvokeBuildLvlibp {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -211,7 +211,7 @@ function InvokeCloseLabVIEW {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -234,7 +234,7 @@ function InvokeGenerateReleaseNotes {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -263,7 +263,7 @@ function InvokeMissingInProject {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -310,7 +310,7 @@ function InvokeModifyVIPBDisplayInfo {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -343,7 +343,7 @@ function InvokePrepareLabVIEWSource {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -370,7 +370,7 @@ function InvokeRenameFile {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -403,7 +403,7 @@ function InvokeRestoreSetupLVSource {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -426,7 +426,7 @@ function InvokeRevertDevelopmentMode {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -453,7 +453,7 @@ function InvokeRunUnitTests {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
@@ -476,7 +476,7 @@ function InvokeSetDevelopmentMode {
         return 0
     }
     if ($gcliPath) {
-        $env:PATH = "$gcliPath;$($env:PATH)"
+        $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$($env:PATH)"
     }
     & $scriptPath @args
     if (-not $?) { return 1 }
