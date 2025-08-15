@@ -1,4 +1,4 @@
-#!/usr/bin/env ts-node
+#!/usr/bin/env -S node --loader ts-node/esm
 import { promises as fs } from 'fs';
 import path from 'path';
 import { glob } from 'glob';

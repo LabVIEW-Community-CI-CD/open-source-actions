@@ -152,7 +152,7 @@ jobs:
           REQ_MAPPING_FILE: "requirements.json"
           DISPATCHER_SCRIPT: "actions/Invoke-OSAction.ps1"
           EVIDENCE_DIR: "test-screenshots"
-        run: npx ts-node scripts/generate-ci-summary.ts
+        run: node --loader ts-node/esm scripts/generate-ci-summary.ts
 
       - name: Upload traceability
         if: always()
