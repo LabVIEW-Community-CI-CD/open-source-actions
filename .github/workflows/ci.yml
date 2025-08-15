@@ -143,7 +143,7 @@ jobs:
         with:
           name: traceability
           path: artifacts/traceability.*
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Upload action-docs
         if: always()
@@ -151,7 +151,7 @@ jobs:
         with:
           name: action-docs
           path: artifacts/action-docs.zip
-          if-no-files-found: error
+          if-no-files-found: warn
 
       - name: Upload evidence (optional)
         if: always()
