@@ -4,7 +4,7 @@ To keep documentation consistent and easy to review, please follow these rules w
 
 ## Action documentation
 
-Documentation for PowerShell actions is generated automatically. During CI the script `scripts/generate-ci-summary.ts` reads the help metadata from each action and fills in `doc-templates/action-doc-template.md`. The rendered Markdown files are zipped into `artifacts/action-docs.zip`. Run `node scripts/generate-ci-summary.ts` locally to preview the generated docs.
+Documentation for PowerShell actions is generated automatically. During CI the script `scripts/generate-ci-summary.ts` reads the help metadata from each action and fills in `doc-templates/action-doc-template.md`. The rendered Markdown files are zipped into `artifacts/action-docs.zip`. Run `node --loader ts-node/esm scripts/generate-ci-summary.ts` locally to preview the generated docs.
 
 ## Markdown linting
 
