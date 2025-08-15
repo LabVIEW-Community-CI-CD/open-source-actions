@@ -21,6 +21,7 @@ jobs:
             docs:
               - 'docs/**'
               - 'doc-templates/**'
+              - 'scripts/**'
               - 'README.md'
       - if: ${{ steps.changes.outputs.docs == 'true' }}
         uses: actions/setup-node@v4
