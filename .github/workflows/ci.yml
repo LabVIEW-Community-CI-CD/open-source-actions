@@ -70,10 +70,11 @@ jobs:
           Import-Module Pester -MinimumVersion 5.0.0
           $cfg = [PesterConfiguration]::Default
           $cfg.Run.Path = './tests/pester'
+          $cfg.Run.Exit = $true
           $cfg.TestResult.Enabled = $true
           $cfg.TestResult.OutputFormat = 'JUnitXml'
           $cfg.TestResult.OutputPath = (Join-Path $OutDir 'pester-junit.xml')
-          Invoke-Pester -Configuration $cfg -CI
+          Invoke-Pester -Configuration $cfg
       - name: Upload Pester JUnit
         if: always()
         uses: actions/upload-artifact@v4
