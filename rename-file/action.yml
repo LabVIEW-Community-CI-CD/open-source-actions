@@ -1,8 +1,11 @@
-name: 'Set development mode'
-description: 'Configure the repository for development mode by removing packed libraries and preparing sources'
+name: 'Rename file'
+description: 'Rename a file if it exists'
 inputs:
-  relative_path:
-    description: 'Relative path containing the repository.'
+  current_filename:
+    description: 'Existing file name.'
+    required: true
+  new_filename:
+    description: 'New file name.'
     required: true
   gcli_path:
     description: 'Optional path to the g-cli executable.'
@@ -21,19 +24,22 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Dispatch set-development-mode
+    - name: Dispatch rename-file
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
-        $args = @{ RelativePath = '${{ inputs.relative_path }}' }
+        $args = @{
+          CurrentFilename = '${{ inputs.current_filename }}'
+          NewFilename     = '${{ inputs.new_filename }}'
+        }
         if ('${{ inputs.gcli_path }}') { $args['gcliPath'] = '${{ inputs.gcli_path }}' }
         $params = @{
-          ActionName = 'set-development-mode'
+          ActionName = 'rename-file'
           ArgsYaml   = $args
           LogLevel   = '${{ inputs.log_level }}'
         }
         if ('${{ inputs.dry_run }}' -eq 'true') { $params['DryRun'] = $true }
         if ('${{ inputs.working_directory }}') { $params['WorkingDirectory'] = '${{ inputs.working_directory }}' }
-        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'Invoke-OSAction.ps1'
+        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'actions' 'Invoke-OSAction.ps1'
         & $script @params
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

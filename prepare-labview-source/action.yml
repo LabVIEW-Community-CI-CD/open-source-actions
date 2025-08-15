@@ -1,11 +1,20 @@
-name: 'Run LabVIEW unit tests'
-description: 'Run LabVIEW unit tests via the Unit Test Framework CLI'
+name: 'Prepare LabVIEW source'
+description: 'Run PrepareIESource to extract components before building'
 inputs:
   minimum_supported_lv_version:
-    description: 'LabVIEW version for the test run.'
+    description: 'Minimum LabVIEW version supported.'
     required: true
   supported_bitness:
     description: '"32" or "64" bitness of LabVIEW.'
+    required: true
+  relative_path:
+    description: 'Relative path containing the project.'
+    required: true
+  labview_project:
+    description: 'Path to the LabVIEW project file.'
+    required: true
+  build_spec:
+    description: 'Name of the build specification.'
     required: true
   gcli_path:
     description: 'Optional path to the g-cli executable.'
@@ -24,22 +33,25 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Dispatch run-unit-tests
+    - name: Dispatch prepare-labview-source
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
         $args = @{
           MinimumSupportedLVVersion = '${{ inputs.minimum_supported_lv_version }}'
           SupportedBitness          = '${{ inputs.supported_bitness }}'
+          RelativePath              = '${{ inputs.relative_path }}'
+          LabVIEW_Project           = '${{ inputs.labview_project }}'
+          Build_Spec                = '${{ inputs.build_spec }}'
         }
         if ('${{ inputs.gcli_path }}') { $args['gcliPath'] = '${{ inputs.gcli_path }}' }
         $params = @{
-          ActionName = 'run-unit-tests'
+          ActionName = 'prepare-labview-source'
           ArgsYaml   = $args
           LogLevel   = '${{ inputs.log_level }}'
         }
         if ('${{ inputs.dry_run }}' -eq 'true') { $params['DryRun'] = $true }
         if ('${{ inputs.working_directory }}') { $params['WorkingDirectory'] = '${{ inputs.working_directory }}' }
-        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'Invoke-OSAction.ps1'
+        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'actions' 'Invoke-OSAction.ps1'
         & $script @params
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

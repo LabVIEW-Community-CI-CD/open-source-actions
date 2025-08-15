@@ -1,8 +1,11 @@
-name: 'Revert development mode'
-description: 'Restore repository from development mode by restoring packaged sources and closing LabVIEW'
+name: 'Run LabVIEW unit tests'
+description: 'Run LabVIEW unit tests via the Unit Test Framework CLI'
 inputs:
-  relative_path:
-    description: 'Relative path containing the repository.'
+  minimum_supported_lv_version:
+    description: 'LabVIEW version for the test run.'
+    required: true
+  supported_bitness:
+    description: '"32" or "64" bitness of LabVIEW.'
     required: true
   gcli_path:
     description: 'Optional path to the g-cli executable.'
@@ -21,19 +24,22 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Dispatch revert-development-mode
+    - name: Dispatch run-unit-tests
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
-        $args = @{ RelativePath = '${{ inputs.relative_path }}' }
+        $args = @{
+          MinimumSupportedLVVersion = '${{ inputs.minimum_supported_lv_version }}'
+          SupportedBitness          = '${{ inputs.supported_bitness }}'
+        }
         if ('${{ inputs.gcli_path }}') { $args['gcliPath'] = '${{ inputs.gcli_path }}' }
         $params = @{
-          ActionName = 'revert-development-mode'
+          ActionName = 'run-unit-tests'
           ArgsYaml   = $args
           LogLevel   = '${{ inputs.log_level }}'
         }
         if ('${{ inputs.dry_run }}' -eq 'true') { $params['DryRun'] = $true }
         if ('${{ inputs.working_directory }}') { $params['WorkingDirectory'] = '${{ inputs.working_directory }}' }
-        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'Invoke-OSAction.ps1'
+        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'actions' 'Invoke-OSAction.ps1'
         & $script @params
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

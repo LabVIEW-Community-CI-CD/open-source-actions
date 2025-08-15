@@ -1,10 +1,9 @@
-name: 'Generate release notes'
-description: 'Generate release notes from git history'
+name: 'Set development mode'
+description: 'Configure the repository for development mode by removing packed libraries and preparing sources'
 inputs:
-  output_path:
-    description: 'Path to output markdown file.'
-    default: 'Tooling/deployment/release_notes.md'
-    required: false
+  relative_path:
+    description: 'Relative path containing the repository.'
+    required: true
   gcli_path:
     description: 'Optional path to the g-cli executable.'
     required: false
@@ -22,19 +21,19 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Dispatch generate-release-notes
+    - name: Dispatch set-development-mode
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
-        $args = @{ OutputPath = '${{ inputs.output_path }}' }
+        $args = @{ RelativePath = '${{ inputs.relative_path }}' }
         if ('${{ inputs.gcli_path }}') { $args['gcliPath'] = '${{ inputs.gcli_path }}' }
         $params = @{
-          ActionName = 'generate-release-notes'
+          ActionName = 'set-development-mode'
           ArgsYaml   = $args
           LogLevel   = '${{ inputs.log_level }}'
         }
         if ('${{ inputs.dry_run }}' -eq 'true') { $params['DryRun'] = $true }
         if ('${{ inputs.working_directory }}') { $params['WorkingDirectory'] = '${{ inputs.working_directory }}' }
-        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'Invoke-OSAction.ps1'
+        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'actions' 'Invoke-OSAction.ps1'
         & $script @params
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

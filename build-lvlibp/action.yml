@@ -1,5 +1,5 @@
-name: 'Restore LabVIEW source setup'
-description: 'Restore LabVIEW source by unzipping components and removing tokens'
+name: 'Build LVLIBP'
+description: 'Build a LabVIEW project into a Packed Project Library (.lvlibp)'
 inputs:
   minimum_supported_lv_version:
     description: 'Minimum LabVIEW version supported.'
@@ -8,13 +8,28 @@ inputs:
     description: '"32" or "64" bitness of LabVIEW.'
     required: true
   relative_path:
-    description: 'Relative path containing the project.'
+    description: 'Relative path containing the LabVIEW project.'
     required: true
   labview_project:
     description: 'Path to the LabVIEW project file.'
     required: true
   build_spec:
     description: 'Name of the build specification.'
+    required: true
+  major:
+    description: 'Major version component.'
+    required: true
+  minor:
+    description: 'Minor version component.'
+    required: true
+  patch:
+    description: 'Patch version component.'
+    required: true
+  build:
+    description: 'Build number.'
+    required: true
+  commit:
+    description: 'Commit identifier.'
     required: true
   gcli_path:
     description: 'Optional path to the g-cli executable.'
@@ -33,7 +48,7 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Dispatch restore-setup-lv-source
+    - name: Dispatch build-lvlibp
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
@@ -43,15 +58,20 @@ runs:
           RelativePath              = '${{ inputs.relative_path }}'
           LabVIEW_Project           = '${{ inputs.labview_project }}'
           Build_Spec                = '${{ inputs.build_spec }}'
+          Major                     = [int]'${{ inputs.major }}'
+          Minor                     = [int]'${{ inputs.minor }}'
+          Patch                     = [int]'${{ inputs.patch }}'
+          Build                     = [int]'${{ inputs.build }}'
+          Commit                    = '${{ inputs.commit }}'
         }
         if ('${{ inputs.gcli_path }}') { $args['gcliPath'] = '${{ inputs.gcli_path }}' }
         $params = @{
-          ActionName = 'restore-setup-lv-source'
+          ActionName = 'build-lvlibp'
           ArgsYaml   = $args
           LogLevel   = '${{ inputs.log_level }}'
         }
         if ('${{ inputs.dry_run }}' -eq 'true') { $params['DryRun'] = $true }
         if ('${{ inputs.working_directory }}') { $params['WorkingDirectory'] = '${{ inputs.working_directory }}' }
-        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'Invoke-OSAction.ps1'
+        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'actions' 'Invoke-OSAction.ps1'
         & $script @params
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

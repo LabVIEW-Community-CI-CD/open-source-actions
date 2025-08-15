@@ -1,11 +1,14 @@
-name: 'Rename file'
-description: 'Rename a file if it exists'
+name: 'Check missing project items'
+description: 'Scan a LabVIEW project for missing items'
 inputs:
-  current_filename:
-    description: 'Existing file name.'
+  lv_version:
+    description: 'LabVIEW version to use.'
     required: true
-  new_filename:
-    description: 'New file name.'
+  arch:
+    description: 'Target architecture (32 or 64).'
+    required: true
+  project_file:
+    description: 'Path to the LabVIEW project (.lvproj).'
     required: true
   gcli_path:
     description: 'Optional path to the g-cli executable.'
@@ -24,22 +27,23 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Dispatch rename-file
+    - name: Dispatch missing-in-project
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
         $args = @{
-          CurrentFilename = '${{ inputs.current_filename }}'
-          NewFilename     = '${{ inputs.new_filename }}'
+          LVVersion   = '${{ inputs.lv_version }}'
+          Arch        = '${{ inputs.arch }}'
+          ProjectFile = '${{ inputs.project_file }}'
         }
         if ('${{ inputs.gcli_path }}') { $args['gcliPath'] = '${{ inputs.gcli_path }}' }
         $params = @{
-          ActionName = 'rename-file'
+          ActionName = 'missing-in-project'
           ArgsYaml   = $args
           LogLevel   = '${{ inputs.log_level }}'
         }
         if ('${{ inputs.dry_run }}' -eq 'true') { $params['DryRun'] = $true }
         if ('${{ inputs.working_directory }}') { $params['WorkingDirectory'] = '${{ inputs.working_directory }}' }
-        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'Invoke-OSAction.ps1'
+        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'actions' 'Invoke-OSAction.ps1'
         & $script @params
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

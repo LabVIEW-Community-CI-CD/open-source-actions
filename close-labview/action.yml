@@ -1,14 +1,11 @@
-name: 'Check missing project items'
-description: 'Scan a LabVIEW project for missing items'
+name: 'Close LabVIEW'
+description: 'Gracefully close a running LabVIEW instance via g-cli'
 inputs:
-  lv_version:
-    description: 'LabVIEW version to use.'
+  minimum_supported_lv_version:
+    description: 'Minimum LabVIEW version supported.'
     required: true
-  arch:
-    description: 'Target architecture (32 or 64).'
-    required: true
-  project_file:
-    description: 'Path to the LabVIEW project (.lvproj).'
+  supported_bitness:
+    description: '"32" or "64" bitness of LabVIEW.'
     required: true
   gcli_path:
     description: 'Optional path to the g-cli executable.'
@@ -27,23 +24,22 @@ inputs:
 runs:
   using: 'composite'
   steps:
-    - name: Dispatch missing-in-project
+    - name: Dispatch close-labview
       shell: pwsh
       run: |
         $ErrorActionPreference = 'Stop'
         $args = @{
-          LVVersion   = '${{ inputs.lv_version }}'
-          Arch        = '${{ inputs.arch }}'
-          ProjectFile = '${{ inputs.project_file }}'
+          MinimumSupportedLVVersion = '${{ inputs.minimum_supported_lv_version }}'
+          SupportedBitness          = '${{ inputs.supported_bitness }}'
         }
         if ('${{ inputs.gcli_path }}') { $args['gcliPath'] = '${{ inputs.gcli_path }}' }
         $params = @{
-          ActionName = 'missing-in-project'
+          ActionName = 'close-labview'
           ArgsYaml   = $args
           LogLevel   = '${{ inputs.log_level }}'
         }
         if ('${{ inputs.dry_run }}' -eq 'true') { $params['DryRun'] = $true }
         if ('${{ inputs.working_directory }}') { $params['WorkingDirectory'] = '${{ inputs.working_directory }}' }
-        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'Invoke-OSAction.ps1'
+        $script = Join-Path $env:GITHUB_ACTION_PATH '..' 'actions' 'Invoke-OSAction.ps1'
         & $script @params
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

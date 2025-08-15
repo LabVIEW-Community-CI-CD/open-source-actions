@@ -14,7 +14,7 @@ See [Common Parameters](common-parameters.md) for a complete list of dispatcher 
 
 ## Cross‑platform
 
-Works on **Windows and Linux** as long as LabVIEW and [g-cli](https://github.com/ni/g-cli) are installed and available on `PATH`. For non‑standard installs, pass `gcliPath` in `args_yaml` (legacy `args_json` is also supported; adapters will prepend it to `PATH`).
+Works on **Windows and Linux** as long as LabVIEW and [g-cli](https://github.com/ni/g-cli) are installed and available on `PATH`. For non‑standard installs, pass `gcliPath` in `args_yaml`. Legacy `args_json` is deprecated but still supported; adapters will prepend it to `PATH`.
 
 ## Example (CLI)
 
