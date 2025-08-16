@@ -20,3 +20,12 @@ During CI runs, `scripts/generate-ci-summary.ts` writes requirement artifacts
 to an OS‑specific directory under `artifacts/`, such as
 `artifacts/windows/traceability.md` or `artifacts/linux/traceability.md`, using the `RUNNER_OS` environment variable.
 
+Each directory also includes a `summary.md` file with per‑OS totals. A typical
+summary might look like this:
+
+| OS | Passed | Failed | Skipped | Duration (s) | Pass Rate (%) |
+| --- | --- | --- | --- | --- | --- |
+| overall | 10 | 0 | 2 | 12.34 | 100.00 |
+| windows | 5 | 0 | 1 | 6.17 | 100.00 |
+| linux | 5 | 0 | 1 | 6.17 | 100.00 |
+

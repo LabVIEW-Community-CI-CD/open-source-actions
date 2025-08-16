@@ -300,6 +300,18 @@ async function main() {
 
   const matrixMd = groupToMarkdown(groups);
 
+  const summaryLines = [
+    '### Test Summary',
+    '| OS | Passed | Failed | Skipped | Duration (s) | Pass Rate (%) |',
+    '| --- | --- | --- | --- | --- | --- |',
+    `| overall | ${totals.overall.passed} | ${totals.overall.failed} | ${totals.overall.skipped} | ${totals.overall.duration.toFixed(2)} | ${totals.overall.rate.toFixed(2)} |`,
+  ];
+  for (const os of Object.keys(totals.byOs).sort()) {
+    const t = totals.byOs[os];
+    summaryLines.push(`| ${os} | ${t.passed} | ${t.failed} | ${t.skipped} | ${t.duration.toFixed(2)} | ${t.rate.toFixed(2)} |`);
+  }
+  const summaryMd = summaryLines.join('\n');
+
   const wrapperFiles = await glob('*/action.yml', { nodir: true });
   const wrapperDirs = wrapperFiles.map(f => path.dirname(f)).sort();
   console.log('Discovered wrapper directories:', wrapperDirs.join(', '));
@@ -307,6 +319,7 @@ async function main() {
 
   await fs.writeFile(path.join(outDir, 'traceability.json'), JSON.stringify({ requirements: groups, totals }, null, 2));
   await fs.writeFile(path.join(outDir, 'traceability.md'), redact(`### Test Traceability Matrix\n\n${matrixMd}`));
+  await fs.writeFile(path.join(outDir, 'summary.md'), redact(summaryMd));
   await fs.writeFile(path.join(outDir, 'action-docs.json'), JSON.stringify(docs, null, 2));
   await fs.writeFile(path.join(outDir, 'action-docs.md'), redact(markdown));
 
