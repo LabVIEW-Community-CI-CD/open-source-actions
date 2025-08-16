@@ -186,6 +186,20 @@ export function buildSummary(groups: RequirementGroup[]) {
   return { overall, byOs };
 }
 
+export function summaryToMarkdown(totals: { overall: { passed: number; failed: number; skipped: number; duration: number; rate: number }; byOs: Record<string, { passed: number; failed: number; skipped: number; duration: number; rate: number }> }) {
+  const lines = [
+    '### Test Summary',
+    '| OS | Passed | Failed | Skipped | Duration (s) | Pass Rate (%) |',
+    '| --- | --- | --- | --- | --- | --- |',
+    `| overall | ${totals.overall.passed} | ${totals.overall.failed} | ${totals.overall.skipped} | ${totals.overall.duration.toFixed(2)} | ${totals.overall.rate.toFixed(2)} |`,
+  ];
+  for (const os of Object.keys(totals.byOs).sort()) {
+    const t = totals.byOs[os];
+    lines.push(`| ${os} | ${t.passed} | ${t.failed} | ${t.skipped} | ${t.duration.toFixed(2)} | ${t.rate.toFixed(2)} |`);
+  }
+  return lines.join('\n');
+}
+
 export function groupToMarkdown(groups: RequirementGroup[], limit?: number) {
   const lines: string[] = [];
   let count = 0;
@@ -320,18 +334,7 @@ async function main() {
   await fs.mkdir(outDir, { recursive: true });
 
   const matrixMd = groupToMarkdown(groups);
-
-  const summaryLines = [
-    '### Test Summary',
-    '| OS | Passed | Failed | Skipped | Duration (s) | Pass Rate (%) |',
-    '| --- | --- | --- | --- | --- | --- |',
-    `| overall | ${totals.overall.passed} | ${totals.overall.failed} | ${totals.overall.skipped} | ${totals.overall.duration.toFixed(2)} | ${totals.overall.rate.toFixed(2)} |`,
-  ];
-  for (const os of Object.keys(totals.byOs).sort()) {
-    const t = totals.byOs[os];
-    summaryLines.push(`| ${os} | ${t.passed} | ${t.failed} | ${t.skipped} | ${t.duration.toFixed(2)} | ${t.rate.toFixed(2)} |`);
-  }
-  const summaryMd = summaryLines.join('\n');
+  const summaryMd = summaryToMarkdown(totals);
 
   const wrapperFiles = await glob('*/action.yml', { nodir: true });
   const wrapperDirs = wrapperFiles.map(f => path.dirname(f)).sort();
@@ -343,6 +346,24 @@ async function main() {
   await fs.writeFile(path.join(outDir, 'summary.md'), redact(summaryMd));
   await fs.writeFile(path.join(outDir, 'action-docs.json'), JSON.stringify(docs, null, 2));
   await fs.writeFile(path.join(outDir, 'action-docs.md'), redact(markdown));
+
+  const partitions: Record<string, RequirementGroup[]> = {};
+  for (const g of groups) {
+    const type = g.runner_type ?? 'standard';
+    if (!partitions[type]) partitions[type] = [];
+    partitions[type].push(g);
+  }
+
+  for (const [type, list] of Object.entries(partitions)) {
+    const partTotals = buildSummary(list);
+    const partSummary = summaryToMarkdown(partTotals);
+    const partMatrix = groupToMarkdown(list);
+    await fs.writeFile(path.join(outDir, `summary-${type}.md`), redact(`${partSummary}\n\n${partMatrix}`));
+    await fs.writeFile(
+      path.join(outDir, `traceability-${type}.md`),
+      redact(`### Test Traceability Matrix\n\n${partMatrix}`),
+    );
+  }
 
   try {
     await fs.access(evidenceDir);
