@@ -11,7 +11,7 @@ Describe 'Adapters restore PATH' {
         New-Item -ItemType Directory -Path $gcliPath -Force | Out-Null
     }
     AfterAll {
-        Remove-Item -Path $gcliPath -Recurse -Force
+        Remove-Item -Path $gcliPath -Recurse -Force -ErrorAction SilentlyContinue
     }
 
     $cases = @(
@@ -35,7 +35,7 @@ Describe 'Adapters restore PATH' {
     foreach ($case in $cases) {
         It "restores PATH after $($case.Func)" {
             $originalPath = $env:PATH
-            Mock $case.Script { $global:LASTEXITCODE = 0 }
+            Mock (Get-Command $case.Script).Name { $global:LASTEXITCODE = 0 }
             & $case.Func @case.Args -gcliPath $gcliPath | Out-Null
             $env:PATH | Should -Be $originalPath
         }
