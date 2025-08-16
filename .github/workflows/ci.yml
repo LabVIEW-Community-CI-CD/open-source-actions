@@ -98,3 +98,7 @@ jobs:
           REQ_MAPPING_FILE: requirements.json
           DISPATCHER_REGISTRY: dispatchers.json
           EVIDENCE_DIR: test-screenshots
+      - name: Print test traceability matrix
+        run: |
+          cat artifacts/traceability.md >> "$GITHUB_STEP_SUMMARY"
+          cat artifacts/traceability.md
