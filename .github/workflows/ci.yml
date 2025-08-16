@@ -128,8 +128,8 @@ jobs:
           EVIDENCE_DIR: test-screenshots
       - name: Print test traceability matrix
         run: |
-          cat artifacts/traceability.md >> "$GITHUB_STEP_SUMMARY"
-          cat artifacts/traceability.md
+          cat "artifacts/${RUNNER_OS,,}/traceability.md" >> "$GITHUB_STEP_SUMMARY"
+          cat "artifacts/${RUNNER_OS,,}/traceability.md"
       - name: Include setup information
         run: |
           echo '## ubuntu-24.04' >> "$GITHUB_STEP_SUMMARY"
