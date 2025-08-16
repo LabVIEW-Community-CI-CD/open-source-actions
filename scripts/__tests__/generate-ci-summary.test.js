@@ -101,3 +101,43 @@ test('writes outputs to OS-specific directory', async () => {
   await fs.rm(tmp, { recursive: true, force: true });
   await fs.rm('artifacts', { recursive: true, force: true });
 });
+
+test('partitions requirement groups by runner_type', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'partition-'));
+  const junitPath = path.join(dir, 'junit.xml');
+  const xml = '<testsuite><testcase name="alpha" time="0"/><testcase name="beta" time="0"/></testsuite>';
+  await fs.writeFile(junitPath, xml);
+  const req = {
+    runners: { integ: { runner_type: 'integration' } },
+    requirements: [
+      { id: 'REQ-1', tests: ['alpha'] },
+      { id: 'REQ-2', runner: 'integ', tests: ['beta'] },
+    ],
+  };
+  const reqPath = path.join(dir, 'req.json');
+  await fs.writeFile(reqPath, JSON.stringify(req));
+
+  await fs.rm('artifacts', { recursive: true, force: true });
+
+  const env = {
+    ...process.env,
+    TEST_RESULTS_GLOB: junitPath,
+    EVIDENCE_DIR: dir,
+    REQ_MAPPING_FILE: reqPath,
+    RUNNER_OS: 'Linux',
+  };
+
+  await execFileP('node_modules/.bin/tsx', ['scripts/generate-ci-summary.ts'], { env });
+
+  const outDir = path.join('artifacts', 'linux');
+  const std = await fs.readFile(path.join(outDir, 'summary-standard.md'), 'utf8');
+  assert.match(std, /REQ-1/);
+  const integ = await fs.readFile(path.join(outDir, 'summary-integration.md'), 'utf8');
+  assert.match(integ, /REQ-2/);
+  const traceStdExists = await fs.stat(path.join(outDir, 'traceability-standard.md')).then(() => true, () => false);
+  const traceIntegExists = await fs.stat(path.join(outDir, 'traceability-integration.md')).then(() => true, () => false);
+  assert.strictEqual(traceStdExists && traceIntegExists, true);
+
+  await fs.rm(dir, { recursive: true, force: true });
+  await fs.rm('artifacts', { recursive: true, force: true });
+});
