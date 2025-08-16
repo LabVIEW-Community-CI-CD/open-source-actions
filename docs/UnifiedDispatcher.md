@@ -43,7 +43,7 @@ jobs:
   unit-tests:
     strategy:
       matrix:
-        os: [windows-latest, ubuntu-latest]
+        os: [windows-latest, ubuntu-24.04]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
