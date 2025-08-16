@@ -24,13 +24,6 @@ jobs:
           path: test-results/node-junit.xml
           if-no-files-found: error
       - run: npm run derive:registry
-      - run: npm run generate:summary
-        if: always()
-        env:
-          TEST_RESULTS_GLOB: "**/junit*.xml"
-          REQ_MAPPING_FILE: "requirements.json"
-          DISPATCHER_REGISTRY: "dispatchers.json"
-          EVIDENCE_DIR: "test-screenshots"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -67,23 +60,19 @@ jobs:
         shell: pwsh
         run: |
           if (Test-Path "tests/pester") {
-            if ('${{ matrix.os }}' -eq 'windows-latest') {
-              $OutDir = Join-Path $env:GITHUB_WORKSPACE 'pester-results'
-              New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
-              Import-Module Pester -MinimumVersion 5.0.0
-              $cfg = [PesterConfiguration]::Default
-              $cfg.Run.Path = './tests/pester'
-              $cfg.Run.Exit = $true
-              $cfg.TestResult.Enabled = $true
-              $cfg.TestResult.OutputFormat = 'JUnitXml'
-              $cfg.TestResult.OutputPath = (Join-Path $OutDir 'pester-junit.xml')
-              Invoke-Pester -Configuration $cfg
-            } else {
-              Invoke-Pester -CI -Path tests/pester
-            }
+            $OutDir = Join-Path $env:GITHUB_WORKSPACE 'pester-results'
+            New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
+            Import-Module Pester -MinimumVersion 5.0.0
+            $cfg = [PesterConfiguration]::Default
+            $cfg.Run.Path = './tests/pester'
+            $cfg.Run.Exit = $true
+            $cfg.TestResult.Enabled = $true
+            $cfg.TestResult.OutputFormat = 'JUnitXml'
+            $cfg.TestResult.OutputPath = (Join-Path $OutDir 'pester-junit.xml')
+            Invoke-Pester -Configuration $cfg
           }
       - uses: actions/upload-artifact@v4
-        if: ${{ matrix.os == 'windows-latest' && always() }}
+        if: always()
         with:
           name: pester-junit-${{ matrix.os }}
           path: pester-results/pester-junit.xml
