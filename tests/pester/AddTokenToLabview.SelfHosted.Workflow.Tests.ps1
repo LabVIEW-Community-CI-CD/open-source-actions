@@ -3,7 +3,13 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
-    Import-Module powershell-yaml
+    try {
+        Import-Module powershell-yaml -ErrorAction Stop
+    }
+    catch {
+        Set-ItResult -Skipped -Because 'powershell-yaml module not installed'
+        return
+    }
 }
 
 Describe 'AddTokenToLabview.SelfHosted.Workflow [REQ-008]' {
