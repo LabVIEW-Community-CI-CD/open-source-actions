@@ -18,5 +18,5 @@ traceability between requirements and test coverage.
 
 During CI runs, `scripts/generate-ci-summary.ts` writes requirement artifacts
 to an OS‑specific directory under `artifacts/`, such as
-`artifacts/windows/traceability.md` or `artifacts/linux/traceability.md`.
+`artifacts/windows/traceability.md` or `artifacts/linux/traceability.md`, using the `RUNNER_OS` environment variable.
 
