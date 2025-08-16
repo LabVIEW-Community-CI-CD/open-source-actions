@@ -95,6 +95,8 @@ test('writes outputs to OS-specific directory', async () => {
   const outDir = path.join('artifacts', 'windows');
   const exists = await fs.stat(path.join(outDir, 'traceability.json')).then(() => true, () => false);
   assert.strictEqual(exists, true);
+  const summary = await fs.readFile(path.join(outDir, 'summary.md'), 'utf8');
+  assert.match(summary, /\| windows \| 1 \| 0 \| 0 \|/);
 
   await fs.rm(tmp, { recursive: true, force: true });
   await fs.rm('artifacts', { recursive: true, force: true });
