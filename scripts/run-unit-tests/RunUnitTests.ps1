@@ -16,6 +16,9 @@
 .PARAMETER SupportedBitness
     Bitness for LabVIEW (e.g., "64").
 
+.PARAMETER KeepReport
+    Skip cleanup so the UnitTestReport.xml remains on disk.
+
 .NOTES
     PowerShell 7.5+ assumed for cross-platform support.
     This script *requires* that g-cli and LabVIEW be compatible with the OS.
@@ -29,7 +32,10 @@ param(
     [Parameter(Mandatory=$true)]
     [ValidateSet("32","64")]
     [string]
-    $SupportedBitness
+    $SupportedBitness,
+
+    [switch]
+    $KeepReport
 )
 
 # --------------------------------------------------------------------
@@ -241,7 +247,12 @@ function Cleanup {
 # -------------------  EXECUTION FLOW  -------------------
 Setup
 MainSequence
-#Cleanup
+if (-not $KeepReport) {
+    Cleanup
+}
+else {
+    Write-Host "`nSkipping Cleanup; retaining UnitTestReport.xml."
+}
 
 # -------------------  FINAL EXIT CODE  ------------------
 if ($Script:OriginalExitCode -ne 0) {
