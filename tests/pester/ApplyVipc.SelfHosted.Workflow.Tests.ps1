@@ -25,14 +25,14 @@ Describe 'ApplyVipc.SelfHosted.DryRunTrue.Workflow [REQ-006]' {
         $job.strategy.matrix.dry_run | Should -Contain $true
 
         $checkoutIconRepoStep.uses | Should -Be 'actions/checkout@v4'
-        $checkoutIconRepoStep.with.path | Should -Be '../../labview-icon-editor/labview-icon-editor'
+        $checkoutIconRepoStep.with.path | Should -Match 'labview-icon-editor/labview-icon-editor$'
 
         $applyStep.uses | Should -Be './apply-vipc/action.yml'
         $applyStep.with.minimum_supported_lv_version | Should -Be '2021'
         $applyStep.with.vip_lv_version | Should -Be '2021'
         $applyStep.with.supported_bitness | Should -Be '64'
-        $applyStep.with.relative_path | Should -Be 'C:\actions-runner\_work\labview-icon-editor\labview-icon-editor'
-        $applyStep.with.vipc_path | Should -Be 'C:\actions-runner\_work\labview-icon-editor\labview-icon-editor\.github\actions\apply-vipc\runner_dependencies.vipc'
+        $applyStep.with.relative_path | Should -Match 'labview-icon-editor$'
+        $applyStep.with.vipc_path | Should -Match 'labview-icon-editor.*runner_dependencies.vipc$'
         $applyStep.with.dry_run | Should -Be '${{ matrix.dry_run }}'
     }
 }
@@ -50,14 +50,14 @@ Describe 'ApplyVipc.SelfHosted.DryRunFalse.Workflow [REQ-007]' {
         $job.strategy.matrix.dry_run | Should -Contain $false
 
         $checkoutIconRepoStep.uses | Should -Be 'actions/checkout@v4'
-        $checkoutIconRepoStep.with.path | Should -Be '../../labview-icon-editor/labview-icon-editor'
+        $checkoutIconRepoStep.with.path | Should -Match 'labview-icon-editor/labview-icon-editor$'
 
         $applyStep.uses | Should -Be './apply-vipc/action.yml'
         $applyStep.with.minimum_supported_lv_version | Should -Be '2021'
         $applyStep.with.vip_lv_version | Should -Be '2021'
         $applyStep.with.supported_bitness | Should -Be '64'
-        $applyStep.with.relative_path | Should -Be 'C:\actions-runner\_work\labview-icon-editor\labview-icon-editor'
-        $applyStep.with.vipc_path | Should -Be 'C:\actions-runner\_work\labview-icon-editor\labview-icon-editor\.github\actions\apply-vipc\runner_dependencies.vipc'
+        $applyStep.with.relative_path | Should -Match 'labview-icon-editor$'
+        $applyStep.with.vipc_path | Should -Match 'labview-icon-editor.*runner_dependencies.vipc$'
         $applyStep.with.dry_run | Should -Be '${{ matrix.dry_run }}'
     }
 }

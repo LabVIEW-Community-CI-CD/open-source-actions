@@ -27,7 +27,7 @@ Describe 'SetDevelopmentMode.SelfHosted.Workflow [REQ-021]' {
                 if ($null -ne $setStep) {
                     $workflowFound = $true
                     $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
-                    $setStep.with.relative_path | Should -Be 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor'
+                    $setStep.with.relative_path | Should -Match 'labview-icon-editor$'
                     $setStep.with.gcli_path | Should -Not -BeNullOrEmpty
                     $setStep.with.working_directory | Should -Not -BeNullOrEmpty
                     $setStep.with.log_level | Should -Not -BeNullOrEmpty

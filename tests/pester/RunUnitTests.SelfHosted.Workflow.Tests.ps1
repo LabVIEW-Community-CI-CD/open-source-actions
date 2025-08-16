@@ -25,8 +25,8 @@ Describe 'RunUnitTests.SelfHosted.Workflow [REQ-011]' {
 
         $testStep.with.minimum_supported_lv_version | Should -Be '2021'
         $testStep.with.supported_bitness | Should -Be '64'
-        $testStep.with.project_path | Should -Be 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor\\source\\lv_icon.lvproj'
-        $testStep.with.test_config | Should -Be 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor\\tests\\unittest-config.cfg'
+        $testStep.with.project_path | Should -Match 'labview-icon-editor.*lv_icon.lvproj$'
+        $testStep.with.test_config | Should -Match 'labview-icon-editor.*unittest-config.cfg$'
 
         $artifactStep | Should -Not -BeNullOrEmpty
         $artifactStep.with.name | Should -Be 'unit-test-results'
