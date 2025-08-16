@@ -2,7 +2,7 @@
 
 Open Source LabVIEW Actions provides typed GitHub Action wrappers around a unified PowerShell dispatcher for LabVIEW CI/CD tasks. Each adapter (for example `run-unit-tests`) is exposed as its own action and can be called from workflows with `uses: LabVIEW-Community-CI-CD/open-source-actions/<action>@v1`.
 
-See the [documentation site](https://open-source-actions.github.io/open-source-actions/) for setup and action reference. The [quickstart](docs/quickstart.md) shows a full example and [Unified Dispatcher](docs/UnifiedDispatcher.md) describes how the dispatcher works. For an overview of the project's architecture, see [docs/architecture.md](docs/architecture.md). For a mapping of high-level requirements to the tests that verify them, see [docs/requirements.md](docs/requirements.md).
+For setup and action reference, see the [documentation](docs/index.md). The [quickstart](docs/quickstart.md) shows a full example and [Unified Dispatcher](docs/UnifiedDispatcher.md) describes how the dispatcher works. For an overview of the project's architecture, see [docs/architecture.md](docs/architecture.md). For a mapping of high-level requirements to the tests that verify them, see [docs/requirements.md](docs/requirements.md).
 
 ## Prerequisites
 
@@ -52,13 +52,11 @@ Enable debug logging and perform a dry run:
     supported_bitness: '64'
     log_level: DEBUG
     dry_run: true
-```
-
-> **Note**: The legacy top-level action using `action_name` and `args_json` is deprecated. Prefer the adapter-specific wrappers shown above.
+  ```
 
 ## CLI/dispatcher usage
 
-If you prefer or need to run tasks directly, call the dispatcher script yourself:
+If you prefer or need to run tasks directly, call the dispatcher script [actions/Invoke-OSAction.ps1](actions/Invoke-OSAction.ps1) yourself:
 
 ```powershell
 $yaml = @'
@@ -96,7 +94,7 @@ Run the JavaScript tests with:
 npm test
 ```
 
-For CI, `npm run test:ci` emits a JUnit XML report that `scripts/generate-ci-summary.ts` parses to build the step summary and requirement traceability files. The script also renders action documentation from the templates in `doc-templates/` and packages the generated Markdown into the build artifacts.
+For CI, `npm run test:ci` emits a JUnit XML report that [scripts/generate-ci-summary.ts](scripts/generate-ci-summary.ts) parses to build the step summary and requirement traceability files.
 
 Pester tests cover the dispatcher and helper modules. See [docs/testing-pester.md](docs/testing-pester.md) for guidelines on using the canonical argument helper and adding new tests. Run them with:
 

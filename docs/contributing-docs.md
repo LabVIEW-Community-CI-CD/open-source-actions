@@ -4,11 +4,12 @@ To keep documentation consistent and easy to review, please follow these rules w
 
 ## Action documentation
 
-Documentation for PowerShell actions is generated automatically. During CI the script `scripts/generate-ci-summary.ts` reads the help metadata from each action and fills in `doc-templates/action-doc-template.md`. The rendered Markdown files are zipped into `artifacts/action-docs.zip`. Run `node --loader ts-node/esm scripts/generate-ci-summary.ts` locally to preview the generated docs.
+Action documentation lives under [docs/actions/](actions/). Keep these files in sync with their corresponding implementations in [scripts/](../scripts).
 
 ## Markdown linting
 
-- Run `pwsh scripts/lint-docs.ps1` to lint Markdown and check links before submitting changes.
+- Run `npx --yes markdownlint-cli README.md docs/**/*.md scripts/**/*.md` to lint Markdown formatting.
+- Run `npx --yes markdown-link-check -q -c .markdown-link-check.json README.md $(find docs scripts -name '*.md')` to check links before submitting changes.
 - Keep one `#`-level heading at the top of each file and increment heading levels sequentially; do not skip levels.
 
 ## Heading levels

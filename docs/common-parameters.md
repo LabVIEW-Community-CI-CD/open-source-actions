@@ -1,6 +1,6 @@
 # Common Parameters
 
-Calls to `actions/Invoke-OSAction.ps1` share a core set of flags and environment variables.
+Calls to [actions/Invoke-OSAction.ps1](../actions/Invoke-OSAction.ps1) share a core set of flags and environment variables.
 
 ## Command-line flags
 
@@ -58,7 +58,7 @@ pwsh ./actions/Invoke-OSAction.ps1 -Describe run-unit-tests
 
 ### `gcliPath`
 
-Optional path to the NI g-cli executable. When provided in `args_yaml`, the dispatcher prepends it to `PATH`. Default: assumes `g-cli` is already on `PATH`. The legacy `args_json` field is deprecated but still supported.
+Optional path to the NI g-cli executable. When provided in `args_yaml`, the dispatcher prepends it to `PATH`. Default: assumes `g-cli` is already on `PATH`.
 
 Example:
 
