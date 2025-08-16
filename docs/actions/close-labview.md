@@ -49,6 +49,17 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
     supported_bitness: '64'
 ```
 
+## External test workflow
+
+This repository ships a workflow that exercises this action against a
+separate project without modifying that project. The
+[`close-labview-external.yml`](../../.github/workflows/close-labview-external.yml)
+workflow checks out the target repository into a subdirectory, runs this
+action with `working_directory` pointing at that clone for both 32-bit and
+64-bit LabVIEW, and uploads the resulting log files. Because the workflow
+clones the repository and drives the action itself, the target repository
+requires no changes to participate in testing.
+
 ## Return Codes
 
 - `0` – LabVIEW closed successfully

