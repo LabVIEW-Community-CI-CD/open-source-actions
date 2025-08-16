@@ -1,14 +1,16 @@
-#!/usr/bin/env node
+#!/usr/bin/env tsx
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath, pathToFileURL } from 'url';
 import { glob } from 'glob';
 import { parseStringPromise } from 'xml2js';
 import yaml from 'js-yaml';
+import { writeErrorSummary } from './error-handler';
 
 interface TestCase {
   id: string;
   name: string;
+  className?: string;
   status: 'Passed' | 'Failed' | 'Skipped';
   duration: number;
   owner?: string;
@@ -31,7 +33,7 @@ function redact(text: string): string {
   return text.replace(/[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+/g, '<redacted>');
 }
 
-async function loadRequirements(mappingFile: string) {
+export async function loadRequirements(mappingFile: string) {
   try {
     const raw = await fs.readFile(mappingFile, 'utf8');
     const parsed = JSON.parse(raw);
@@ -55,7 +57,7 @@ async function loadRequirements(mappingFile: string) {
   }
 }
 
-async function collectTestCases(files: string[], evidenceDir: string): Promise<TestCase[]> {
+export async function collectTestCases(files: string[], evidenceDir: string): Promise<TestCase[]> {
   const evidenceFiles = await fs.readdir(evidenceDir).catch(() => []);
   const tests: TestCase[] = [];
   const statusMap: Record<string, 'Passed' | 'Failed' | 'Skipped'> = {
@@ -77,12 +79,13 @@ async function collectTestCases(files: string[], evidenceDir: string): Promise<T
       if (Array.isArray(obj.testcase)) {
         for (const tc of obj.testcase) {
           const name = tc.name?.[0] ?? 'unknown';
+          const className = tc.classname?.[0];
           const id = normalizeTestId(name);
           let status: 'Passed' | 'Failed' | 'Skipped' = 'Passed';
           if (tc.failure || tc.error) status = 'Failed';
           else if (tc.skipped) status = 'Skipped';
           const duration = parseFloat(tc.time?.[0] ?? '0');
-          const test: TestCase = { id, name, status, duration, requirements: [] };
+          const test: TestCase = { id, name, className, status, duration, requirements: [] };
           const evidence = evidenceFiles.find((f) => f.startsWith(id) || f.startsWith(id + '.'));
           if (evidence) test.evidence = path.join('evidence', evidence);
           const ownerMatch = name.match(/\[Owner:([^\]]+)\]/i);
@@ -101,10 +104,12 @@ async function collectTestCases(files: string[], evidenceDir: string): Promise<T
   return tests;
 }
 
-function mapToRequirements(tests: TestCase[], mapping: Record<string, { requirements: string[]; owner?: string }>, meta: Record<string, { description?: string; owner?: string }>): RequirementGroup[] {
+export function mapToRequirements(tests: TestCase[], mapping: Record<string, { requirements: string[]; owner?: string }>, meta: Record<string, { description?: string; owner?: string }>): RequirementGroup[] {
   const groups: Map<string, RequirementGroup> = new Map();
   for (const test of tests) {
-    const mapped = mapping[test.name.toLowerCase()];
+    const mapped =
+      mapping[test.name.toLowerCase()] ||
+      (test.className ? mapping[test.className.toLowerCase()] : undefined);
     const reqs = mapped ? mapped.requirements : test.requirements;
     if (mapped && mapped.owner) test.owner = mapped.owner;
     const targetReqs = reqs.length ? reqs : ['Unmapped'];
@@ -257,9 +262,12 @@ async function main() {
     const single = process.env.TEST_RESULTS_GLOB || '**/junit*.xml';
     junitFiles = await glob(single, { nodir: true });
   }
-  if (junitFiles.length === 0) throw new Error('No JUnit files found');
-
-  const tests = await collectTestCases(junitFiles, evidenceDir);
+  let tests: TestCase[] = [];
+  if (junitFiles.length === 0) {
+    console.warn('No JUnit files found; writing empty summary.');
+  } else {
+    tests = await collectTestCases(junitFiles, evidenceDir);
+  }
   const { map, meta } = await loadRequirements(mappingFile);
   const groups = mapToRequirements(tests, map, meta);
   const totals = buildSummary(groups);
@@ -296,12 +304,10 @@ async function main() {
   }
 }
 
-main().catch(async (err) => {
-  const msg = `### Error\n\n${err.message}`;
-  if (process.env.GITHUB_STEP_SUMMARY) {
-    await fs.appendFile(process.env.GITHUB_STEP_SUMMARY, msg + '\n');
-  }
-  console.error(err);
-  process.exit(1);
-});
+if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
+  main().catch(async (err: unknown) => {
+    await writeErrorSummary(err);
+    process.exit(1);
+  });
+}
 
