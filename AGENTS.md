@@ -1,14 +1,20 @@
 # AGENTS.md
 
+## Environment Setup
+- Run `apt-get update && apt-get install -y apt-utils` to ensure required APT utilities are available.
+- Ensure Node.js 24 or newer is installed (e.g. via the NodeSource setup script).
+- Install `actionlint` and ensure it is on your `PATH`:
+  - `go install github.com/rhysd/actionlint/cmd/actionlint@latest`
+- Ensure PowerShell 7.5.2 is installed and accessible.
+
 ## Testing
 - Run `npm run check:node` to verify Node.js satisfies the required version.
 - Run `npm install` to ensure Node dependencies are available.
 - Run `npm test`.
 - Run `npx --yes markdownlint-cli README.md docs/**/*.md scripts/**/*.md` to lint Markdown files.
 - Run `npx --yes markdown-link-check -q -c .markdown-link-check.json README.md $(find docs scripts -name '*.md')` to verify links.
-- Run `npx --yes actionlint` to validate GitHub Actions workflows.
-- Ensure PowerShell 7.5.2 is installed.
-- Run `pwsh -NoLogo -Command "Install-Module -Name Pester -Force -Scope AllUsers; if ($env:RUNNER_TYPE -ne 'integration') { Install-Module -Name powershell-yaml -Force -Scope AllUsers }; Invoke-Pester -CI -Path ./tests/pester"`.
+- Run `actionlint` to validate GitHub Actions workflows.
+- Run `pwsh -NoLogo -Command "Install-Module -Name Pester -Force -Scope AllUsers; if (\$env:RUNNER_TYPE -ne 'integration') { Install-Module -Name powershell-yaml -Force -Scope AllUsers }; Invoke-Pester -CI -Path ./tests/pester"`.
 - If `$env:RUNNER_TYPE` is `integration`, verify native YAML parsing with `pwsh -NoLogo -Command "ConvertFrom-Yaml 'a: 1' | Out-Null"` before running Pester.
 
 All tests above are mandatory; they must pass before committing.
