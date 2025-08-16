@@ -296,12 +296,19 @@ async function main() {
   }
 }
 
-main().catch(async (err) => {
-  const msg = `### Error\n\n${err.message}`;
+main().catch(async (err: unknown) => {
+  const msg = `### Error\n\n${err instanceof Error ? err.message : String(err)}`;
   if (process.env.GITHUB_STEP_SUMMARY) {
-    await fs.appendFile(process.env.GITHUB_STEP_SUMMARY, msg + '\n');
+    try {
+      await fs.appendFile(process.env.GITHUB_STEP_SUMMARY, msg + '\n');
+    } catch (appendErr: unknown) {
+      console.error(
+        'Failed to append error summary:',
+        appendErr instanceof Error ? appendErr.message : String(appendErr),
+      );
+    }
   }
-  console.error(err);
+  console.error('Error generating CI summary:', err);
   process.exit(1);
 });
 
