@@ -1,8 +1,14 @@
 name: Release
 
 on:
-  release:
-    types: [published]
+  push:
+    branches:
+      - actions
+      - actions-main
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
   tests:
@@ -38,55 +44,40 @@ jobs:
         shell: pwsh
         run: Invoke-Pester -CI -Path tests/pester
 
-  deploy-docs:
+  release:
     needs: tests
-    if: always()
     runs-on: ubuntu-latest
     permissions:
-      contents: read
-      pages: write
-      id-token: write
-    concurrency:
-      group: pages
-      cancel-in-progress: true
+      contents: write
     steps:
-      - name: Log deploy conditions
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get commit count
+        id: commit_count
+        run: echo "count=$(git rev-list --count ${GITHUB_REF_NAME})" >> "$GITHUB_OUTPUT"
+
+      - name: Prepare release metadata
+        id: release_meta
+        env:
+          COUNT: ${{ steps.commit_count.outputs.count }}
+          BRANCH: ${{ github.ref_name }}
         run: |
-          echo "ref: ${{ github.ref }}"
-          echo "target: ${{ github.event.release.target_commitish }}"
-          echo "tests result: ${{ needs.tests.result }}"
-      - uses: actions/checkout@v4
-        if: github.event.release.target_commitish == 'actions'
-      - uses: dorny/paths-filter@v2
-        if: github.event.release.target_commitish == 'actions'
-        id: changes
+          if [ "$BRANCH" = "actions" ]; then
+            echo "tag=prerelease-$COUNT" >> "$GITHUB_OUTPUT"
+            echo "prerelease=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "tag=release-$COUNT" >> "$GITHUB_OUTPUT"
+            echo "prerelease=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create GitHub release
+        uses: actions/create-release@v1
         with:
-          filters: |
-            docs:
-              - 'docs/**'
-              - 'README.md'
-      - uses: actions/setup-node@v4
-        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
-        with:
-          node-version: '20'
-      - name: Lint documentation
-        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
-        shell: pwsh
-        run: scripts/lint-docs.ps1
-      - uses: ./actions/setup-mkdocs
-        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
-      - run: mkdocs build --strict
-        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
-      - uses: actions/upload-artifact@v4
-        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
-        with:
-          name: docs-site
-          path: site
-          if-no-files-found: error
-      - uses: actions/upload-pages-artifact@v3
-        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
-        with:
-          path: site
-      - id: deploy
-        uses: actions/deploy-pages@v4
-        if: github.event.release.target_commitish == 'actions' && steps.changes.outputs.docs == 'true'
+          tag_name: ${{ steps.release_meta.outputs.tag }}
+          release_name: ${{ steps.release_meta.outputs.tag }}
+          draft: false
+          prerelease: ${{ steps.release_meta.outputs.prerelease }}
+
