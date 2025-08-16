@@ -35,7 +35,7 @@ test('associates classname with requirement', async () => {
   const xml = `<testsuite><testcase classname="Dispatcher.Tests" name="sample" time="0.1"/></testsuite>`;
   const xmlPath = path.join(dir, 'junit.xml');
   await fs.writeFile(xmlPath, xml);
-  const tests = await collectTestCases([xmlPath], dir);
+  const tests = await collectTestCases([xmlPath], dir, 'linux');
   const reqPath = fileURLToPath(new URL('../../requirements.json', import.meta.url));
   const { map, meta } = await loadRequirements(reqPath);
   const groups = mapToRequirements(tests, map, meta);

@@ -58,18 +58,12 @@ export async function loadRequirements(mappingFile: string) {
   }
 }
 
-export async function collectTestCases(files: string[], evidenceDir: string): Promise<TestCase[]> {
+export async function collectTestCases(files: string[], evidenceDir: string, os?: string): Promise<TestCase[]> {
   const evidenceFiles = await fs.readdir(evidenceDir).catch(() => []);
   const tests: TestCase[] = [];
-  const statusMap: Record<string, 'Passed' | 'Failed' | 'Skipped'> = {
-    passed: 'Passed',
-    failed: 'Failed',
-    skipped: 'Skipped',
-  };
+  const osType = (os ?? process.env.RUNNER_OS ?? 'unknown').toLowerCase();
   for (const file of files) {
     const xml = await fs.readFile(file, 'utf8');
-    const osMatch = file.toLowerCase().match(/(windows|linux|macos)/);
-    const osType = osMatch ? osMatch[1] : 'unknown';
     const data = await parseStringPromise(xml, { explicitArray: true, mergeAttrs: true });
     const suites: any[] = [];
     if (data.testsuite) suites.push(data.testsuite);
@@ -275,6 +269,7 @@ async function main() {
   const mappingFile = process.env.REQ_MAPPING_FILE || 'requirements.json';
   const dispatcherRegistryFile = process.env.DISPATCHER_REGISTRY || 'dispatchers.json';
   const evidenceDir = process.env.EVIDENCE_DIR || 'test-screenshots';
+  const osType = (process.env.RUNNER_OS ?? 'unknown').toLowerCase();
 
   let junitFiles: string[] = [];
   const plural = process.env.TEST_RESULTS_GLOBS;
@@ -294,14 +289,13 @@ async function main() {
   if (junitFiles.length === 0) {
     console.warn('No JUnit files found; writing empty summary.');
   } else {
-    tests = await collectTestCases(junitFiles, evidenceDir);
+    tests = await collectTestCases(junitFiles, evidenceDir, osType);
   }
   const { map, meta } = await loadRequirements(mappingFile);
   const groups = mapToRequirements(tests, map, meta);
   const totals = buildSummary(groups);
 
-  const osDir = (process.env.RUNNER_OS ?? 'unknown').toLowerCase();
-  const outDir = path.join('artifacts', osDir);
+  const outDir = path.join('artifacts', osType);
   await fs.mkdir(outDir, { recursive: true });
 
   const matrixMd = groupToMarkdown(groups);
