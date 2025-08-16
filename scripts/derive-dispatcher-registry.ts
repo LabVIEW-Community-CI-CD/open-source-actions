@@ -51,7 +51,7 @@ function extractDescription(content: string, index: number): string {
 }
 
 async function main() {
-  const files = await glob('actions/*.ps1');
+  const files = await glob('actions/*.{ps1,psm1}');
   const registry: Record<string, FuncInfo> = {};
   for (const file of files) {
     const content = await fs.readFile(file, 'utf8');

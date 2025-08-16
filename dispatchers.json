@@ -1,1 +1,62 @@
-{}
+{
+  "InvokeAddTokenToLabVIEW": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeApplyVIPC": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeBuild": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeBuildLvlibp": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeBuildViPackage": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeCloseLabVIEW": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeGenerateReleaseNotes": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeMissingInProject": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeModifyVIPBDisplayInfo": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokePrepareLabVIEWSource": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeRenameFile": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeRestoreSetupLVSource": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeRevertDevelopmentMode": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeRunUnitTests": {
+    "description": "",
+    "parameters": {}
+  },
+  "InvokeSetDevelopmentMode": {
+    "description": "",
+    "parameters": {}
+  }
+}
