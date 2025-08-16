@@ -108,11 +108,20 @@ export async function collectTestCases(files: string[], evidenceDir: string): Pr
 export function mapToRequirements(tests: TestCase[], mapping: Record<string, { requirements: string[]; owner?: string }>, meta: Record<string, { description?: string; owner?: string }>): RequirementGroup[] {
   const groups: Map<string, RequirementGroup> = new Map();
   for (const test of tests) {
-    const mapped =
-      mapping[test.name.toLowerCase()] ||
-      (test.className ? mapping[test.className.toLowerCase()] : undefined);
+    const stripAnnotations = (s: string) => s.replace(/\[[^\]]+\]/g, '').trim();
+    const nameKey = stripAnnotations(test.name).toLowerCase();
+    const classKey = test.className ? stripAnnotations(test.className).toLowerCase() : undefined;
+    const mapped = mapping[nameKey] || (classKey ? mapping[classKey] : undefined);
     const reqs = mapped ? mapped.requirements : test.requirements;
     if (mapped && mapped.owner) test.owner = mapped.owner;
+    if (!test.owner) {
+      for (const r of reqs) {
+        if (meta[r]?.owner) {
+          test.owner = meta[r].owner;
+          break;
+        }
+      }
+    }
     const targetReqs = reqs.length ? reqs : ['Unmapped'];
     for (const reqId of targetReqs) {
       if (!groups.has(reqId)) {
@@ -154,12 +163,12 @@ function groupToMarkdown(groups: RequirementGroup[], limit?: number) {
     const pct = total === 0 ? 0 : Math.round((passedCount / total) * 100);
     const header = `${g.id} (${pct}% passed)`;
     const table = ['| Requirement | Test ID | Status | Duration (s) | Owner | Evidence |', '| --- | --- | --- | --- | --- | --- |'];
-    for (const t of g.tests) {
-      if (limit && count >= limit) break;
-      const evidence = t.evidence ? `[link](${t.evidence})` : '';
-      table.push(`| ${g.id} | ${t.name} | ${t.status} | ${t.duration.toFixed(3)} | ${t.owner ?? ''} | ${evidence} |`);
-      count++;
-    }
+      for (const t of g.tests) {
+        if (limit && count >= limit) break;
+        const evidence = t.evidence ? `[link](${t.evidence})` : '';
+        table.push(`| ${g.id} | ${t.name} | ${t.status} | ${t.duration.toFixed(3)} | ${t.owner ?? g.owner ?? ''} | ${evidence} |`);
+        count++;
+      }
     const content = table.join('\n');
     if (g.tests.length > 5) {
       lines.push(`<details><summary>${header}</summary>\n\n${content}\n\n</details>`);
