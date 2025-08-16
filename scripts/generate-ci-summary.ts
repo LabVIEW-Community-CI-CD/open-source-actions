@@ -16,12 +16,16 @@ interface TestCase {
   owner?: string;
   evidence?: string;
   requirements: string[];
+  os?: string;
 }
 
 interface RequirementGroup {
   id: string;
   description?: string;
   owner?: string;
+  runner_label?: string;
+  runner_type?: string;
+  skip_dry_run?: boolean;
   tests: TestCase[];
 }
 
@@ -37,15 +41,21 @@ export async function loadRequirements(mappingFile: string) {
   try {
     const raw = await fs.readFile(mappingFile, 'utf8');
     const parsed = JSON.parse(raw);
+    const defaults: Record<string, any> = parsed.runners || parsed.defaults || {};
     const map: Record<string, { requirements: string[]; owner?: string }> = {};
-    const meta: Record<string, { description?: string; owner?: string }> = {};
+    const meta: Record<string, { description?: string; owner?: string; runner_label?: string; runner_type?: string; skip_dry_run?: boolean }> = {};
     if (Array.isArray(parsed.requirements)) {
       for (const r of parsed.requirements) {
-        meta[r.id] = { description: r.description, owner: r.owner };
+        const def = (r.runner && defaults[r.runner]) || {};
+        const owner = r.owner ?? def.owner;
+        const runner_label = r.runner_label ?? def.runner_label;
+        const runner_type = r.runner_type ?? def.runner_type;
+        const skip_dry_run = r.skip_dry_run ?? def.skip_dry_run;
+        meta[r.id] = { description: r.description, owner, runner_label, runner_type, skip_dry_run };
         if (Array.isArray(r.tests)) {
           for (const t of r.tests) {
             const key = t.toLowerCase();
-            if (!map[key]) map[key] = { requirements: [], owner: r.owner };
+            if (!map[key]) map[key] = { requirements: [], owner };
             map[key].requirements.push(r.id);
           }
         }
@@ -57,14 +67,10 @@ export async function loadRequirements(mappingFile: string) {
   }
 }
 
-export async function collectTestCases(files: string[], evidenceDir: string): Promise<TestCase[]> {
+export async function collectTestCases(files: string[], evidenceDir: string, os?: string): Promise<TestCase[]> {
   const evidenceFiles = await fs.readdir(evidenceDir).catch(() => []);
   const tests: TestCase[] = [];
-  const statusMap: Record<string, 'Passed' | 'Failed' | 'Skipped'> = {
-    passed: 'Passed',
-    failed: 'Failed',
-    skipped: 'Skipped',
-  };
+  const osType = (os ?? process.env.RUNNER_OS ?? 'unknown').toLowerCase();
   for (const file of files) {
     const xml = await fs.readFile(file, 'utf8');
     const data = await parseStringPromise(xml, { explicitArray: true, mergeAttrs: true });
@@ -85,7 +91,7 @@ export async function collectTestCases(files: string[], evidenceDir: string): Pr
           if (tc.failure || tc.error) status = 'Failed';
           else if (tc.skipped) status = 'Skipped';
           const duration = parseFloat(tc.time?.[0] ?? '0');
-          const test: TestCase = { id, name, className, status, duration, requirements: [] };
+          const test: TestCase = { id, name, className, status, duration, requirements: [], os: osType };
           const evidence = evidenceFiles.find((f) => f.startsWith(id) || f.startsWith(id + '.'));
           if (evidence) test.evidence = path.join('evidence', evidence);
           const ownerMatch = name.match(/\[Owner:([^\]]+)\]/i);
@@ -105,7 +111,11 @@ export async function collectTestCases(files: string[], evidenceDir: string): Pr
   return tests;
 }
 
-export function mapToRequirements(tests: TestCase[], mapping: Record<string, { requirements: string[]; owner?: string }>, meta: Record<string, { description?: string; owner?: string }>): RequirementGroup[] {
+export function mapToRequirements(
+  tests: TestCase[],
+  mapping: Record<string, { requirements: string[]; owner?: string }>,
+  meta: Record<string, { description?: string; owner?: string; runner_label?: string; runner_type?: string; skip_dry_run?: boolean }>
+): RequirementGroup[] {
   const groups: Map<string, RequirementGroup> = new Map();
   for (const test of tests) {
     const stripAnnotations = (s: string) => s.replace(/\[[^\]]+\]/g, '').trim();
@@ -125,7 +135,15 @@ export function mapToRequirements(tests: TestCase[], mapping: Record<string, { r
     const targetReqs = reqs.length ? reqs : ['Unmapped'];
     for (const reqId of targetReqs) {
       if (!groups.has(reqId)) {
-        groups.set(reqId, { id: reqId, description: meta[reqId]?.description, owner: meta[reqId]?.owner, tests: [] });
+        groups.set(reqId, {
+          id: reqId,
+          description: meta[reqId]?.description,
+          owner: meta[reqId]?.owner,
+          runner_label: meta[reqId]?.runner_label,
+          runner_type: meta[reqId]?.runner_type,
+          skip_dry_run: meta[reqId]?.skip_dry_run,
+          tests: [],
+        });
       }
       groups.get(reqId)!.tests.push(test);
     }
@@ -142,16 +160,30 @@ export function mapToRequirements(tests: TestCase[], mapping: Record<string, { r
   return sorted;
 }
 
-function buildSummary(groups: RequirementGroup[]) {
-  let passed = 0, failed = 0, skipped = 0, duration = 0;
+export function buildSummary(groups: RequirementGroup[]) {
+  const overall = { passed: 0, failed: 0, skipped: 0, duration: 0, rate: 0 };
+  const byOs: Record<string, { passed: number; failed: number; skipped: number; duration: number; rate: number }> = {};
   for (const g of groups) {
     for (const t of g.tests) {
-      duration += t.duration;
-      if (t.status === 'Passed') passed++; else if (t.status === 'Failed') failed++; else skipped++;
+      const os = t.os || 'unknown';
+      if (!byOs[os]) byOs[os] = { passed: 0, failed: 0, skipped: 0, duration: 0, rate: 0 };
+      overall.duration += t.duration;
+      byOs[os].duration += t.duration;
+      if (t.status === 'Passed') {
+        overall.passed++; byOs[os].passed++;
+      } else if (t.status === 'Failed') {
+        overall.failed++; byOs[os].failed++;
+      } else {
+        overall.skipped++; byOs[os].skipped++;
+      }
     }
   }
-  const rate = passed + failed === 0 ? 0 : (passed / (passed + failed)) * 100;
-  return { passed, failed, skipped, duration, rate };
+  overall.rate = overall.passed + overall.failed === 0 ? 0 : (overall.passed / (overall.passed + overall.failed)) * 100;
+  for (const os of Object.keys(byOs)) {
+    const t = byOs[os];
+    t.rate = t.passed + t.failed === 0 ? 0 : (t.passed / (t.passed + t.failed)) * 100;
+  }
+  return { overall, byOs };
 }
 
 export function groupToMarkdown(groups: RequirementGroup[], limit?: number) {
@@ -258,6 +290,7 @@ async function main() {
   const mappingFile = process.env.REQ_MAPPING_FILE || 'requirements.json';
   const dispatcherRegistryFile = process.env.DISPATCHER_REGISTRY || 'dispatchers.json';
   const evidenceDir = process.env.EVIDENCE_DIR || 'test-screenshots';
+  const osType = (process.env.RUNNER_OS ?? 'unknown').toLowerCase();
 
   let junitFiles: string[] = [];
   const plural = process.env.TEST_RESULTS_GLOBS;
@@ -277,29 +310,43 @@ async function main() {
   if (junitFiles.length === 0) {
     console.warn('No JUnit files found; writing empty summary.');
   } else {
-    tests = await collectTestCases(junitFiles, evidenceDir);
+    tests = await collectTestCases(junitFiles, evidenceDir, osType);
   }
   const { map, meta } = await loadRequirements(mappingFile);
   const groups = mapToRequirements(tests, map, meta);
   const totals = buildSummary(groups);
 
-  await fs.mkdir('artifacts', { recursive: true });
+  const outDir = path.join('artifacts', osType);
+  await fs.mkdir(outDir, { recursive: true });
 
   const matrixMd = groupToMarkdown(groups);
+
+  const summaryLines = [
+    '### Test Summary',
+    '| OS | Passed | Failed | Skipped | Duration (s) | Pass Rate (%) |',
+    '| --- | --- | --- | --- | --- | --- |',
+    `| overall | ${totals.overall.passed} | ${totals.overall.failed} | ${totals.overall.skipped} | ${totals.overall.duration.toFixed(2)} | ${totals.overall.rate.toFixed(2)} |`,
+  ];
+  for (const os of Object.keys(totals.byOs).sort()) {
+    const t = totals.byOs[os];
+    summaryLines.push(`| ${os} | ${t.passed} | ${t.failed} | ${t.skipped} | ${t.duration.toFixed(2)} | ${t.rate.toFixed(2)} |`);
+  }
+  const summaryMd = summaryLines.join('\n');
 
   const wrapperFiles = await glob('*/action.yml', { nodir: true });
   const wrapperDirs = wrapperFiles.map(f => path.dirname(f)).sort();
   console.log('Discovered wrapper directories:', wrapperDirs.join(', '));
   const { docs, markdown } = await generateActionDocs(dispatcherRegistryFile, wrapperDirs);
 
-  await fs.writeFile(path.join('artifacts','traceability.json'), JSON.stringify({ requirements: groups, totals }, null, 2));
-  await fs.writeFile(path.join('artifacts','traceability.md'), redact(`### Test Traceability Matrix\n\n${matrixMd}`));
-  await fs.writeFile(path.join('artifacts','action-docs.json'), JSON.stringify(docs, null, 2));
-  await fs.writeFile(path.join('artifacts','action-docs.md'), redact(markdown));
+  await fs.writeFile(path.join(outDir, 'traceability.json'), JSON.stringify({ requirements: groups, totals }, null, 2));
+  await fs.writeFile(path.join(outDir, 'traceability.md'), redact(`### Test Traceability Matrix\n\n${matrixMd}`));
+  await fs.writeFile(path.join(outDir, 'summary.md'), redact(summaryMd));
+  await fs.writeFile(path.join(outDir, 'action-docs.json'), JSON.stringify(docs, null, 2));
+  await fs.writeFile(path.join(outDir, 'action-docs.md'), redact(markdown));
 
   try {
     await fs.access(evidenceDir);
-    await fs.cp(evidenceDir, path.join('artifacts','evidence'), { recursive: true });
+    await fs.cp(evidenceDir, path.join(outDir, 'evidence'), { recursive: true });
   } catch {
     // ignore missing evidence
   }
