@@ -154,7 +154,7 @@ function buildSummary(groups: RequirementGroup[]) {
   return { passed, failed, skipped, duration, rate };
 }
 
-function groupToMarkdown(groups: RequirementGroup[], limit?: number) {
+export function groupToMarkdown(groups: RequirementGroup[], limit?: number) {
   const lines: string[] = [];
   let count = 0;
   for (const g of groups) {
@@ -162,13 +162,14 @@ function groupToMarkdown(groups: RequirementGroup[], limit?: number) {
     const passedCount = g.tests.filter((t) => t.status === 'Passed').length;
     const pct = total === 0 ? 0 : Math.round((passedCount / total) * 100);
     const header = `${g.id} (${pct}% passed)`;
-    const table = ['| Requirement | Test ID | Status | Duration (s) | Owner | Evidence |', '| --- | --- | --- | --- | --- | --- |'];
-      for (const t of g.tests) {
-        if (limit && count >= limit) break;
-        const evidence = t.evidence ? `[link](${t.evidence})` : '';
-        table.push(`| ${g.id} | ${t.name} | ${t.status} | ${t.duration.toFixed(3)} | ${t.owner ?? g.owner ?? ''} | ${evidence} |`);
-        count++;
-      }
+    const table = ['| ID | Requirement | Test ID | Status | Duration (s) | Owner | Evidence |',
+      '| --- | --- | --- | --- | --- | --- | --- |'];
+    for (const t of g.tests) {
+      if (limit && count >= limit) break;
+      const evidence = t.evidence ? `[link](${t.evidence})` : '';
+      table.push(`| ${count} | ${g.id} | ${t.name} | ${t.status} | ${t.duration.toFixed(3)} | ${t.owner ?? g.owner ?? ''} | ${evidence} |`);
+      count++;
+    }
     const content = table.join('\n');
     if (g.tests.length > 5) {
       lines.push(`<details><summary>${header}</summary>\n\n${content}\n\n</details>`);

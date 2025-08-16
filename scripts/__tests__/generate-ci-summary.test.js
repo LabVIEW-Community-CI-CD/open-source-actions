@@ -4,7 +4,7 @@ import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
 import { fileURLToPath } from 'node:url';
-import { collectTestCases, loadRequirements, mapToRequirements } from '../generate-ci-summary.ts';
+import { collectTestCases, loadRequirements, mapToRequirements, groupToMarkdown } from '../generate-ci-summary.ts';
 import { writeErrorSummary } from '../error-handler.ts';
 
 const fileUrl = new URL('../generate-ci-summary.ts', import.meta.url);
@@ -40,4 +40,18 @@ test('associates classname with requirement', async () => {
   const req = groups.find((g) => g.id === 'REQ-001');
   assert(req && req.tests.some((t) => t.className === 'Dispatcher.Tests'));
   await fs.rm(dir, { recursive: true, force: true });
+});
+
+test('groupToMarkdown assigns numeric identifiers', () => {
+  const groups = [{
+    id: 'REQ-XYZ',
+    tests: [
+      { id: 'a', name: 'alpha', status: 'Passed', duration: 0, requirements: [] },
+      { id: 'b', name: 'beta', status: 'Failed', duration: 0, requirements: [] },
+    ],
+  }];
+  const md = groupToMarkdown(groups);
+  assert.match(md, /\| ID \| Requirement \| Test ID \| Status \|/);
+  assert.match(md, /\| 0 \| REQ-XYZ \| alpha \| Passed \|/);
+  assert.match(md, /\| 1 \| REQ-XYZ \| beta \| Failed \|/);
 });
