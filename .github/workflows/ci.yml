@@ -62,7 +62,7 @@ jobs:
           "was captured from the set up job." | Out-File -FilePath $file -Encoding utf8
           foreach ($k in $data.Keys) {
             if ($data[$k]) {
-              "$k: $($data[$k])" | Out-File -FilePath $file -Encoding utf8 -Append
+              "${k}: $($data[$k])" | Out-File -FilePath $file -Encoding utf8 -Append
             }
           }
       - uses: actions/upload-artifact@v4
