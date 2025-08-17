@@ -5,7 +5,7 @@ $env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::Path
 #   $cfg = New-PesterConfiguration
 #   $cfg.Run.Path = './tests/pester'
 #   $cfg.TestResult.Enabled = $false
-#   Invoke-Pester -CI -Configuration $cfg
+#   Invoke-Pester -Configuration $cfg
 # Requirement: REQ-002 - Dispatcher dry-run mode prints descriptions and warns on unknown arguments without executing actions.
 
 Set-StrictMode -Version Latest

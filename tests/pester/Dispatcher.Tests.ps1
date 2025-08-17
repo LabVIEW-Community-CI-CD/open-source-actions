@@ -5,7 +5,7 @@ $env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::Path
 #   $cfg = New-PesterConfiguration
 #   $cfg.Run.Path = './tests/pester'
 #   $cfg.TestResult.Enabled = $false
-#   Invoke-Pester -CI -Configuration $cfg
+#   Invoke-Pester -Configuration $cfg
 # Requirement: REQ-001 - Dispatcher discovers available actions, describes them, and validates arguments.
 
 Set-StrictMode -Version Latest
