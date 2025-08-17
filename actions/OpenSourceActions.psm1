@@ -1,3 +1,33 @@
+function Run-OpenSourceActionScript {
+    param(
+        [Parameter(Mandatory)] [string[]] $ScriptSegments,
+        [Parameter(Mandatory)] [hashtable] $Arguments,
+        [Parameter()] [switch] $DryRun,
+        [Parameter()] [string] $gcliPath
+    )
+    $segments = @('..', 'scripts') + $ScriptSegments
+    $scriptPath = $PSScriptRoot
+    foreach ($seg in $segments) {
+        $scriptPath = [System.IO.Path]::Combine($scriptPath, $seg)
+    }
+    if ($DryRun) {
+        Write-Information "DryRun: & $scriptPath $($Arguments | ConvertTo-Json -Compress)"
+        return 0
+    }
+    $originalPath = $env:PATH
+    try {
+        if ($gcliPath) {
+            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
+        }
+        & $scriptPath @Arguments
+        if (-not $?) { return 1 }
+        return $LASTEXITCODE
+    }
+    finally {
+        $env:PATH = $originalPath
+    }
+}
+
 function InvokeAddTokenToLabVIEW {
     [CmdletBinding()]
     param(
@@ -8,28 +38,12 @@ function InvokeAddTokenToLabVIEW {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing AddTokenToLabVIEW (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'add-token-to-labview', 'AddTokenToLabVIEW.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
         RelativePath              = $RelativePath
     }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('add-token-to-labview','AddTokenToLabVIEW.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeApplyVIPC {
@@ -44,7 +58,6 @@ function InvokeApplyVIPC {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing ApplyVIPC (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'apply-vipc', 'ApplyVIPC.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         VIP_LVVersion             = $VIP_LVVersion
@@ -52,22 +65,7 @@ function InvokeApplyVIPC {
         RelativePath              = $RelativePath
         VIPCPath                  = $VIPCPath
     }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('apply-vipc','ApplyVIPC.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeBuildViPackage {
@@ -89,7 +87,6 @@ function InvokeBuildViPackage {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing BuildViPackage version $Major.$Minor.$Patch-$Build (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'build-vi-package', 'build_vip.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
@@ -104,22 +101,7 @@ function InvokeBuildViPackage {
         DisplayInformationJSON    = $DisplayInformationJSON
         ReleaseNotesFile          = $ReleaseNotesFile
     }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('build-vi-package','build_vip.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeBuild {
@@ -138,7 +120,6 @@ function InvokeBuild {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing Build version $Major.$Minor.$Patch-$Build (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'build', 'Build.ps1')
     $args = @{
         RelativePath         = $RelativePath
         Major                = $Major
@@ -150,22 +131,7 @@ function InvokeBuild {
         CompanyName          = $CompanyName
         AuthorName           = $AuthorName
     }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('build','Build.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeBuildLvlibp {
@@ -185,7 +151,6 @@ function InvokeBuildLvlibp {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing BuildLvlibp version $Major.$Minor.$Patch-$Build (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'build-lvlibp', 'Build_lvlibp.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
@@ -198,22 +163,7 @@ function InvokeBuildLvlibp {
         Build                     = $Build
         Commit                    = $Commit
     }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('build-lvlibp','Build_lvlibp.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeCloseLabVIEW {
@@ -225,27 +175,11 @@ function InvokeCloseLabVIEW {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing CloseLabVIEW (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'close-labview', 'Close_LabVIEW.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
     }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('close-labview','Close_LabVIEW.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeGenerateReleaseNotes {
@@ -256,24 +190,8 @@ function InvokeGenerateReleaseNotes {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing GenerateReleaseNotes (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'generate-release-notes', 'GenerateReleaseNotes.ps1')
     $args = @{ OutputPath = $OutputPath }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('generate-release-notes','GenerateReleaseNotes.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeMissingInProject {
@@ -286,28 +204,12 @@ function InvokeMissingInProject {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing MissingInProject (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'missing-in-project', 'Invoke-MissingInProjectCLI.ps1')
     $args = @{
         LVVersion   = $LVVersion
         Arch        = $Arch
         ProjectFile = $ProjectFile
     }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('missing-in-project','Invoke-MissingInProjectCLI.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeModifyVIPBDisplayInfo {
@@ -329,7 +231,6 @@ function InvokeModifyVIPBDisplayInfo {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing ModifyVIPBDisplayInfo (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'modify-vipb-display-info', 'ModifyVIPBDisplayInfo.ps1')
     $args = @{
         SupportedBitness       = $SupportedBitness
         RelativePath           = $RelativePath
@@ -344,22 +245,7 @@ function InvokeModifyVIPBDisplayInfo {
         DisplayInformationJSON = $DisplayInformationJSON
         ReleaseNotesFile       = $ReleaseNotesFile
     }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('modify-vipb-display-info','ModifyVIPBDisplayInfo.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokePrepareLabVIEWSource {
@@ -374,30 +260,14 @@ function InvokePrepareLabVIEWSource {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing PrepareLabVIEWSource (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'prepare-labview-source', 'Prepare_LabVIEW_source.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
-        SupportedBitness          = $SupportedBitness
+       SupportedBitness          = $SupportedBitness
         RelativePath              = $RelativePath
         LabVIEW_Project           = $LabVIEW_Project
         Build_Spec                = $Build_Spec
     }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('prepare-labview-source','Prepare_LabVIEW_source.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeRenameFile {
@@ -409,27 +279,11 @@ function InvokeRenameFile {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing RenameFile (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'rename-file', 'Rename-file.ps1')
     $args = @{
         CurrentFilename = $CurrentFilename
         NewFilename     = $NewFilename
     }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('rename-file','Rename-file.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeRestoreSetupLVSource {
@@ -444,7 +298,6 @@ function InvokeRestoreSetupLVSource {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing RestoreSetupLVSource (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'restore-setup-lv-source', 'RestoreSetupLVSource.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
@@ -452,22 +305,7 @@ function InvokeRestoreSetupLVSource {
         LabVIEW_Project           = $LabVIEW_Project
         Build_Spec                = $Build_Spec
     }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('restore-setup-lv-source','RestoreSetupLVSource.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeRevertDevelopmentMode {
@@ -478,24 +316,8 @@ function InvokeRevertDevelopmentMode {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing RevertDevelopmentMode (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'revert-development-mode', 'RevertDevelopmentMode.ps1')
     $args = @{ RelativePath = $RelativePath }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('revert-development-mode','RevertDevelopmentMode.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeRunUnitTests {
@@ -507,27 +329,11 @@ function InvokeRunUnitTests {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing RunUnitTests (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'run-unit-tests', 'RunUnitTests.ps1')
     $args = @{
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
     }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('run-unit-tests','RunUnitTests.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 function InvokeSetDevelopmentMode {
@@ -538,22 +344,6 @@ function InvokeSetDevelopmentMode {
         [Parameter()] [string] $gcliPath
     )
     Write-Information "Executing SetDevelopmentMode (DryRun=$DryRun)"
-    $scriptPath = [System.IO.Path]::Combine($PSScriptRoot, '..', 'scripts', 'set-development-mode', 'Set_Development_Mode.ps1')
     $args = @{ RelativePath = $RelativePath }
-    if ($DryRun) {
-        Write-Information "DryRun: & $scriptPath $($args | ConvertTo-Json -Compress)"
-        return 0
-    }
-    $originalPath = $env:PATH
-    try {
-        if ($gcliPath) {
-            $env:PATH = "$gcliPath$([System.IO.Path]::PathSeparator)$originalPath"
-        }
-        & $scriptPath @args
-        if (-not $?) { return 1 }
-        return $LASTEXITCODE
-    }
-    finally {
-        $env:PATH = $originalPath
-    }
+    return Run-OpenSourceActionScript -ScriptSegments @('set-development-mode','Set_Development_Mode.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
