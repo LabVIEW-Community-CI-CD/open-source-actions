@@ -4,7 +4,7 @@
       "owner": "icon-editor-windows",
       "runner_label": "icon-editor-windows",
       "runner_type": "integration",
-      "skip_dry_run": false
+      "skip_dry_run": true
     },
     "self-hosted-windows-lv": {
       "owner": "self-hosted-windows-lv",
