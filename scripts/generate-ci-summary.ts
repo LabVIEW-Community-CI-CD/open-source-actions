@@ -235,19 +235,23 @@ export function requirementsSummaryToMarkdown(groups: RequirementGroup[]) {
 
 export function groupToMarkdown(groups: RequirementGroup[], limit?: number) {
   const lines: string[] = [];
-  let count = 0;
+  let remaining = limit ?? Infinity;
   for (const g of groups) {
     const total = g.tests.length;
     const passedCount = g.tests.filter((t) => t.status === 'Passed').length;
     const pct = total === 0 ? 0 : Math.round((passedCount / total) * 100);
     const header = `${g.id} (${pct}% passed)`;
-    const table = ['| ID | Requirement | Test ID | Status | Duration (s) | Owner | Evidence |',
-      '| --- | --- | --- | --- | --- | --- | --- |'];
+    const table = [
+      '| Requirement | Test ID | Status | Duration (s) | Owner | Evidence |',
+      '| --- | --- | --- | --- | --- | --- |',
+    ];
     for (const t of g.tests) {
-      if (limit && count >= limit) break;
+      if (remaining <= 0) break;
       const evidence = t.evidence ? `[link](${t.evidence})` : '';
-      table.push(`| ${count} | ${g.id} | ${t.name} | ${t.status} | ${t.duration.toFixed(3)} | ${t.owner ?? g.owner ?? ''} | ${evidence} |`);
-      count++;
+      table.push(
+        `| ${g.id} | ${t.name} | ${t.status} | ${t.duration.toFixed(3)} | ${t.owner ?? g.owner ?? ''} | ${evidence} |`,
+      );
+      remaining--;
     }
     const content = table.join('\n');
     if (g.tests.length > 5) {
@@ -255,9 +259,9 @@ export function groupToMarkdown(groups: RequirementGroup[], limit?: number) {
     } else {
       lines.push(`#### ${header}\n\n${content}`);
     }
-    if (limit && count >= limit) break;
+    if (remaining <= 0) break;
   }
-  if (limit && count >= limit) lines.push('\n_Truncated. See traceability.md for full details._');
+  if (limit && remaining <= 0) lines.push('\n_Truncated. See traceability.md for full details._');
   return lines.join('\n\n');
 }
 

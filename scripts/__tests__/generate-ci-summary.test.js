@@ -80,7 +80,7 @@ test('collectTestCases uses evidence property and falls back to directory scan',
   await fs.rm(dir, { recursive: true, force: true });
 });
 
-test('groupToMarkdown assigns numeric identifiers', () => {
+test('groupToMarkdown omits numeric identifiers', () => {
   const groups = [{
     id: 'REQ-XYZ',
     tests: [
@@ -89,9 +89,10 @@ test('groupToMarkdown assigns numeric identifiers', () => {
     ],
   }];
   const md = groupToMarkdown(groups);
-  assert.match(md, /\| ID \| Requirement \| Test ID \| Status \|/);
-  assert.match(md, /\| 0 \| REQ-XYZ \| alpha \| Passed \|/);
-  assert.match(md, /\| 1 \| REQ-XYZ \| beta \| Failed \|/);
+  assert.doesNotMatch(md, /\| ID \|/);
+  assert.match(md, /\| Requirement \| Test ID \| Status \| Duration \(s\) \| Owner \| Evidence \|/);
+  assert.match(md, /\| REQ-XYZ \| alpha \| Passed \|/);
+  assert.match(md, /\| REQ-XYZ \| beta \| Failed \|/);
 });
 
 test('buildSummary splits totals by OS', () => {
