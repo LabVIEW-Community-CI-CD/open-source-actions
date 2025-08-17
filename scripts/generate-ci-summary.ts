@@ -6,7 +6,7 @@ import { fileURLToPath, pathToFileURL } from 'url';
 import { glob } from 'glob';
 import { parseStringPromise } from 'xml2js';
 import yaml from 'js-yaml';
-import { writeErrorSummary } from './error-handler';
+import { writeErrorSummary } from './error-handler.ts';
 
 interface TestCase {
   id: string;
