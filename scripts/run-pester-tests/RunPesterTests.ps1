@@ -22,6 +22,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $testPath = Join-Path $WorkingDirectory 'tests/pester'
-Invoke-Pester -CI -Path $testPath
+$ansiRegex = [regex]'\x1B\[[0-9;]*[A-Za-z]'
+$cfg = New-PesterConfiguration
+$cfg.Output.NoColor = $true
+Invoke-Pester -CI -Configuration $cfg -Path $testPath 2>&1 | ForEach-Object { $ansiRegex.Replace($_, '') }
 exit $LASTEXITCODE
 

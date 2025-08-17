@@ -19,6 +19,7 @@ Describe 'Unified Dispatcher — DryRun behavior for all actions' {
     }
   $script:args = Get-LabVIEWIconEditorArgsJson | ConvertFrom-Json
   $extra = @{
+       WorkingDirectory         = $repoRoot
        VIP_LVVersion             = '2021'
        VIPCPath                  = 'dummy.vipc'
        LabVIEW_Project           = 'My.lvproj'
