@@ -12,8 +12,8 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
-Describe 'ModifyVipbDisplayInfo.SelfHosted.Workflow [REQ-015]' {
-    It 'runs modify-vipb-display-info action on a self-hosted runner and uploads VIPB artifact [REQ-015]' {
+Describe 'ModifyVipbDisplayInfo.SelfHosted.Workflow' {
+    It 'runs modify-vipb-display-info action on a self-hosted runner and uploads VIPB artifact' -Tag 'REQ-015' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'

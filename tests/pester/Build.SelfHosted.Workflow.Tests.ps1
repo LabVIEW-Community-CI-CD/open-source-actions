@@ -12,8 +12,8 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
-Describe 'Build.SelfHosted.Workflow [REQ-009]' {
-    It 'runs build action with required inputs [REQ-009]' {
+Describe 'Build.SelfHosted.Workflow' {
+    It 'runs build action with required inputs' -Tag 'REQ-009' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/build-self-hosted.yml'
         $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml

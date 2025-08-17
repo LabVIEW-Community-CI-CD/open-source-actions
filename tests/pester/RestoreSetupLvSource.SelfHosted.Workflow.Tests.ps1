@@ -12,8 +12,8 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
-Describe 'RestoreSetupLvSource.SelfHosted.Workflow [REQ-018]' {
-    It 'runs restore-setup-lv-source action on a self-hosted runner and uploads restoration artifacts [REQ-018]' {
+Describe 'RestoreSetupLvSource.SelfHosted.Workflow' {
+    It 'runs restore-setup-lv-source action on a self-hosted runner and uploads restoration artifacts' -Tag 'REQ-018' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'

@@ -12,8 +12,8 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
-Describe 'RenameFile.SelfHosted.Workflow [REQ-011]' {
-    It 'runs rename-file action on a self-hosted runner and uploads renamed file artifact [REQ-011]' {
+Describe 'RenameFile.SelfHosted.Workflow' {
+    It 'runs rename-file action on a self-hosted runner and uploads renamed file artifact' -Tag 'REQ-011' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'
