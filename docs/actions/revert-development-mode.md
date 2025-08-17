@@ -53,3 +53,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - non‑zero – script or g-cli error
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/revert-development-mode/README.md](../../scripts/revert-development-mode/README.md).

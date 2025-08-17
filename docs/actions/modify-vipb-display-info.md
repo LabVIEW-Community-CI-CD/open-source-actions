@@ -94,3 +94,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - non‑zero – g-cli or build error
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/modify-vipb-display-info/README.md](../../scripts/modify-vipb-display-info/README.md).

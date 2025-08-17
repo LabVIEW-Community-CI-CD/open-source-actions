@@ -35,6 +35,8 @@ Runs **`build_vip.ps1`** to update a `.vipb` file's display info and build the V
     display_information_json: '{}'
 ```
 
+See also: [docs/actions/build-vi-package.md](../../docs/actions/build-vi-package.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).

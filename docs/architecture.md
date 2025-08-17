@@ -12,8 +12,8 @@ Each action lives in a `scripts/<action-name>` folder. These PowerShell scripts 
 
 ## Repository layout
 
-- `actions/` – dispatcher scripts and PowerShell module
-- `docs/` – MkDocs documentation, including this page
-- `scripts/` – adapter scripts invoked by the dispatcher
-- `tests/` – Pester tests and other verification scripts
-- `tools/` – utilities for building or testing actions
+- [`actions/`](../actions/) – dispatcher scripts and PowerShell module
+- [`docs/`](.) – MkDocs documentation, including this page
+- [`scripts/`](../scripts/) – adapter scripts invoked by the dispatcher
+- [`tests/`](../tests/) – Pester tests and other verification scripts
+- [`tools/`](../tools/) – utilities for building or testing actions

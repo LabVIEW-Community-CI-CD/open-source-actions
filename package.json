@@ -11,6 +11,7 @@
     "check:node": "node scripts/check-node-version.js",
     "pretest": "npm run check:node",
     "pretest:ci": "npm run check:node",
+    "verify:docs": "tsx scripts/verify-docs.ts",
     "prederive:registry": "npm run check:node",
     "pregenerate:summary": "npm run check:node",
     "test": "tsx --test scripts/**/*.test.js scripts/*.test.js",

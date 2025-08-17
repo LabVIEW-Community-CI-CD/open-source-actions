@@ -57,3 +57,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - `3` – g-cli or test run error
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/run-unit-tests/README.md](../../scripts/run-unit-tests/README.md).

@@ -51,3 +51,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 See [run-pester-tests/action.yml](../../run-pester-tests/action.yml) and [scripts/run-pester-tests/RunPesterTests.ps1](../../scripts/run-pester-tests/RunPesterTests.ps1) for implementation details.
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/run-pester-tests/README.md](../../scripts/run-pester-tests/README.md).

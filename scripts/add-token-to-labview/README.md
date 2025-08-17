@@ -20,6 +20,8 @@ Invoke **`AddTokenToLabVIEW.ps1`** through a composite action to add a `Localhos
     relative_path: ${{ github.workspace }}
 ```
 
+See also: [docs/actions/add-token-to-labview.md](../../docs/actions/add-token-to-labview.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).

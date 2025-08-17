@@ -76,6 +76,8 @@ The CI pipeline applies these dependencies across multiple LabVIEW versions—20
 
 ---
 
+See also: [docs/actions/apply-vipc.md](../../docs/actions/apply-vipc.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).

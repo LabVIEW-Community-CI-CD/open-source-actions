@@ -69,3 +69,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - non‑zero – g-cli error preparing source
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/prepare-labview-source/README.md](../../scripts/prepare-labview-source/README.md).

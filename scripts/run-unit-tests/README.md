@@ -21,6 +21,8 @@ Reports are deleted when all tests pass; set `keep_report` to retain them.
     # keep_report: true
 ```
 
+See also: [docs/actions/run-unit-tests.md](../../docs/actions/run-unit-tests.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).
