@@ -19,7 +19,7 @@ Describe 'ApplyVipc.SelfHosted.DryRunTrue.Workflow' {
         Evidence    = 'tests/pester/ApplyVipc.SelfHosted.Workflow.Tests.ps1'
     }
 
-    It 'runs apply-vipc action with dry_run true' -Tag 'REQ-006' -TestMetadata $meta {
+    It 'runs apply-vipc action with dry_run true' -Tag 'REQ-006' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/apply-vipc-self-hosted.yml'
         $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
@@ -50,7 +50,7 @@ Describe 'ApplyVipc.SelfHosted.DryRunFalse.Workflow' {
         Evidence    = 'tests/pester/ApplyVipc.SelfHosted.Workflow.Tests.ps1'
     }
 
-    It 'runs apply-vipc action with dry_run false' -Tag 'REQ-007' -TestMetadata $meta {
+    It 'runs apply-vipc action with dry_run false' -Tag 'REQ-007' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/apply-vipc-self-hosted.yml'
         $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml

@@ -24,9 +24,7 @@ Describe 'AddTokenToLabview.SelfHosted.Workflow' {
         Evidence    = 'tests/pester/AddTokenToLabview.SelfHosted.Workflow.Tests.ps1'
     }
 
-    It 'runs add-token-to-labview action on a self-hosted runner and uploads token artifact' \
-        -Tag 'REQ-008' \
-        -TestMetadata $meta {
+    It 'runs add-token-to-labview action on a self-hosted runner and uploads token artifact' -Tag 'REQ-008' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'

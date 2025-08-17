@@ -19,7 +19,7 @@ Describe 'CloseLabview.SelfHosted.Workflow' {
         Evidence    = 'tests/pester/CloseLabview.SelfHosted.Workflow.Tests.ps1'
     }
 
-    It 'runs close-labview action for 32-bit and 64-bit and uploads logs' -Tag 'REQ-012' -TestMetadata $meta {
+    It 'runs close-labview action for 32-bit and 64-bit and uploads logs' -Tag 'REQ-012' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfFile = Join-Path $repoRoot '.github/workflows/close-labview-external.yml'
 

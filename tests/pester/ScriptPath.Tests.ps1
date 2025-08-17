@@ -36,7 +36,7 @@ Describe 'Action script paths' {
         Evidence    = 'tests/pester/ScriptPath.Tests.ps1'
     }
 
-    It 'has script for <Name>' -Tag 'REQ-004' -TestCases $cases -TestMetadata $meta {
+    It 'has script for <Name>' -Tag 'REQ-004' -TestCases $cases {
         param($Name, $Path)
         Test-Path $Path | Should -BeTrue
     }

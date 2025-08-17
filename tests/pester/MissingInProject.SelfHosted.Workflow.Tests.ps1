@@ -19,7 +19,7 @@ Describe 'MissingInProject.SelfHosted.Workflow' {
         Evidence    = 'tests/pester/MissingInProject.SelfHosted.Workflow.Tests.ps1'
     }
 
-    It 'runs missing-in-project action on a self-hosted runner and uploads findings report' -Tag 'REQ-014' -TestMetadata $meta {
+    It 'runs missing-in-project action on a self-hosted runner and uploads findings report' -Tag 'REQ-014' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'

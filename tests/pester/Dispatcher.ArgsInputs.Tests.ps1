@@ -5,7 +5,7 @@ Describe 'Dispatcher Args Inputs' {
         Evidence    = 'tests/pester/Dispatcher.ArgsInputs.Tests.ps1'
     }
 
-    It 'dummy test' -Tag 'REQ-000' -TestMetadata $meta {
+    It 'dummy test' -Tag 'REQ-000' {
         $true | Should -BeTrue
     }
 }
