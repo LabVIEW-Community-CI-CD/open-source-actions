@@ -13,8 +13,13 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
 }
 
 Describe 'RestoreSetupLvSource.SelfHosted.Workflow' {
-    BeforeEach { Add-TestResult -Property @{ Owner = "DevTools"; Evidence = "tests/pester/RestoreSetupLvSource.SelfHosted.Workflow.Tests.ps1" } }
-    It 'runs restore-setup-lv-source action on a self-hosted runner and uploads restoration artifacts' -Tag 'REQ-018' {
+    $meta = @{
+        requirement = 'REQ-018'
+        Owner       = 'DevTools'
+        Evidence    = 'tests/pester/RestoreSetupLvSource.SelfHosted.Workflow.Tests.ps1'
+    }
+
+    It 'runs restore-setup-lv-source action on a self-hosted runner and uploads restoration artifacts' -Tag 'REQ-018' -TestMetadata $meta {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'

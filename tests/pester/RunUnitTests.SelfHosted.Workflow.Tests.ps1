@@ -13,8 +13,13 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
 }
 
 Describe 'RunUnitTests.SelfHosted.Workflow' {
-    BeforeEach { Add-TestResult -Property @{ Owner = "DevTools"; Evidence = "tests/pester/RunUnitTests.SelfHosted.Workflow.Tests.ps1" } }
-    It 'runs run-unit-tests action and uploads unit-test results' -Tag 'REQ-011' {
+    $meta = @{
+        requirement = 'REQ-011'
+        Owner       = 'DevTools'
+        Evidence    = 'tests/pester/RunUnitTests.SelfHosted.Workflow.Tests.ps1'
+    }
+
+    It 'runs run-unit-tests action and uploads unit-test results' -Tag 'REQ-011' -TestMetadata $meta {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/run-unit-tests-self-hosted.yml'
         $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml

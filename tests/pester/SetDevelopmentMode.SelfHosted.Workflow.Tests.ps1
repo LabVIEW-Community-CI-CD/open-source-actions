@@ -13,8 +13,13 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
 }
 
 Describe 'SetDevelopmentMode.SelfHosted.Workflow' {
-    BeforeEach { Add-TestResult -Property @{ Owner = "DevTools"; Evidence = "tests/pester/SetDevelopmentMode.SelfHosted.Workflow.Tests.ps1" } }
-    It 'runs set-development-mode action on a self-hosted runner and uploads logs' -Tag 'REQ-021' {
+    $meta = @{
+        requirement = 'REQ-021'
+        Owner       = 'DevTools'
+        Evidence    = 'tests/pester/SetDevelopmentMode.SelfHosted.Workflow.Tests.ps1'
+    }
+
+    It 'runs set-development-mode action on a self-hosted runner and uploads logs' -Tag 'REQ-021' -TestMetadata $meta {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'

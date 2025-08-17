@@ -13,8 +13,13 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
 }
 
 Describe 'ApplyVipc.SelfHosted.DryRunTrue.Workflow' {
-    BeforeEach { Add-TestResult -Property @{ Owner = "DevTools"; Evidence = "tests/pester/ApplyVipc.SelfHosted.Workflow.Tests.ps1" } }
-    It 'runs apply-vipc action with dry_run true' -Tag 'REQ-006' {
+    $meta = @{
+        requirement = 'REQ-006'
+        Owner       = 'DevTools'
+        Evidence    = 'tests/pester/ApplyVipc.SelfHosted.Workflow.Tests.ps1'
+    }
+
+    It 'runs apply-vipc action with dry_run true' -Tag 'REQ-006' -TestMetadata $meta {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/apply-vipc-self-hosted.yml'
         $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
@@ -39,7 +44,13 @@ Describe 'ApplyVipc.SelfHosted.DryRunTrue.Workflow' {
 }
 
 Describe 'ApplyVipc.SelfHosted.DryRunFalse.Workflow' {
-    It 'runs apply-vipc action with dry_run false' -Tag 'REQ-007' {
+    $meta = @{
+        requirement = 'REQ-007'
+        Owner       = 'DevTools'
+        Evidence    = 'tests/pester/ApplyVipc.SelfHosted.Workflow.Tests.ps1'
+    }
+
+    It 'runs apply-vipc action with dry_run false' -Tag 'REQ-007' -TestMetadata $meta {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/apply-vipc-self-hosted.yml'
         $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml

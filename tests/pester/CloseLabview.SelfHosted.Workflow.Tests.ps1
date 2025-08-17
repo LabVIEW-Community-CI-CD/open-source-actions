@@ -13,8 +13,13 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
 }
 
 Describe 'CloseLabview.SelfHosted.Workflow' {
-    BeforeEach { Add-TestResult -Property @{ Owner = "DevTools"; Evidence = "tests/pester/CloseLabview.SelfHosted.Workflow.Tests.ps1" } }
-    It 'runs close-labview action for 32-bit and 64-bit and uploads logs' -Tag 'REQ-012' {
+    $meta = @{
+        requirement = 'REQ-012'
+        Owner       = 'DevTools'
+        Evidence    = 'tests/pester/CloseLabview.SelfHosted.Workflow.Tests.ps1'
+    }
+
+    It 'runs close-labview action for 32-bit and 64-bit and uploads logs' -Tag 'REQ-012' -TestMetadata $meta {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfFile = Join-Path $repoRoot '.github/workflows/close-labview-external.yml'
 

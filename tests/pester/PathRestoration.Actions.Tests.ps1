@@ -6,7 +6,12 @@ $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
 Import-Module (Join-Path $repoRoot 'actions' 'OpenSourceActions.psm1') -Force
 
 Describe 'Adapters restore PATH' -Skip {
-    BeforeEach { Add-TestResult -Property @{ Owner = "DevTools"; Evidence = "tests/pester/PathRestoration.Actions.Tests.ps1" } }
+    $meta = @{
+        requirement = 'REQ-000'
+        Owner       = 'DevTools'
+        Evidence    = 'tests/pester/PathRestoration.Actions.Tests.ps1'
+    }
+
     BeforeAll {
         $script:gcliPath = Join-Path $PSScriptRoot 'dummy-gcli'
         New-Item -ItemType Directory -Path $script:gcliPath -Force | Out-Null
@@ -35,7 +40,7 @@ Describe 'Adapters restore PATH' -Skip {
 
     foreach ($case in $cases) {
         $caseCopy = $case
-        It "restores PATH after $($caseCopy.Func)" {
+        It "restores PATH after $($caseCopy.Func)" -TestMetadata $meta {
             $originalPath = $env:PATH
             & $caseCopy.Func @($caseCopy.Args) -DryRun -gcliPath $script:gcliPath | Out-Null
             $env:PATH | Should -Be $originalPath
