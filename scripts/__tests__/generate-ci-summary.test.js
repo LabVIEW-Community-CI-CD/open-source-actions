@@ -31,6 +31,18 @@ test('writeErrorSummary skips summary file for non-Error throws', async () => {
   delete process.env.GITHUB_STEP_SUMMARY;
 });
 
+test('writeErrorSummary appends error details to summary file', async () => {
+  const tmp = new URL('./error-summary.md', import.meta.url);
+  await fs.rm(tmp, { force: true });
+  process.env.GITHUB_STEP_SUMMARY = fileURLToPath(tmp);
+  const err = new Error('kaboom');
+  await writeErrorSummary(err);
+  const content = await fs.readFile(tmp, 'utf8');
+  assert.match(content, /kaboom/);
+  await fs.rm(tmp, { force: true });
+  delete process.env.GITHUB_STEP_SUMMARY;
+});
+
 test('associates classname with requirement', async () => {
   const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'junit-'));
   const xml = `<testsuite><testcase classname="Dispatcher.Tests" name="sample" time="0.1"/></testsuite>`;
