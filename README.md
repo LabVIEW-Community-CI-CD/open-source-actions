@@ -138,8 +138,13 @@ For CI, `npm run test:ci` emits a JUnit XML report that [scripts/generate-ci-sum
 Pester tests cover the dispatcher and helper modules. See [docs/testing-pester.md](docs/testing-pester.md) for guidelines on using the canonical argument helper and adding new tests. Run them with:
 
 ```powershell
-Invoke-Pester -CI -Path ./tests/pester
+$cfg = New-PesterConfiguration
+$cfg.Run.Path = './tests/pester'
+$cfg.TestResult.Enabled = $false
+Invoke-Pester -CI -Configuration $cfg
 ```
+
+XML test result output is intentionally disabled.
 
 ## Contributing
 

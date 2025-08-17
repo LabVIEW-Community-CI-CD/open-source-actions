@@ -17,7 +17,16 @@ The helper points at the **labview-icon-editor** project. This open-source repos
    ```
 3. Use `Get-LabVIEWIconEditorArgsJson` to obtain the canonical JSON for dispatcher calls.
 4. Include both positive and negative path tests where practical.
-5. Run the suite with `Invoke-Pester -CI -Path ./tests/pester` before submitting a pull request.
+5. Run the suite before submitting a pull request with:
+
+   ```powershell
+   $cfg = New-PesterConfiguration
+   $cfg.Run.Path = './tests/pester'
+   $cfg.TestResult.Enabled = $false
+   Invoke-Pester -CI -Configuration $cfg
+   ```
+
+   XML test result output is intentionally disabled.
 
 ### Positive path example
 

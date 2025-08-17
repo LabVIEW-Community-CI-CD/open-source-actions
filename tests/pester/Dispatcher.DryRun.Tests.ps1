@@ -1,7 +1,11 @@
 #requires -Version 7.0
 $env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::PathSeparator + $env:PSModulePath
 # Pester v5+ tests that do NOT require LabVIEW/g-cli.
-# Run:  Invoke-Pester -CI -Path ./tests/pester
+# Run:
+#   $cfg = New-PesterConfiguration
+#   $cfg.Run.Path = './tests/pester'
+#   $cfg.TestResult.Enabled = $false
+#   Invoke-Pester -CI -Configuration $cfg
 # Requirement: REQ-002 - Dispatcher dry-run mode prints descriptions and warns on unknown arguments without executing actions.
 
 Set-StrictMode -Version Latest
