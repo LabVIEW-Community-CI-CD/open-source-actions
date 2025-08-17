@@ -19,7 +19,7 @@ Describe 'RevertDevelopmentMode.SelfHosted.Workflow' {
         Evidence    = 'tests/pester/RevertDevelopmentMode.SelfHosted.Workflow.Tests.ps1'
     }
 
-    It 'runs revert-development-mode action on a self-hosted runner and uploads configuration artifact' -Tag 'REQ-019' -TestMetadata $meta {
+    It 'runs revert-development-mode action on a self-hosted runner and uploads configuration artifact' -Tag 'REQ-019' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'

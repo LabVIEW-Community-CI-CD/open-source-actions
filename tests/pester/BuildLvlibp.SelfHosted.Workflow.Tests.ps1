@@ -19,7 +19,7 @@ Describe 'BuildLvlibp.SelfHosted.Workflow' {
         Evidence    = 'tests/pester/BuildLvlibp.SelfHosted.Workflow.Tests.ps1'
     }
 
-    It 'runs build-lvlibp action and uploads lvlibp artifact' -Tag 'REQ-010' -TestMetadata $meta {
+    It 'runs build-lvlibp action and uploads lvlibp artifact' -Tag 'REQ-010' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/build-lvlibp-self-hosted.yml'
         $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml

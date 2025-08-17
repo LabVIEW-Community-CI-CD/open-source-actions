@@ -47,14 +47,14 @@ Describe 'Unified Dispatcher — DryRun behavior for all actions' {
     Where-Object { $_ -match '^\s+- ' } |
     ForEach-Object { @{ Action = $_.Trim().Substring(2); ArgsJson = $script:argsJson } }
 
-  It "describes <Action>" -Tag 'REQ-002' -ForEach $actions -TestMetadata $meta {
+  It "describes <Action>" -Tag 'REQ-002' -ForEach $actions {
     param($Action, $ArgsJson)
     Write-Host "Testing $Action with ArgsJson $ArgsJson"
     pwsh -NoProfile -File $global:dispatcher -Describe $Action -ArgsJson $ArgsJson *> $null
     $LASTEXITCODE | Should -Be 0
   }
 
-  It "prints description before dry-run <Action>" -Tag 'REQ-002' -ForEach $actions -TestMetadata $meta {
+  It "prints description before dry-run <Action>" -Tag 'REQ-002' -ForEach $actions {
     param($Action, $ArgsJson)
     Write-Host "Testing $Action with ArgsJson $ArgsJson"
     $describeOut = & $global:dispatcher -Describe $Action -ArgsJson $ArgsJson 6>&1 | Out-String
@@ -63,7 +63,7 @@ Describe 'Unified Dispatcher — DryRun behavior for all actions' {
     $describeOut | Should -Match "$Action parameters:"
   }
 
-  It "dry-runs <Action> and warns on unknown args" -Tag 'REQ-002' -ForEach $actions -TestMetadata $meta {
+  It "dry-runs <Action> and warns on unknown args" -Tag 'REQ-002' -ForEach $actions {
     param($Action, $ArgsJson)
     Write-Host "Testing $Action with ArgsJson $ArgsJson"
     $out = & $global:dispatcher -ActionName $Action -ArgsJson $ArgsJson -DryRun *>&1 | Out-String

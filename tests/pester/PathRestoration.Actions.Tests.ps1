@@ -40,7 +40,7 @@ Describe 'Adapters restore PATH' -Skip {
 
     foreach ($case in $cases) {
         $caseCopy = $case
-        It "restores PATH after $($caseCopy.Func)" -TestMetadata $meta {
+        It "restores PATH after $($caseCopy.Func)" {
             $originalPath = $env:PATH
             & $caseCopy.Func @($caseCopy.Args) -DryRun -gcliPath $script:gcliPath | Out-Null
             $env:PATH | Should -Be $originalPath

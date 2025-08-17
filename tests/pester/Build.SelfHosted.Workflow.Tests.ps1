@@ -19,7 +19,7 @@ Describe 'Build.SelfHosted.Workflow' {
         Evidence    = 'tests/pester/Build.SelfHosted.Workflow.Tests.ps1'
     }
 
-    It 'runs build action with required inputs' -Tag 'REQ-009' -TestMetadata $meta {
+    It 'runs build action with required inputs' -Tag 'REQ-009' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/build-self-hosted.yml'
         $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
