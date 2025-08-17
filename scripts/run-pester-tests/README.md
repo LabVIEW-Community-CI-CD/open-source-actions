@@ -17,6 +17,8 @@ For full documentation, see [run-pester-tests action](../../docs/actions/run-pes
     working_directory: '.'
 ```
 
+See also: [docs/actions/run-pester-tests.md](../../docs/actions/run-pester-tests.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).

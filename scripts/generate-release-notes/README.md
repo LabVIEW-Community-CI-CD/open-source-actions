@@ -15,3 +15,5 @@ By default, it writes to `Tooling/deployment/release_notes.md`, which you can us
   with:
     output_path: Tooling/deployment/release_notes.md
 ```
+
+See also: [docs/actions/generate-release-notes.md](../../docs/actions/generate-release-notes.md).

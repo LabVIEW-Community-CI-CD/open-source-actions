@@ -69,3 +69,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - `1` – error applying VIPC or invalid input
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/apply-vipc/README.md](../../scripts/apply-vipc/README.md).

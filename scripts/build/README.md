@@ -31,6 +31,8 @@ Runs **`Build.ps1`** to clean, compile, and package the LabVIEW Icon Editor.
     author_name: CI
 ```
 
+See also: [docs/actions/build.md](../../docs/actions/build.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).

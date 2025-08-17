@@ -89,3 +89,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - `1` – build failed or g-cli error
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/build-lvlibp/README.md](../../scripts/build-lvlibp/README.md).

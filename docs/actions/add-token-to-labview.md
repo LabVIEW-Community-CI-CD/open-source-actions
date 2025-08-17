@@ -61,3 +61,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - non‑zero – g-cli error adding token
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/add-token-to-labview/README.md](../../scripts/add-token-to-labview/README.md).

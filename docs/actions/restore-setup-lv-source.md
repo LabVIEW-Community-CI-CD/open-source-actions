@@ -69,3 +69,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - non‑zero – g-cli error restoring setup
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/restore-setup-lv-source/README.md](../../scripts/restore-setup-lv-source/README.md).

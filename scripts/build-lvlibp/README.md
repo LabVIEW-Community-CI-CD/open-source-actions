@@ -32,6 +32,8 @@ The following example builds using LabVIEW 2021.
     commit: ${{ github.sha }}
 ```
 
+See also: [docs/actions/build-lvlibp.md](../../docs/actions/build-lvlibp.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).

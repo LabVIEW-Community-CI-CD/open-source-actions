@@ -55,3 +55,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - non‑zero – file not found or rename failed
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/rename-file/README.md](../../scripts/rename-file/README.md).

@@ -60,3 +60,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - `2` – missing files found
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/missing-in-project/README.md](../../scripts/missing-in-project/README.md).

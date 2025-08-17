@@ -24,6 +24,8 @@ Runs **`Prepare_LabVIEW_source.ps1`** to unpack and configure project sources be
     build_spec: "Editor Packed Library"
 ```
 
+See also: [docs/actions/prepare-labview-source.md](../../docs/actions/prepare-labview-source.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).

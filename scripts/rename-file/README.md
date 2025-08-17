@@ -18,6 +18,8 @@ Use **`Rename-file.ps1`** to rename a file within the repository.
     new_filename: lv_icon_x64.lvlibp
 ```
 
+See also: [docs/actions/rename-file.md](../../docs/actions/rename-file.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).

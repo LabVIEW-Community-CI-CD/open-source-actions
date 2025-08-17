@@ -51,3 +51,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - non‑zero – git error generating notes
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/generate-release-notes/README.md](../../scripts/generate-release-notes/README.md).

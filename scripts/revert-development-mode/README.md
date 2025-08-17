@@ -16,6 +16,8 @@ Invoke **`RevertDevelopmentMode.ps1`** to restore packaged sources after develop
     relative_path: ${{ github.workspace }}
 ```
 
+See also: [docs/actions/revert-development-mode.md](../../docs/actions/revert-development-mode.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).
