@@ -332,7 +332,7 @@
       "tests": [
         "BuildProfile1.IconEditor.Cleanup.labview-closed"
       ]
-    },0
+    },
     {
       "id": "REQIE-011",
       "description": "PostSequence: The sequencer shall assemble a canonical single-line CI evidence string summarizing statuses and key facts for REQ-001..REQ-018. The string SHALL be a minified JSON assigned to a step output named 'CI_EVIDENCE' and saved as 'ci_evidence.txt'. Acceptance: the string parses as JSON and includes {\"pipeline\":\"IconEditor\", \"git_sha\":..., \"matrix\":[...], \"version\":{...}, \"artifacts\":{...}, \"req_status\":{\"REQ-001\":\"PASS\"|\"FAIL\", ...}}.",
