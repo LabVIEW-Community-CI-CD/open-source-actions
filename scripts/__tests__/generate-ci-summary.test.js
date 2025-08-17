@@ -134,6 +134,11 @@ test('writes outputs to OS-specific directory', async () => {
   assert.strictEqual(exists, true);
   const summary = await fs.readFile(path.join(outDir, 'summary.md'), 'utf8');
   assert.match(summary, /\| windows \| 1 \| 0 \| 0 \|/);
+  const reqSummary = await fs.readFile(path.join(outDir, 'requirements-summary.md'), 'utf8');
+  assert.match(reqSummary, /### Requirement Summary/);
+  assert.match(reqSummary, /Unmapped/);
+  assert.match(reqSummary, /### Requirement Testcases/);
+  assert.match(reqSummary, /\| Unmapped \| foo \| Passed \|/);
 
   await fs.rm(tmp, { recursive: true, force: true });
   await fs.rm('artifacts', { recursive: true, force: true });
