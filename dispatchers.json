@@ -20,7 +20,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory."
       },
       "SupportedBitness": {
         "type": "string",
@@ -50,7 +50,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory."
       },
       "SupportedBitness": {
         "type": "string",
@@ -125,7 +125,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory."
       }
     }
   },
@@ -185,7 +185,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory."
       },
       "SupportedBitness": {
         "type": "string",
@@ -250,7 +250,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory."
       },
       "ReleaseNotesFile": {
         "type": "string",
@@ -401,7 +401,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory."
       },
       "ReleaseNotesFile": {
         "type": "string",
@@ -451,7 +451,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory."
       },
       "SupportedBitness": {
         "type": "string",
@@ -516,7 +516,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory."
       },
       "SupportedBitness": {
         "type": "string",
@@ -541,7 +541,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory."
       }
     }
   },
@@ -561,7 +561,7 @@
       "WorkingDirectory": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Working directory for the action; RelativePath is resolved from here."
       }
     }
   },
@@ -606,7 +606,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory."
       }
     }
   },

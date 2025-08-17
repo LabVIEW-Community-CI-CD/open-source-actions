@@ -4,7 +4,7 @@
     This version includes additional debug/verbose output.
 
 .EXAMPLE
-    .\applyvipc.ps1 -MinimumSupportedLVVersion "2021" -SupportedBitness "64" -RelativePath "C:\release\labview-icon-editor-fork" -VIP_LVVersion "2021" -Verbose
+    .\applyvipc.ps1 -MinimumSupportedLVVersion "2021" -SupportedBitness "64" -RelativePath "." -VIP_LVVersion "2021" -Verbose
 #>
 
 [CmdletBinding()]  # Enables -Verbose and other common parameters

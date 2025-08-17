@@ -13,7 +13,7 @@
     Bitness of the LabVIEW environment ("32" or "64").
 
 .PARAMETER RelativePath
-    Path to the repository root where the project file resides.
+    Path relative to the action's working directory. Use "." for the working directory (e.g., repository root).
 
 .PARAMETER Major
     Major version component for the PPL.
@@ -31,7 +31,7 @@
     Commit hash or identifier recorded in the build.
 
 .EXAMPLE
-    .\Build_lvlibp.ps1 -MinimumSupportedLVVersion "2021" -SupportedBitness "64" -RelativePath "C:\labview-icon-editor" -Major 1 -Minor 0 -Patch 0 -Build 0 -Commit "Placeholder"
+    .\Build_lvlibp.ps1 -MinimumSupportedLVVersion "2021" -SupportedBitness "64" -RelativePath "." -Major 1 -Minor 0 -Patch 0 -Build 0 -Commit "Placeholder"
 #>
 param(
     [string]$MinimumSupportedLVVersion,

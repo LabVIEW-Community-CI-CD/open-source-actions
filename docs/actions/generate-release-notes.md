@@ -32,7 +32,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 | --- | --- | --- |
 | `output_path` | `OutputPath` | Path to output markdown file. |
 | `gcli_path` | `gcliPath` | Optional path to the g-cli executable. |
-| `working_directory` | `WorkingDirectory` | Working directory where the action will run. |
+| `working_directory` | `WorkingDirectory` | Base directory for the action; relative paths are resolved from here. |
 | `log_level` | `LogLevel` | Verbosity level (ERROR\|WARN\|INFO\|DEBUG). |
 | `dry_run` | `DryRun` | If true, simulate the action without side effects. |
 

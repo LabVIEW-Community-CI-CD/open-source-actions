@@ -14,6 +14,7 @@ jobs:
         with:
           minimum_supported_lv_version: '2019'
           supported_bitness: '32'
+          working_directory: .
           relative_path: .
           labview_project: MyProject.lvproj
           build_spec: My Build
@@ -31,6 +32,7 @@ In this step, the wrapper action invokes the dispatcher to run the **build-lvlib
 $yaml = @'
 MinimumSupportedLVVersion: "2019"
 SupportedBitness: "32"
+WorkingDirectory: .
 RelativePath: .
 LabVIEW_Project: MyProject.lvproj
 Build_Spec: "My Build"
@@ -65,16 +67,19 @@ jobs:
           minimum_supported_lv_version: '2021'
           vip_lv_version: '2021'
           supported_bitness: '64'
-          relative_path: labview-icon-editor
+          working_directory: labview-icon-editor
+          relative_path: '.'
           vipc_path: labview-icon-editor/.github/actions/apply-vipc/runner_dependencies.vipc
       - uses: LabVIEW-Community-CI-CD/open-source-actions/set-development-mode@v1
         with:
           minimum_supported_lv_version: '2021'
           supported_bitness: '64'
-          relative_path: labview-icon-editor
+          working_directory: labview-icon-editor
+          relative_path: '.'
       - uses: LabVIEW-Community-CI-CD/open-source-actions/build@v1
         with:
-          relative_path: labview-icon-editor
+          working_directory: labview-icon-editor
+          relative_path: '.'
           major: 1
           minor: 0
           patch: 0
@@ -85,7 +90,8 @@ jobs:
           author_name: 'Jane Doe'
       - uses: LabVIEW-Community-CI-CD/open-source-actions/revert-development-mode@v1
         with:
-          relative_path: labview-icon-editor
+          working_directory: labview-icon-editor
+          relative_path: '.'
 ```
 
 ## Need help?
