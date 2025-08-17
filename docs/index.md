@@ -31,3 +31,9 @@ Open Source LabVIEW Actions unifies LabVIEW CI/CD scripts behind a single PowerS
 | [revert-development-mode](actions/revert-development-mode.md) | Restore the repository from development mode by restoring packaged sources and closing LabVIEW. |
 | [run-unit-tests](actions/run-unit-tests.md) | Run LabVIEW unit tests via the LabVIEW Unit Test Framework CLI and report pass/fail/error using standard exit codes. |
 | [set-development-mode](actions/set-development-mode.md) | Configure the repository for development mode by removing packed libraries, adding tokens, preparing sources, and closing LabVIEW. |
+
+## Workflow Examples
+
+| Workflow | Purpose |
+| --- | --- |
+| [run-pester-tests](workflows/run-pester-tests.md) | Run Pester tests in a target repository. |
