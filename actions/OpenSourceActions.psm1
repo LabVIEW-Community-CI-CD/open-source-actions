@@ -320,6 +320,18 @@ function InvokeRevertDevelopmentMode {
     return Run-OpenSourceActionScript -ScriptSegments @('revert-development-mode','RevertDevelopmentMode.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
+function InvokeRunPesterTests {
+    [CmdletBinding()]
+    param(
+        [Parameter(Mandatory)] [string] $WorkingDirectory,
+        [Parameter()] [switch] $DryRun,
+        [Parameter()] [string] $gcliPath
+    )
+    Write-Information "Executing RunPesterTests (DryRun=$DryRun)"
+    $args = @{ WorkingDirectory = $WorkingDirectory }
+    return Run-OpenSourceActionScript -ScriptSegments @('run-pester-tests','RunPesterTests.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+}
+
 function InvokeRunUnitTests {
     [CmdletBinding()]
     param(
