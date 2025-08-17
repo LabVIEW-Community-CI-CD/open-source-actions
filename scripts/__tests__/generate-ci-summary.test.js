@@ -45,23 +45,20 @@ test('associates classname with requirement', async () => {
   await fs.rm(dir, { recursive: true, force: true });
 });
 
-test('extracts owner from machine-name property', async () => {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'owner-prop-'));
-  const xml = `<testsuite><testcase name="alpha" time="0"><properties><property name="machine-name" value="dave"/></properties></testcase></testsuite>`;
-  const xmlPath = path.join(dir, 'junit.xml');
-  await fs.writeFile(xmlPath, xml);
-  const tests = await collectTestCases([xmlPath], dir, 'linux');
-  assert.strictEqual(tests[0].owner, 'dave');
-  await fs.rm(dir, { recursive: true, force: true });
-});
+test('collectTestCases uses machine-name property for owner', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'owner-'));
+  const xmlProp = `<testsuite><testcase name="foo" time="0"><properties><property name="machine-name" value="ci-bot"/></properties></testcase></testsuite>`;
+  const propPath = path.join(dir, 'junit1.xml');
+  await fs.writeFile(propPath, xmlProp);
+  const testsProp = await collectTestCases([propPath], dir, 'linux');
+  assert.strictEqual(testsProp[0].owner, 'ci-bot');
 
-test('falls back to [Owner:...] annotation', async () => {
-  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'owner-annot-'));
-  const xml = `<testsuite><testcase name="beta [Owner:carol]" time="0"/></testsuite>`;
-  const xmlPath = path.join(dir, 'junit.xml');
-  await fs.writeFile(xmlPath, xml);
-  const tests = await collectTestCases([xmlPath], dir, 'linux');
-  assert.strictEqual(tests[0].owner, 'carol');
+  const xmlFallback = `<testsuite><testcase name="[Owner:alice] bar" time="0"/></testsuite>`;
+  const fallbackPath = path.join(dir, 'junit2.xml');
+  await fs.writeFile(fallbackPath, xmlFallback);
+  const testsFallback = await collectTestCases([fallbackPath], dir, 'linux');
+  assert.strictEqual(testsFallback[0].owner, 'alice');
+
   await fs.rm(dir, { recursive: true, force: true });
 });
 
