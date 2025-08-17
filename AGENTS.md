@@ -15,5 +15,3 @@
 - Run `npx --yes markdown-link-check -q -c .markdown-link-check.json README.md $(find docs scripts -name '*.md')` to verify links.
 - Run `actionlint` to validate GitHub Actions workflows.
 - Run `pwsh -NoLogo -Command "Install-Module -Name Pester -Force -Scope AllUsers; Invoke-Pester -CI -Path ./tests/pester"`.
-
-All tests above are mandatory; they must pass before committing.
