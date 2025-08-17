@@ -141,7 +141,7 @@ Pester tests cover the dispatcher and helper modules. See [docs/testing-pester.m
 $cfg = New-PesterConfiguration
 $cfg.Run.Path = './tests/pester'
 $cfg.TestResult.Enabled = $false
-Invoke-Pester -CI -Configuration $cfg
+Invoke-Pester -Configuration $cfg
 ```
 
 XML test result output is intentionally disabled.
