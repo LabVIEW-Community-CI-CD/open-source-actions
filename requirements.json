@@ -4,6 +4,12 @@
       "owner": "icon-editor-windows",
       "runner_label": "icon-editor-windows",
       "runner_type": "integration",
+      "skip_dry_run": false
+    },
+    "self-hosted-windows-lv": {
+      "owner": "self-hosted-windows-lv",
+      "runner_label": "self-hosted-windows-lv",
+      "runner_type": "integration",
       "skip_dry_run": true
     }
   },
@@ -247,6 +253,13 @@
       "description": "Parser tolerates and retains unknown attributes for future extensibility.",
       "tests": [
         "scripts/__tests__/junit-parser.test.js"
+      ]
+    },
+    {
+      "id": "REQ-033",
+      "description": "Tests ending with SelfHosted.Workflow.Tests.ps1 execute only in dry run mode unless the workflow targets a self-hosted Windows runner labeled self-hosted-windows-lv.",
+      "tests": [
+        "SelfHosted.Workflow.Tests"
       ]
     }
   ]
