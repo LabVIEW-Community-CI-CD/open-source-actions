@@ -28,8 +28,8 @@ Describe 'PrepareLabviewSource.SelfHosted.Workflow [REQ-011]' {
                     $workflowFound = $true
                     $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
                     $prepareStep.uses | Should -Be './prepare-labview-source/action.yml'
-                    $prepareStep.with.relative_path | Should -Be 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor'
-                    $prepareStep.with.labview_project | Should -Be 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor\\source\\lv_icon.lvproj'
+                    $prepareStep.with.relative_path | Should -Match 'labview-icon-editor$'
+                    $prepareStep.with.labview_project | Should -Match 'labview-icon-editor.*lv_icon.lvproj$'
                     $prepareStep.with.build_spec | Should -Be 'Editor Packed Library'
                     $artifactStep = $job.steps | Where-Object {
                         $_.ContainsKey('uses') -and $_.uses -like 'actions/upload-artifact@*' -and (

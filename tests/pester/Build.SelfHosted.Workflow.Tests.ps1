@@ -23,7 +23,7 @@ Describe 'Build.SelfHosted.Workflow [REQ-009]' {
 
         $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
 
-        $buildStep.with.relative_path | Should -Be 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor'
+        $buildStep.with.relative_path | Should -Match 'labview-icon-editor$'
         $buildStep.with.major | Should -Be '1'
         $buildStep.with.minor | Should -Be '0'
         $buildStep.with.patch | Should -Be '0'

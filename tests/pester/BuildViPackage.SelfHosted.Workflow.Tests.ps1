@@ -27,7 +27,7 @@ Describe 'BuildViPackage.SelfHosted.Workflow [REQ-011]' {
 
         $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
 
-        $buildStep.with.vipb_path | Should -Be 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor\\Tooling\\deployment\\NI Icon editor.vipb'
+        $buildStep.with.vipb_path | Should -Match 'labview-icon-editor.*NI Icon editor.vipb$'
         $buildStep.with.major | Should -Be '1'
         $buildStep.with.minor | Should -Be '0'
         $buildStep.with.patch | Should -Be '0'

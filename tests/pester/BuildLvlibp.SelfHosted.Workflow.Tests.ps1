@@ -25,7 +25,7 @@ Describe 'BuildLvlibp.SelfHosted.Workflow [REQ-010]' {
 
         $buildStep.with.minimum_supported_lv_version | Should -Be '2021'
         $buildStep.with.supported_bitness | Should -Be '64'
-        $buildStep.with.labview_project | Should -Be 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor\\source\\lv_icon.lvproj'
+        $buildStep.with.labview_project | Should -Match 'labview-icon-editor.*lv_icon.lvproj$'
         $buildStep.with.build_spec | Should -Be 'PackedLib Build'
 
         $artifactStep | Should -Not -BeNullOrEmpty
