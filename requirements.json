@@ -30,7 +30,7 @@
     },
     {
       "id": "REQ-003",
-      "description": "Actions correctly resolve and pass RelativePath arguments relative to the action's working directory without warnings.",
+      "description": "Actions correctly resolve and pass RelativePath arguments relative to the action's working directory without warnings, including when the RelativePath is '.' and the WorkingDirectory targets subdirectories.",
       "tests": [
         "RelativePath.Actions.Tests"
       ]

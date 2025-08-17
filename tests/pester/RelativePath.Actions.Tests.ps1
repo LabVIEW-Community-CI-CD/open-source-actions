@@ -166,3 +166,22 @@ Describe 'set-development-mode resolves RelativePath' {
     }
 }
 
+Describe 'RelativePath "." resolves with varying working directories' {
+    foreach ($subdir in @('docs', 'scripts', 'tests')) {
+        It "dry-runs without warnings when WorkingDirectory is $subdir" -Tag 'REQ-003' {
+            $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
+            $workingDir = Join-Path $repoRoot $subdir
+            $args = @{ RelativePath = '.' } | ConvertTo-Json -Compress
+            $out = & $dispatcher -ActionName set-development-mode -ArgsJson $args -WorkingDirectory $workingDir -DryRun *>&1 | Out-String
+            $LASTEXITCODE | Should -Be 0
+            $jsonLine = $out -split "`n" | Where-Object { $_ -match '{' } | Select-Object -Last 1
+            $jsonText = $jsonLine -replace '^[^{}]*({.*})','$1'
+            ($jsonText | ConvertFrom-Json).RelativePath | Should -Be '.'
+            $resolved = [System.IO.Path]::TrimEndingDirectorySeparator((Resolve-Path (Join-Path $workingDir '.')).Path)
+            $expected = [System.IO.Path]::TrimEndingDirectorySeparator((Resolve-Path $workingDir).Path)
+            $resolved | Should -Be $expected
+            $out | Should -Not -Match 'Ignored unknown parameters'
+        }
+    }
+}
+
