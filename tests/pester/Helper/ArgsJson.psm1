@@ -25,3 +25,19 @@ function Get-LabVIEWIconEditorArgsJson {
 }
 
 Export-ModuleMember -Function Get-LabVIEWIconEditorArgsJson
+
+if (-not (Get-Command -Name Add-TestResult -ErrorAction SilentlyContinue)) {
+    function Add-TestResult {
+        [CmdletBinding()]
+        param(
+            [hashtable]$Property
+        )
+
+        # Pester versions prior to 5 do not include Add-TestResult.
+        # Provide a no-op implementation so tests can record metadata
+        # without failing when the command is missing.
+        return
+    }
+
+    Export-ModuleMember -Function Add-TestResult -Alias *
+}
