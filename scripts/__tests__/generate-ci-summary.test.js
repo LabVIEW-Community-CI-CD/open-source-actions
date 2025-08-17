@@ -45,6 +45,26 @@ test('associates classname with requirement', async () => {
   await fs.rm(dir, { recursive: true, force: true });
 });
 
+test('extracts owner from machine-name property', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'owner-prop-'));
+  const xml = `<testsuite><testcase name="alpha" time="0"><properties><property name="machine-name" value="dave"/></properties></testcase></testsuite>`;
+  const xmlPath = path.join(dir, 'junit.xml');
+  await fs.writeFile(xmlPath, xml);
+  const tests = await collectTestCases([xmlPath], dir, 'linux');
+  assert.strictEqual(tests[0].owner, 'dave');
+  await fs.rm(dir, { recursive: true, force: true });
+});
+
+test('falls back to [Owner:...] annotation', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'owner-annot-'));
+  const xml = `<testsuite><testcase name="beta [Owner:carol]" time="0"/></testsuite>`;
+  const xmlPath = path.join(dir, 'junit.xml');
+  await fs.writeFile(xmlPath, xml);
+  const tests = await collectTestCases([xmlPath], dir, 'linux');
+  assert.strictEqual(tests[0].owner, 'carol');
+  await fs.rm(dir, { recursive: true, force: true });
+});
+
 test('groupToMarkdown assigns numeric identifiers', () => {
   const groups = [{
     id: 'REQ-XYZ',
