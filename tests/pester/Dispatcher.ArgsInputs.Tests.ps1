@@ -1,6 +1,11 @@
 Describe 'Dispatcher Args Inputs' {
-    BeforeEach { Add-TestResult -Property @{ Owner = "DevTools"; Evidence = "tests/pester/Dispatcher.ArgsInputs.Tests.ps1" } }
-    It 'dummy test' {
+    $meta = @{
+        requirement = 'REQ-000'
+        Owner       = 'DevTools'
+        Evidence    = 'tests/pester/Dispatcher.ArgsInputs.Tests.ps1'
+    }
+
+    It 'dummy test' -Tag 'REQ-000' -TestMetadata $meta {
         $true | Should -BeTrue
     }
 }

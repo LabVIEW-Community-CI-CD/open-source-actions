@@ -13,8 +13,13 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
 }
 
 Describe 'PrepareLabviewSource.SelfHosted.Workflow' {
-    BeforeEach { Add-TestResult -Property @{ Owner = "DevTools"; Evidence = "tests/pester/PrepareLabviewSource.SelfHosted.Workflow.Tests.ps1" } }
-    It 'runs prepare-labview-source action and uploads prepared source artifact' -Tag 'REQ-011' {
+    $meta = @{
+        requirement = 'REQ-011'
+        Owner       = 'DevTools'
+        Evidence    = 'tests/pester/PrepareLabviewSource.SelfHosted.Workflow.Tests.ps1'
+    }
+
+    It 'runs prepare-labview-source action and uploads prepared source artifact' -Tag 'REQ-011' -TestMetadata $meta {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'

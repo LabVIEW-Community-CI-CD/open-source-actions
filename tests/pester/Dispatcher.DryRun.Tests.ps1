@@ -11,7 +11,11 @@ $global:dispatcher = Join-Path $repoRoot 'actions' 'Invoke-OSAction.ps1'
 Import-Module (Join-Path $PSScriptRoot 'Helper' 'ArgsJson.psm1')
 
 Describe 'Unified Dispatcher — DryRun behavior for all actions' {
-    BeforeEach { Add-TestResult -Property @{ Owner = "DevTools"; Evidence = "tests/pester/Dispatcher.DryRun.Tests.ps1" } }
+    $meta = @{
+        requirement = 'REQ-002'
+        Owner       = 'DevTools'
+        Evidence    = 'tests/pester/Dispatcher.DryRun.Tests.ps1'
+    }
   $script:args = Get-LabVIEWIconEditorArgsJson | ConvertFrom-Json
   $extra = @{
        VIP_LVVersion             = '2021'
@@ -43,14 +47,14 @@ Describe 'Unified Dispatcher — DryRun behavior for all actions' {
     Where-Object { $_ -match '^\s+- ' } |
     ForEach-Object { @{ Action = $_.Trim().Substring(2); ArgsJson = $script:argsJson } }
 
-  It "describes <Action>" -Tag 'REQ-002' -ForEach $actions {
+  It "describes <Action>" -Tag 'REQ-002' -ForEach $actions -TestMetadata $meta {
     param($Action, $ArgsJson)
     Write-Host "Testing $Action with ArgsJson $ArgsJson"
     pwsh -NoProfile -File $global:dispatcher -Describe $Action -ArgsJson $ArgsJson *> $null
     $LASTEXITCODE | Should -Be 0
   }
 
-  It "prints description before dry-run <Action>" -Tag 'REQ-002' -ForEach $actions {
+  It "prints description before dry-run <Action>" -Tag 'REQ-002' -ForEach $actions -TestMetadata $meta {
     param($Action, $ArgsJson)
     Write-Host "Testing $Action with ArgsJson $ArgsJson"
     $describeOut = & $global:dispatcher -Describe $Action -ArgsJson $ArgsJson 6>&1 | Out-String
@@ -59,7 +63,7 @@ Describe 'Unified Dispatcher — DryRun behavior for all actions' {
     $describeOut | Should -Match "$Action parameters:"
   }
 
-  It "dry-runs <Action> and warns on unknown args" -Tag 'REQ-002' -ForEach $actions {
+  It "dry-runs <Action> and warns on unknown args" -Tag 'REQ-002' -ForEach $actions -TestMetadata $meta {
     param($Action, $ArgsJson)
     Write-Host "Testing $Action with ArgsJson $ArgsJson"
     $out = & $global:dispatcher -ActionName $Action -ArgsJson $ArgsJson -DryRun *>&1 | Out-String

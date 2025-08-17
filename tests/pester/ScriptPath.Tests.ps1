@@ -30,8 +30,13 @@ $cases = foreach ($name in $actionNames) {
 }
 
 Describe 'Action script paths' {
-    BeforeEach { Add-TestResult -Property @{ Owner = "DevTools"; Evidence = "tests/pester/ScriptPath.Tests.ps1" } }
-    It 'has script for <Name>' -Tag 'REQ-004' -TestCases $cases {
+    $meta = @{
+        requirement = 'REQ-004'
+        Owner       = 'DevTools'
+        Evidence    = 'tests/pester/ScriptPath.Tests.ps1'
+    }
+
+    It 'has script for <Name>' -Tag 'REQ-004' -TestCases $cases -TestMetadata $meta {
         param($Name, $Path)
         Test-Path $Path | Should -BeTrue
     }
