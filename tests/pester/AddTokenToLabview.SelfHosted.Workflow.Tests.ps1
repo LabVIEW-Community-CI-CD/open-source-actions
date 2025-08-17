@@ -12,6 +12,11 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
+if (-not ($env:RUNNER_LABELS -split ',' | ForEach-Object { $_.Trim() } | Where-Object { $_ -eq 'icon-editor-windows' })) {
+    Set-ItResult -Skipped -Because 'requires runner label icon-editor-windows'
+    return
+}
+
 Describe 'AddTokenToLabview.SelfHosted.Workflow' {
     $meta = @{
         requirement = 'REQ-008'
