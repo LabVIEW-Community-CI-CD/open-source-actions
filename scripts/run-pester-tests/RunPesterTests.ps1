@@ -22,6 +22,14 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 $testPath = Join-Path $WorkingDirectory 'tests/pester'
-Invoke-Pester -CI -Path $testPath
-exit $LASTEXITCODE
+$cfg = New-PesterConfiguration
+$cfg.Output.NoColor = $true
+$ansiPattern = '\x1B\[[0-9;]*[A-Za-z]'
+
+$output = & {
+    Invoke-Pester -CI -Configuration $cfg -Path $testPath 2>&1
+}
+$exitCode = $LASTEXITCODE
+$output | ForEach-Object { $_ -replace $ansiPattern, '' }
+exit $exitCode
 
