@@ -30,7 +30,7 @@
     },
     {
       "id": "REQ-003",
-      "description": "Actions correctly resolve and pass RelativePath arguments relative to the action's working directory without warnings, including when the RelativePath is '.' and the WorkingDirectory targets subdirectories.",
+      "description": "Actions resolve RelativePath arguments using the action's WorkingDirectory as the base path and pass them without warnings, including when RelativePath is '.' and the WorkingDirectory targets subdirectories.",
       "tests": [
         "RelativePath.Actions.Tests"
       ]
@@ -44,7 +44,7 @@
     },
     {
       "id": "REQ-005",
-      "description": "Dispatcher fails when RelativePath is missing or invalid relative to the working directory.",
+      "description": "Dispatcher fails when RelativePath is missing or invalid after resolving it relative to the specified WorkingDirectory.",
       "tests": [
         "Dispatcher.InvalidPaths.Tests"
       ]
