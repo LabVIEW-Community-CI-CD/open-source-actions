@@ -261,6 +261,14 @@
       "tests": [
         "SelfHosted.Workflow.Tests"
       ]
+    },
+    {
+      "id": "REQ-034",
+      "description": "Workflow tests the composite action defined in run-pester-tests/action.yml on a self-hosted Windows runner labeled icon-editor-windows.",
+      "runner": "icon-editor-windows",
+      "tests": [
+        "RunPesterTests.SelfHosted.Workflow"
+      ]
     }
   ]
 }

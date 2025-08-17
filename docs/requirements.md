@@ -37,6 +37,7 @@ This project tracks high‑level requirements and maps each one to the Pester te
 | REQ-031 | Parsing logic validates presence of required fields and reports missing or malformed data. | `scripts/__tests__/junit-parser.test.js` |  |  |  |
 | REQ-032 | Parser tolerates and retains unknown attributes for future extensibility. | `scripts/__tests__/junit-parser.test.js` |  |  |  |
 | REQ-033 | Tests ending with `SelfHosted.Workflow.Tests.ps1` execute only in dry run mode unless the workflow targets a self-hosted Windows runner labeled `self-hosted-windows-lv`. | `tests/pester/*SelfHosted.Workflow.Tests.ps1` |  |  | false |
+| REQ-034 | Workflow tests the composite action defined in run-pester-tests/action.yml on a self-hosted Windows runner labeled icon-editor-windows. | `tests/pester/RunPesterTests.SelfHosted.Workflow.Tests.ps1` | icon-editor-windows | integration | false |
 
 Each test file is annotated with its corresponding requirement ID to maintain traceability between requirements and test coverage.
 

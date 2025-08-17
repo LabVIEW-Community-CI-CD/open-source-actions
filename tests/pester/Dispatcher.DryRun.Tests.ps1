@@ -41,6 +41,7 @@ Describe 'Unified Dispatcher — DryRun behavior for all actions' {
        NewFilename               = 'new.txt'
        ReleaseNotesFile          = 'notes.md'
        ExtraParam                = 'extra'
+       WorkingDirectory          = '/tmp'
     }
   foreach ($kvp in $extra.GetEnumerator()) { $script:args | Add-Member -NotePropertyName $kvp.Key -NotePropertyValue $kvp.Value }
   $script:argsJson = $script:args | ConvertTo-Json -Compress
