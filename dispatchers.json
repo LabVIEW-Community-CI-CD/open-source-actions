@@ -5,17 +5,17 @@
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "MinimumSupportedLVVersion": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Minimum LabVIEW version that the project supports."
       },
       "RelativePath": {
         "type": "string",
@@ -25,7 +25,7 @@
       "SupportedBitness": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Target LabVIEW bitness (32- or 64-bit)."
       }
     }
   },
@@ -35,17 +35,17 @@
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "MinimumSupportedLVVersion": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Minimum LabVIEW version that the project supports."
       },
       "RelativePath": {
         "type": "string",
@@ -55,17 +55,17 @@
       "SupportedBitness": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Target LabVIEW bitness (32- or 64-bit)."
       },
       "VIP_LVVersion": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "LabVIEW version used to build the VI Package Configuration."
       },
       "VIPCPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path to the VI Package Configuration file."
       }
     }
   },
@@ -75,52 +75,52 @@
       "AuthorName": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Author name recorded in build metadata."
       },
       "Build": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Build number component."
       },
       "Commit": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Commit identifier used for the build metadata."
       },
       "CompanyName": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Company name recorded in build metadata."
       },
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "LabVIEWMinorRevision": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Minor revision of LabVIEW used for the build."
       },
       "Major": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Major version component."
       },
       "Minor": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Minor version component."
       },
       "Patch": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Patch version component."
       },
       "RelativePath": {
         "type": "string",
@@ -135,52 +135,52 @@
       "Build": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Build number component."
       },
       "Build_Spec": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Name of the build specification to run."
       },
       "Commit": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Commit identifier used for the build metadata."
       },
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "LabVIEW_Project": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path to the LabVIEW project file."
       },
       "Major": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Major version component."
       },
       "MinimumSupportedLVVersion": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Minimum LabVIEW version that the library supports."
       },
       "Minor": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Minor version component."
       },
       "Patch": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Patch version component."
       },
       "RelativePath": {
         "type": "string",
@@ -190,7 +190,7 @@
       "SupportedBitness": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Target LabVIEW bitness (32- or 64-bit)."
       }
     }
   },
@@ -200,52 +200,52 @@
       "Build": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Build number component."
       },
       "Commit": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Commit identifier used for the build metadata."
       },
       "DisplayInformationJSON": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path to JSON file containing display information."
       },
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "LabVIEWMinorRevision": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Minor revision of LabVIEW used to build the package."
       },
       "Major": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Major version component."
       },
       "MinimumSupportedLVVersion": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Minimum LabVIEW version that the package supports."
       },
       "Minor": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Minor version component."
       },
       "Patch": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Patch version component."
       },
       "RelativePath": {
         "type": "string",
@@ -255,17 +255,17 @@
       "ReleaseNotesFile": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path to the release notes file."
       },
       "SupportedBitness": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Target LabVIEW bitness (32- or 64-bit)."
       },
       "VIPBPath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path to the VI Package Build (.vipb) file."
       }
     }
   },
@@ -275,22 +275,22 @@
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "MinimumSupportedLVVersion": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Minimum LabVIEW version that the project supports."
       },
       "SupportedBitness": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Target LabVIEW bitness (32- or 64-bit)."
       }
     }
   },
@@ -300,18 +300,18 @@
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "OutputPath": {
         "type": "string",
         "required": false,
         "default": "Tooling/deployment/release_notes.md",
-        "description": ""
+        "description": "Path where generated release notes will be written."
       }
     }
   },
@@ -321,27 +321,27 @@
       "Arch": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Target architecture or bitness."
       },
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "LVVersion": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "LabVIEW version of the project."
       },
       "ProjectFile": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path to the LabVIEW project file."
       }
     }
   },
@@ -351,52 +351,52 @@
       "Build": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Build number component."
       },
       "Commit": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Commit identifier used for the build metadata."
       },
       "DisplayInformationJSON": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path to JSON file containing display information."
       },
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "LabVIEWMinorRevision": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Minor revision of LabVIEW used for the build."
       },
       "Major": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Major version component."
       },
       "MinimumSupportedLVVersion": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Minimum LabVIEW version that the package supports."
       },
       "Minor": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Minor version component."
       },
       "Patch": {
         "type": "number",
         "required": true,
-        "description": ""
+        "description": "Patch version component."
       },
       "RelativePath": {
         "type": "string",
@@ -406,17 +406,17 @@
       "ReleaseNotesFile": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path to the release notes file."
       },
       "SupportedBitness": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Target LabVIEW bitness (32- or 64-bit)."
       },
       "VIPBPath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path to the VI Package Build (.vipb) file."
       }
     }
   },
@@ -426,27 +426,27 @@
       "Build_Spec": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Name of the build specification to run."
       },
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "LabVIEW_Project": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path to the LabVIEW project file."
       },
       "MinimumSupportedLVVersion": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Minimum LabVIEW version that the project supports."
       },
       "RelativePath": {
         "type": "string",
@@ -456,7 +456,7 @@
       "SupportedBitness": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Target LabVIEW bitness (32- or 64-bit)."
       }
     }
   },
@@ -466,22 +466,22 @@
       "CurrentFilename": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Existing path to the file."
       },
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "NewFilename": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "New path for the file."
       }
     }
   },
@@ -491,27 +491,27 @@
       "Build_Spec": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Name of the build specification to run."
       },
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "LabVIEW_Project": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path to the LabVIEW project file."
       },
       "MinimumSupportedLVVersion": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Minimum LabVIEW version that the project supports."
       },
       "RelativePath": {
         "type": "string",
@@ -521,7 +521,7 @@
       "SupportedBitness": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Target LabVIEW bitness (32- or 64-bit)."
       }
     }
   },
@@ -531,12 +531,12 @@
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "RelativePath": {
         "type": "string",
@@ -551,17 +551,17 @@
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "WorkingDirectory": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path containing the Pester tests to execute."
       }
     }
   },
@@ -571,22 +571,22 @@
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "MinimumSupportedLVVersion": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Minimum LabVIEW version that the project supports."
       },
       "SupportedBitness": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Target LabVIEW bitness (32- or 64-bit)."
       }
     }
   },
@@ -596,12 +596,12 @@
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "RelativePath": {
         "type": "string",
@@ -616,22 +616,22 @@
       "Arguments": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Hashtable of arguments forwarded to the script."
       },
       "DryRun": {
         "type": "boolean",
         "required": false,
-        "description": ""
+        "description": "If set, prints the command instead of executing it."
       },
       "gcliPath": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Path prepended to PATH for locating the g CLI."
       },
       "ScriptSegments": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path segments under the scripts folder that locate the target script."
       }
     }
   },
@@ -641,7 +641,7 @@
       "Level": {
         "type": "string",
         "required": false,
-        "description": ""
+        "description": "Desired log level (ERROR, WARN, INFO, DEBUG)."
       }
     }
   }
