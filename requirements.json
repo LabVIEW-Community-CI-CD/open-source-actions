@@ -1,10 +1,10 @@
 {
   "runners": {
-    "icon-editor-windows": {
-      "owner": "icon-editor-windows",
-      "runner_label": "icon-editor-windows",
+    "windows-latest": {
+      "owner": "windows-latest",
+      "runner_label": "windows-latest",
       "runner_type": "integration",
-      "skip_dry_run": true
+      "skip_dry_run": false
     },
     "self-hosted-windows-lv": {
       "owner": "self-hosted-windows-lv",
@@ -263,42 +263,42 @@
       ]
     },
     {
-      "id": "REQ-009",
+      "id": "REQIE-001",
       "description": "PreSequence: The sequencer shall enumerate and record the build matrix used by the workflow (LabVIEW versions and bitness). Acceptance: a 'matrix.json' file exists listing each tuple {\"lv-version\": \"2021\"|\"2023\", \"bitness\": \"32\"|\"64\"} with at least [ [\"2021\",\"32\"], [\"2021\",\"64\"], [\"2023\",\"64\"] ].",
       "tests": [
         "BuildProfile1.IconEditor.PreSequence.matrix-enumeration"
       ]
     },
     {
-      "id": "REQ-010",
+      "id": "REQIE-002",
       "description": "Setup: For each matrix entry, the sequencer shall apply VIPC dependencies using the canonical action inputs (minimum_supported_lv_version, vip_lv_version, supported_bitness, relative_path). Evidence: a 'vipc-apply.json' summary per matrix entry capturing inputs, start/end timestamps, exit code, and status. Acceptance: all entries report exit_code == 0 and status == 'success'.",
       "tests": [
         "BuildProfile1.IconEditor.Setup.apply-vipc-succeeds"
       ]
     },
     {
-      "id": "REQ-011",
+      "id": "REQIE-003",
       "description": "Setup: The sequencer shall compute and persist semantic version information. Evidence: a 'version.json' containing VERSION, MAJOR, MINOR, PATCH, BUILD, IS_PRERELEASE and the commit SHA used. Acceptance: VERSION conforms to SemVer and all numeric components are present.",
       "tests": [
         "BuildProfile1.IconEditor.Setup.version-outputs-captured"
       ]
     },
     {
-      "id": "REQ-012",
+      "id": "REQIE-004",
       "description": "Setup: The 'missing-in-project' check shall be executed for the specified LabVIEW version(s) and both 32-bit and 64-bit bitness as applicable. Evidence: 'missing-in-project.json' including project-file, lv-version, bitness, and result. Acceptance: result == 'present' for expected module paths.",
       "tests": [
         "BuildProfile1.IconEditor.Setup.missing-in-project-matrix"
       ]
     },
     {
-      "id": "REQ-013",
+      "id": "REQIE-005",
       "description": "Main: Unit tests shall be executed (Pester) across the configured matrix. Evidence: a 'pester-summary.json' file containing total, passed, failed, skipped, duration_ms, and per-test results; XML output is not required. Acceptance: failed == 0 and total >= 1.",
       "tests": [
         "BuildProfile1.IconEditor.Main.unit-tests-pass"
       ]
     },
     {
-      "id": "REQ-014",
+      "id": "REQIE-006",
       "description": "Main: Build Packed Libraries (PPL) shall succeed for both 32-bit and 64-bit targets. Evidence: existence of 'resource/plugins/lv_icon_x86.lvlibp' and 'resource/plugins/lv_icon_x64.lvlibp' and a 'ppl.hash' file containing SHA256 for each artifact. Acceptance: non-zero artifact sizes and matching SHA256 re-computation.",
       "tests": [
         "BuildProfile1.IconEditor.Main.ppl-built-and-hashed",
@@ -306,35 +306,35 @@
       ]
     },
     {
-      "id": "REQ-015",
+      "id": "REQIE-007",
       "description": "Main: Renaming and artifact upload steps shall complete. Evidence: an 'artifact-manifest.json' listing uploaded artifact names ('lv_icon_x86.lvlibp', 'lv_icon_x64.lvlibp'), paths, and sizes. Acceptance: manifest entries match on-disk files and GitHub Artifacts report success.",
       "tests": [
         "BuildProfile1.IconEditor.Main.artifacts-renamed-and-uploaded"
       ]
     },
     {
-      "id": "REQ-016",
+      "id": "REQIE-008",
       "description": "Main: The workflow shall generate a VI Package (.vip) using the prescribed actions and inputs. Evidence: 'vi-package.hash' (SHA256 of produced .vip), and a 'vi-package.json' summarizing package metadata (name, version, company, build). Acceptance: at least one .vip exists, size > 0, and hash is recorded.",
       "tests": [
         "BuildProfile1.IconEditor.Main.vi-package-built-and-hashed"
       ]
     },
     {
-      "id": "REQ-017",
+      "id": "REQIE-009",
       "description": "Main: The workflow shall produce a display information JSON for the VI Package and inject it prior to packaging. Evidence: 'display-info.json' containing the exact keys used by the action (Package Version.major/minor/patch/build, Product/Company/Author fields, etc.). Acceptance: all required keys exist and reflect the computed version (REQ-011).",
       "tests": [
         "BuildProfile1.IconEditor.Main.display-info-generated"
       ]
     },
     {
-      "id": "REQ-018",
+      "id": "REQIE-010",
       "description": "Cleanup: The workflow shall terminate any LabVIEW processes via the 'close-labview' step for each applicable bitness. Evidence: 'close-labview.log' including bitness, attempts, and final process list. Acceptance: no LabVIEW process remains after the step.",
       "tests": [
         "BuildProfile1.IconEditor.Cleanup.labview-closed"
       ]
-    },
+    },0
     {
-      "id": "REQ-019",
+      "id": "REQIE-011",
       "description": "PostSequence: The sequencer shall assemble a canonical single-line CI evidence string summarizing statuses and key facts for REQ-001..REQ-018. The string SHALL be a minified JSON assigned to a step output named 'CI_EVIDENCE' and saved as 'ci_evidence.txt'. Acceptance: the string parses as JSON and includes {\"pipeline\":\"IconEditor\", \"git_sha\":..., \"matrix\":[...], \"version\":{...}, \"artifacts\":{...}, \"req_status\":{\"REQ-001\":\"PASS\"|\"FAIL\", ...}}.",
       "tests": [
         "BuildProfile1.IconEditor.PostSequence.ci-evidence-assembled",
@@ -342,7 +342,7 @@
       ]
     },
     {
-      "id": "REQ-020",
+      "id": "REQIE-012",
       "description": "PostSequence: The CI evidence string shall be logged succinctly to the job summary and made available to downstream jobs via $GITHUB_OUTPUT. Evidence: the step output 'CI_EVIDENCE' is present and a 'summary.md' contains a redacted preview. Acceptance: dependent jobs can read 'needs.<job>.outputs.CI_EVIDENCE' and parse it successfully.",
       "tests": [
         "BuildProfile1.IconEditor.PostSequence.ci-evidence-published"
