@@ -12,8 +12,8 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
-Describe 'ApplyVipc.SelfHosted.DryRunTrue.Workflow [REQ-006]' {
-    It 'runs apply-vipc action with dry_run true [REQ-006]' {
+Describe 'ApplyVipc.SelfHosted.DryRunTrue.Workflow' {
+    It 'runs apply-vipc action with dry_run true' -Tag 'REQ-006' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/apply-vipc-self-hosted.yml'
         $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
@@ -37,8 +37,8 @@ Describe 'ApplyVipc.SelfHosted.DryRunTrue.Workflow [REQ-006]' {
     }
 }
 
-Describe 'ApplyVipc.SelfHosted.DryRunFalse.Workflow [REQ-007]' {
-    It 'runs apply-vipc action with dry_run false [REQ-007]' {
+Describe 'ApplyVipc.SelfHosted.DryRunFalse.Workflow' {
+    It 'runs apply-vipc action with dry_run false' -Tag 'REQ-007' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/apply-vipc-self-hosted.yml'
         $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml

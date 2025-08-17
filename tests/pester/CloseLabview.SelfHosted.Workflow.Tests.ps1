@@ -12,8 +12,8 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
-Describe 'CloseLabview.SelfHosted.Workflow [REQ-012]' {
-    It 'runs close-labview action for 32-bit and 64-bit and uploads logs [REQ-012]' {
+Describe 'CloseLabview.SelfHosted.Workflow' {
+    It 'runs close-labview action for 32-bit and 64-bit and uploads logs' -Tag 'REQ-012' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfFile = Join-Path $repoRoot '.github/workflows/close-labview-external.yml'
 

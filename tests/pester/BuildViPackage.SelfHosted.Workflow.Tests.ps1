@@ -12,8 +12,8 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
-Describe 'BuildViPackage.SelfHosted.Workflow [REQ-011]' {
-    It 'runs build-vi-package action and uploads vi package artifact [REQ-011]' {
+Describe 'BuildViPackage.SelfHosted.Workflow' {
+    It 'runs build-vi-package action and uploads vi package artifact' -Tag 'REQ-011' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/build-vi-package-self-hosted.yml'
         if (-not (Test-Path $workflowPath)) {

@@ -12,8 +12,8 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
-Describe 'RevertDevelopmentMode.SelfHosted.Workflow [REQ-019]' {
-    It 'runs revert-development-mode action on a self-hosted runner and uploads configuration artifact [REQ-019]' {
+Describe 'RevertDevelopmentMode.SelfHosted.Workflow' {
+    It 'runs revert-development-mode action on a self-hosted runner and uploads configuration artifact' -Tag 'REQ-019' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'

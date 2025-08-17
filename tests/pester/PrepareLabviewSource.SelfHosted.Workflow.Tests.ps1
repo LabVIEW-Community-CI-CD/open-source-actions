@@ -12,8 +12,8 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
-Describe 'PrepareLabviewSource.SelfHosted.Workflow [REQ-011]' {
-    It 'runs prepare-labview-source action and uploads prepared source artifact [REQ-011]' {
+Describe 'PrepareLabviewSource.SelfHosted.Workflow' {
+    It 'runs prepare-labview-source action and uploads prepared source artifact' -Tag 'REQ-011' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'

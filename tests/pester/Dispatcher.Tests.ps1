@@ -11,8 +11,8 @@ $global:dispatcher = Join-Path $repoRoot 'actions' 'Invoke-OSAction.ps1'
 Import-Module (Join-Path $PSScriptRoot 'Helper' 'ArgsJson.psm1')
 
 
-Describe 'Unified Dispatcher — discovery and validation [REQ-001]' {
-  It 'lists available actions [REQ-001]' {
+Describe 'Unified Dispatcher — discovery and validation' {
+  It 'lists available actions' -Tag 'REQ-001' {
     $json = Get-LabVIEWIconEditorArgsJson
     $out = pwsh -NoProfile -File $global:dispatcher -ListActions -ArgsJson $json | Out-String
     $out | Should -Match 'apply-vipc'
@@ -20,7 +20,7 @@ Describe 'Unified Dispatcher — discovery and validation [REQ-001]' {
     $out | Should -Match 'missing-in-project'
     $out | Should -Match 'run-unit-tests'
   }
-  It 'describes a known action (build-lvlibp) [REQ-001]' {
+  It 'describes a known action (build-lvlibp)' -Tag 'REQ-001' {
     $json = Get-LabVIEWIconEditorArgsJson
     $out = pwsh -NoProfile -File $global:dispatcher -Describe build-lvlibp -ArgsJson $json | Out-String
     $out | Should -Match 'Major'
@@ -30,23 +30,23 @@ Describe 'Unified Dispatcher — discovery and validation [REQ-001]' {
     $out | Should -Match 'Commit'
   }
 
-  It 'fails gracefully on unknown action [REQ-001]' {
+  It 'fails gracefully on unknown action' -Tag 'REQ-001' {
     $json = Get-LabVIEWIconEditorArgsJson
     pwsh -NoProfile -File $global:dispatcher -ActionName no-such-action -ArgsJson $json *>$null
     $LASTEXITCODE | Should -Be 1
   }
 }
 
-Describe 'ArgsJson path handling [REQ-001]' {
-  It 'handles Windows paths without manual escaping [REQ-001]' {
+Describe 'ArgsJson path handling' {
+  It 'handles Windows paths without manual escaping' -Tag 'REQ-001' {
     $json = Get-LabVIEWIconEditorArgsJson
     & $global:dispatcher -ActionName set-development-mode -ArgsJson $json -DryRun *> $null
     $LASTEXITCODE | Should -Be 0
   }
 }
 
-Describe 'ArgsFile handling [REQ-001]' {
-  It 'merges file arguments with inline overrides [REQ-001]' {
+Describe 'ArgsFile handling' {
+  It 'merges file arguments with inline overrides' -Tag 'REQ-001' {
     $jsonFile = Join-Path $TestDrive 'args.json'
     @{ MinimumSupportedLVVersion = '2021'; SupportedBitness = '32' } | ConvertTo-Json -Compress | Set-Content -Path $jsonFile
 
@@ -59,8 +59,8 @@ Describe 'ArgsFile handling [REQ-001]' {
 }
 
 
-Describe 'Filter-Args helper [REQ-001]' {
-  It 'returns UnknownParams when requested [REQ-001]' {
+Describe 'Filter-Args helper' {
+  It 'returns UnknownParams when requested' -Tag 'REQ-001' {
     $ast = [System.Management.Automation.Language.Parser]::ParseFile($global:dispatcher, [ref]$null, [ref]$null)
     $funcAst = $ast.Find({ param($a) $a -is [System.Management.Automation.Language.FunctionDefinitionAst] -and $a.Name -eq 'Filter-Args' }, $true)
     Invoke-Expression $funcAst.Extent.Text
@@ -72,8 +72,8 @@ Describe 'Filter-Args helper [REQ-001]' {
   }
 }
 
-  Describe 'close-labview parameter aliases [REQ-001]' {
-    It 'accepts camelCase args [REQ-001]' {
+  Describe 'close-labview parameter aliases' {
+    It 'accepts camelCase args' -Tag 'REQ-001' {
       $base = Get-LabVIEWIconEditorArgsJson | ConvertFrom-Json
       $json = @{
         MinimumSupportedLVVersion = $base.MinimumSupportedLVVersion
@@ -83,7 +83,7 @@ Describe 'Filter-Args helper [REQ-001]' {
       $LASTEXITCODE | Should -Be 0
     }
 
-    It 'accepts snake_case args without warnings [REQ-001]' {
+    It 'accepts snake_case args without warnings' -Tag 'REQ-001' {
       $base = Get-LabVIEWIconEditorArgsJson | ConvertFrom-Json
       $json = @{
         minimum_supported_lv_version = $base.MinimumSupportedLVVersion

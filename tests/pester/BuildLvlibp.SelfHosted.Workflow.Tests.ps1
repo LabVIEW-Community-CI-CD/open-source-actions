@@ -12,8 +12,8 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
-Describe 'BuildLvlibp.SelfHosted.Workflow [REQ-010]' {
-    It 'runs build-lvlibp action and uploads lvlibp artifact [REQ-010]' {
+Describe 'BuildLvlibp.SelfHosted.Workflow' {
+    It 'runs build-lvlibp action and uploads lvlibp artifact' -Tag 'REQ-010' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/build-lvlibp-self-hosted.yml'
         $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml

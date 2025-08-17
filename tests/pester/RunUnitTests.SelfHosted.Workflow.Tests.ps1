@@ -12,8 +12,8 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
-Describe 'RunUnitTests.SelfHosted.Workflow [REQ-011]' {
-    It 'runs run-unit-tests action and uploads unit-test results [REQ-011]' {
+Describe 'RunUnitTests.SelfHosted.Workflow' {
+    It 'runs run-unit-tests action and uploads unit-test results' -Tag 'REQ-011' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $workflowPath = Join-Path $repoRoot '.github/workflows/run-unit-tests-self-hosted.yml'
         $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml

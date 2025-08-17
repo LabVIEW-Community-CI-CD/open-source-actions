@@ -103,6 +103,12 @@ export async function collectTestCases(files: string[], evidenceDir: string, os?
             );
             const evidenceVal = evidenceProp?.value?.[0] ?? evidenceProp?._;
             if (evidenceVal) test.evidence = evidenceVal;
+            for (const p of props) {
+              if (p.name?.[0] === 'requirement') {
+                const val = p.value?.[0] ?? p._;
+                if (typeof val === 'string') test.requirements.push(val.toUpperCase());
+              }
+            }
           }
           if (!test.evidence) {
             const evidence = evidenceFiles.find((f) => f.startsWith(id) || f.startsWith(id + '.'));
@@ -112,9 +118,6 @@ export async function collectTestCases(files: string[], evidenceDir: string, os?
             const ownerMatch = name.match(/\[Owner:([^\]]+)\]/i);
             if (ownerMatch) test.owner = ownerMatch[1];
           }
-          const reqMatches = [...name.matchAll(/\[(REQ-\d+)\]/gi)].map((m) => m[1].toUpperCase());
-          const uniqueReqMatches = new Set(reqMatches);
-          if (uniqueReqMatches.size) test.requirements.push(...uniqueReqMatches);
           tests.push(test);
         }
       }

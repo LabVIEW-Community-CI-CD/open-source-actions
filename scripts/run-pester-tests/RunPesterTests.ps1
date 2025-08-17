@@ -17,6 +17,30 @@ $pesterDir = Join-Path $repoRoot 'tests' 'pester'
 
 # Run Pester and capture results
 $pesterResult = Invoke-Pester -Path $pesterDir -PassThru
+
+# Export JUnit report with requirement properties derived from tags
+$junitPath = Join-Path $repoRoot 'pester-junit.xml'
+$pesterResult | Export-JUnitReport -Path $junitPath
+[xml]$junitXml = Get-Content -Path $junitPath
+foreach ($t in $pesterResult.Tests) {
+    $name = ($t.Path -join '.')
+    $case = $junitXml.SelectSingleNode("//testcase[@name='${name}']")
+    if (-not $case) { continue }
+    foreach ($tag in @($t.Tag)) {
+        if ($tag -match '^REQ-\d+$') {
+            $props = $case.SelectSingleNode('properties')
+            if (-not $props) {
+                $props = $junitXml.CreateElement('properties')
+                $null = $case.AppendChild($props)
+            }
+            $prop = $junitXml.CreateElement('property')
+            $prop.SetAttribute('name', 'requirement')
+            $prop.SetAttribute('value', $tag.ToUpper())
+            $null = $props.AppendChild($prop)
+        }
+    }
+}
+$junitXml.Save($junitPath)
 $tests = $null
 if ($pesterResult.PSObject.Properties['TestResult']) {
     $tests = $pesterResult.TestResult

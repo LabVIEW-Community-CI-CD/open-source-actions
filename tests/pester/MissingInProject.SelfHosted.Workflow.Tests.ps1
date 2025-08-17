@@ -12,8 +12,8 @@ if (-not (Get-Command ConvertFrom-Yaml -ErrorAction SilentlyContinue)) {
     }
 }
 
-Describe 'MissingInProject.SelfHosted.Workflow [REQ-014]' {
-    It 'runs missing-in-project action on a self-hosted runner and uploads findings report [REQ-014]' {
+Describe 'MissingInProject.SelfHosted.Workflow' {
+    It 'runs missing-in-project action on a self-hosted runner and uploads findings report' -Tag 'REQ-014' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'
