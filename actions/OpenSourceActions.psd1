@@ -23,6 +23,7 @@
     'InvokeRenameFile'
     'InvokeRestoreSetupLVSource'
     'InvokeRevertDevelopmentMode'
+    'InvokeRunPesterTests'
     'InvokeRunUnitTests'
     'InvokeSetDevelopmentMode'
   )

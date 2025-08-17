@@ -545,6 +545,26 @@
       }
     }
   },
+  "InvokeRunPesterTests": {
+    "description": "",
+    "parameters": {
+      "DryRun": {
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      "gcliPath": {
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      "WorkingDirectory": {
+        "type": "string",
+        "required": true,
+        "description": ""
+      }
+    }
+  },
   "InvokeRunUnitTests": {
     "description": "",
     "parameters": {

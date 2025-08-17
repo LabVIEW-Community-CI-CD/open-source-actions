@@ -32,9 +32,10 @@ $FallbackRegistry = [ordered]@{
     'rename-file'              = 'InvokeRenameFile'
     'restore-setup-lv-source'  = 'InvokeRestoreSetupLVSource'
     'revert-development-mode'  = 'InvokeRevertDevelopmentMode'
+    'run-pester-tests'         = 'InvokeRunPesterTests'
     'run-unit-tests'           = 'InvokeRunUnitTests'
     'set-development-mode'     = 'InvokeSetDevelopmentMode'
-}
+  }
 
 $Registry = $null
 $dispatcherPath = Join-Path $PSScriptRoot '..' 'dispatchers.json'
