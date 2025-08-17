@@ -20,6 +20,7 @@ jobs:
           node-version: 24
       - run: npm run check:node
       - run: npm install
+      - run: npm run link:check
       - run: npm run test:ci
       - run: npm run derive:registry
       - run: npm run generate:summary
