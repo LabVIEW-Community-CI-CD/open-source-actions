@@ -62,6 +62,24 @@ test('collectTestCases uses machine-name property for owner', async () => {
   await fs.rm(dir, { recursive: true, force: true });
 });
 
+test('collectTestCases uses evidence property and falls back to directory scan', async () => {
+  const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'evidence-'));
+  const xmlProp = `<testsuite><testcase name="alpha" time="0"><properties><property name="evidence" value="http://ci/example.log"/></properties></testcase></testsuite>`;
+  const propPath = path.join(dir, 'junit1.xml');
+  await fs.writeFile(propPath, xmlProp);
+  const xmlFallback = `<testsuite><testcase name="beta" time="0"/></testsuite>`;
+  const fallbackPath = path.join(dir, 'junit2.xml');
+  await fs.writeFile(fallbackPath, xmlFallback);
+  await fs.writeFile(path.join(dir, 'beta.txt'), 'x');
+
+  const testsProp = await collectTestCases([propPath], dir, 'linux');
+  assert.strictEqual(testsProp[0].evidence, 'http://ci/example.log');
+  const testsFallback = await collectTestCases([fallbackPath], dir, 'linux');
+  assert.strictEqual(testsFallback[0].evidence, path.join('evidence', 'beta.txt'));
+
+  await fs.rm(dir, { recursive: true, force: true });
+});
+
 test('groupToMarkdown assigns numeric identifiers', () => {
   const groups = [{
     id: 'REQ-XYZ',
