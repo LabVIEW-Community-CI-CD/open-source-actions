@@ -236,6 +236,20 @@ export function requirementsSummaryToMarkdown(groups: RequirementGroup[]) {
   return lines.join('\n');
 }
 
+export function requirementTestsToMarkdown(groups: RequirementGroup[]) {
+  const lines = [
+    '### Requirement Testcases',
+    '| Requirement ID | Test ID | Status |',
+    '| --- | --- | --- |',
+  ];
+  for (const g of groups) {
+    for (const t of g.tests) {
+      lines.push(`| ${g.id} | ${t.name} | ${t.status} |`);
+    }
+  }
+  return lines.join('\n');
+}
+
 export function groupToMarkdown(groups: RequirementGroup[], limit?: number) {
   const lines: string[] = [];
   let remaining = limit ?? Infinity;
@@ -376,6 +390,7 @@ async function main() {
   const matrixMd = groupToMarkdown(groups);
   const summaryMd = summaryToMarkdown(totals);
   const requirementsMd = requirementsSummaryToMarkdown(groups);
+  const requirementsTestsMd = requirementTestsToMarkdown(groups);
 
   const wrapperFiles = await glob('*/action.yml', { nodir: true });
   const wrapperDirs = wrapperFiles.map(f => path.dirname(f)).sort();
@@ -386,6 +401,8 @@ async function main() {
   await fs.writeFile(path.join(outDir, 'traceability.md'), redact(`### Test Traceability Matrix\n\n${matrixMd}`));
   const combinedSummary = `${summaryMd}\n\n${requirementsMd}\n\n_For detailed per-test information, see [traceability.md](traceability.md)._`;
   await fs.writeFile(path.join(outDir, 'summary.md'), redact(combinedSummary));
+  const reqSummary = `${requirementsMd}\n\n${requirementsTestsMd}`;
+  await fs.writeFile(path.join(outDir, 'requirements-summary.md'), redact(reqSummary));
   await fs.writeFile(path.join(outDir, 'action-docs.json'), JSON.stringify(docs, null, 2));
   await fs.writeFile(path.join(outDir, 'action-docs.md'), redact(markdown));
 
