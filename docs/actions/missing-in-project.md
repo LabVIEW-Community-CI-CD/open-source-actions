@@ -16,7 +16,7 @@ Common parameters are described in [Common parameters](../common-parameters.md).
 
 ### Optional
 
-None.
+- **WorkingDirectory** (`string`): Base directory for resolving `RelativePath`. Use `.` for the repository root.
 
 ## CLI example
 
@@ -38,7 +38,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 | `arch` | `Arch` | Target architecture (32 or 64). |
 | `project_file` | `ProjectFile` | Path to the LabVIEW project (.lvproj). |
 | `gcli_path` | `gcliPath` | Optional path to the g-cli executable. |
-| `working_directory` | `WorkingDirectory` | Working directory where the action will run. |
+| `working_directory` | `WorkingDirectory` | Working directory for the action; base path for `relative_path`. |
 | `log_level` | `LogLevel` | Verbosity level (ERROR\|WARN\|INFO\|DEBUG). |
 | `dry_run` | `DryRun` | If true, simulate the action without side effects. |
 

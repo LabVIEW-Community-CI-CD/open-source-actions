@@ -20,7 +20,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory (repository root by default)."
       },
       "SupportedBitness": {
         "type": "string",
@@ -50,7 +50,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory (repository root by default)."
       },
       "SupportedBitness": {
         "type": "string",
@@ -125,7 +125,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory (repository root by default)."
       }
     }
   },
@@ -185,7 +185,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory (repository root by default)."
       },
       "SupportedBitness": {
         "type": "string",
@@ -250,7 +250,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory (repository root by default)."
       },
       "ReleaseNotesFile": {
         "type": "string",
@@ -401,7 +401,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory (repository root by default)."
       },
       "ReleaseNotesFile": {
         "type": "string",
@@ -451,7 +451,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory (repository root by default)."
       },
       "SupportedBitness": {
         "type": "string",
@@ -516,7 +516,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory (repository root by default)."
       },
       "SupportedBitness": {
         "type": "string",
@@ -541,7 +541,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory (repository root by default)."
       }
     }
   },
@@ -561,7 +561,7 @@
       "WorkingDirectory": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Base directory for resolving RelativePath values. Use '.' for the repository root."
       }
     }
   },
@@ -606,7 +606,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": ""
+        "description": "Path relative to the action's working directory. Use '.' for the working directory (repository root by default)."
       }
     }
   },

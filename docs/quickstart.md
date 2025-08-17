@@ -14,6 +14,7 @@ jobs:
         with:
           minimum_supported_lv_version: '2019'
           supported_bitness: '32'
+          working_directory: .
           relative_path: .
           labview_project: MyProject.lvproj
           build_spec: My Build
@@ -25,6 +26,7 @@ jobs:
 ```
 
 In this step, the wrapper action invokes the dispatcher to run the **build-lvlibp** task. The typed inputs provide the required parameters to build a 32-bit LV library. The dispatcher locates the appropriate script and executes it, failing the step if a problem occurs.
+Relative path inputs are evaluated from the specified `working_directory`, so `working_directory: .` targets the repository root.
 3. **Invoke via PowerShell (CLI):** You can also call the dispatcher script directly. For example, the above build can be run in a PowerShell session or script:
 
 ```powershell

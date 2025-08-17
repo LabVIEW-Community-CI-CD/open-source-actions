@@ -13,7 +13,7 @@ Common parameters are described in [Common parameters](../common-parameters.md).
 - **MinimumSupportedLVVersion** (`string`): Minimum LabVIEW version supported by the package.
 - **SupportedBitness** (`string`): "32" or "64" bitness of LabVIEW.
 - **LabVIEWMinorRevision** (`string`): LabVIEW minor revision (e.g., "3").
-- **RelativePath** (`string`): Repository root used to resolve paths.
+- **RelativePath** (`string`): Path relative to the action's working directory. Use `.` to target the working directory itself (repository root by default).
 - **VIPBPath** (`string`): Relative path to the VIPB file to build.
 - **Major** (`int`): Major version component.
 - **Minor** (`int`): Minor version component.
@@ -25,6 +25,7 @@ Common parameters are described in [Common parameters](../common-parameters.md).
 ### Optional
 
 - **ReleaseNotesFile** (`string`): Path to a release notes file included in the package.
+- **WorkingDirectory** (`string`): Base directory for resolving `RelativePath`. Use `.` for the repository root.
 
 ## CLI example
 
@@ -53,7 +54,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 | `minimum_supported_lv_version` | `MinimumSupportedLVVersion` | Minimum LabVIEW version supported. |
 | `supported_bitness` | `SupportedBitness` | "32" or "64" bitness of LabVIEW. |
 | `labview_minor_revision` | `LabVIEWMinorRevision` | LabVIEW minor revision. |
-| `relative_path` | `RelativePath` | Relative path containing the project. |
+| `relative_path` | `RelativePath` | Path relative to `working_directory`. Use `.` to reference the working directory. |
 | `vipb_path` | `VIPBPath` | Path to the VIPB file. |
 | `major` | `Major` | Major version component. |
 | `minor` | `Minor` | Minor version component. |
@@ -63,7 +64,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 | `display_information_json` | `DisplayInformationJSON` | JSON string of display information. |
 | `release_notes_file` | `ReleaseNotesFile` | Optional path to release notes file. |
 | `gcli_path` | `gcliPath` | Optional path to the g-cli executable. |
-| `working_directory` | `WorkingDirectory` | Working directory where the action will run. |
+| `working_directory` | `WorkingDirectory` | Working directory for the action; base path for `relative_path`. |
 | `log_level` | `LogLevel` | Verbosity level (ERROR\|WARN\|INFO\|DEBUG). |
 | `dry_run` | `DryRun` | If true, simulate the action without side effects. |
 
@@ -76,6 +77,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
     minimum_supported_lv_version: '2023'
     supported_bitness: '64'
     labview_minor_revision: '3'
+    working_directory: '.'
     relative_path: '.'
     vipb_path: 'Tooling/deployment/NI Icon editor.vipb'
     major: 1

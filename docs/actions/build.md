@@ -10,7 +10,7 @@ Common parameters are described in [Common parameters](../common-parameters.md).
 
 ### Required
 
-- **RelativePath** (`string`): Path to the repository root.
+- **RelativePath** (`string`): Path relative to the action's working directory. Use `.` to target the working directory itself (repository root by default).
 - **Major** (`int`): Major version component.
 - **Minor** (`int`): Minor version component.
 - **Patch** (`int`): Patch version component.
@@ -22,7 +22,7 @@ Common parameters are described in [Common parameters](../common-parameters.md).
 
 ### Optional
 
-None.
+- **WorkingDirectory** (`string`): Base directory for resolving `RelativePath`. Use `.` for the repository root.
 
 ## CLI example
 
@@ -46,7 +46,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 
 | Input | CLI parameter | Description |
 | --- | --- | --- |
-| `relative_path` | `RelativePath` | Relative path containing the LabVIEW project. |
+| `relative_path` | `RelativePath` | Path relative to `working_directory`. Use `.` to reference the working directory. |
 | `major` | `Major` | Major version component. |
 | `minor` | `Minor` | Minor version component. |
 | `patch` | `Patch` | Patch version component. |
@@ -56,7 +56,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 | `company_name` | `CompanyName` | Company name for the build. |
 | `author_name` | `AuthorName` | Author name for the build. |
 | `gcli_path` | `gcliPath` | Optional path to the g-cli executable. |
-| `working_directory` | `WorkingDirectory` | Working directory where the action will run. |
+| `working_directory` | `WorkingDirectory` | Working directory for the action; base path for `relative_path`. |
 | `log_level` | `LogLevel` | Verbosity level (ERROR\|WARN\|INFO\|DEBUG). |
 | `dry_run` | `DryRun` | If true, simulate the action without side effects. |
 
@@ -66,6 +66,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - name: Build project
   uses: LabVIEW-Community-CI-CD/open-source-actions/build@v1
   with:
+    working_directory: '.'
     relative_path: '.'
     major: 1
     minor: 0

@@ -12,7 +12,7 @@ Common parameters are described in [Common parameters](../common-parameters.md).
 
 - **MinimumSupportedLVVersion** (`string`): LabVIEW version used for the build.
 - **SupportedBitness** (`string`): "32" or "64" bitness of LabVIEW.
-- **RelativePath** (`string`): Working directory or project root.
+- **RelativePath** (`string`): Path relative to the action's working directory. Use `.` to target the working directory itself (repository root by default).
 - **LabVIEW_Project** (`string`): Path to the LabVIEW project (.lvproj).
 - **Build_Spec** (`string`): Name of the build specification to execute.
 - **Major** (`int`): Major version number.
@@ -23,7 +23,7 @@ Common parameters are described in [Common parameters](../common-parameters.md).
 
 ### Optional
 
-None.
+- **WorkingDirectory** (`string`): Base directory for resolving `RelativePath`. Use `.` for the repository root.
 
 ## CLI example
 
@@ -50,7 +50,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 | --- | --- | --- |
 | `minimum_supported_lv_version` | `MinimumSupportedLVVersion` | Minimum LabVIEW version supported. |
 | `supported_bitness` | `SupportedBitness` | "32" or "64" bitness of LabVIEW. |
-| `relative_path` | `RelativePath` | Relative path containing the LabVIEW project. |
+| `relative_path` | `RelativePath` | Path relative to `working_directory`. Use `.` to reference the working directory. |
 | `labview_project` | `LabVIEW_Project` | Path to the LabVIEW project file. |
 | `build_spec` | `Build_Spec` | Name of the build specification. |
 | `major` | `Major` | Major version component. |
@@ -59,7 +59,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 | `build` | `Build` | Build number. |
 | `commit` | `Commit` | Commit identifier. |
 | `gcli_path` | `gcliPath` | Optional path to the g-cli executable. |
-| `working_directory` | `WorkingDirectory` | Working directory where the action will run. |
+| `working_directory` | `WorkingDirectory` | Working directory for the action; base path for `relative_path`. |
 | `log_level` | `LogLevel` | Verbosity level (ERROR\|WARN\|INFO\|DEBUG). |
 | `dry_run` | `DryRun` | If true, simulate the action without side effects. |
 
@@ -71,6 +71,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
   with:
     minimum_supported_lv_version: '2020'
     supported_bitness: '64'
+    working_directory: '.'
     relative_path: '.'
     labview_project: 'Source/MyProject.lvproj'
     build_spec: 'PackedLib Build'
