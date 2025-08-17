@@ -143,7 +143,7 @@ jobs:
           REQ_MAPPING_FILE: requirements.json
           DISPATCHER_REGISTRY: dispatchers.json
           EVIDENCE_DIR: test-screenshots
-      - run: node scripts/print-pester-traceability.ts >> "$GITHUB_STEP_SUMMARY"
+      - run: npx tsx scripts/print-pester-traceability.ts >> "$GITHUB_STEP_SUMMARY"
       - name: Include setup information
         run: |
           echo '## ubuntu-24.04' >> "$GITHUB_STEP_SUMMARY"
