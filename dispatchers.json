@@ -20,7 +20,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": "Path relative to the action's working directory. Use '.' for the working directory."
+        "description": "Path relative to WorkingDirectory that locates the project or repository root."
       },
       "SupportedBitness": {
         "type": "string",
@@ -50,7 +50,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": "Path relative to the action's working directory. Use '.' for the working directory."
+        "description": "Path relative to WorkingDirectory that locates the project or repository root."
       },
       "SupportedBitness": {
         "type": "string",
@@ -125,7 +125,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": "Path relative to the action's working directory. Use '.' for the working directory."
+        "description": "Path relative to WorkingDirectory that locates the project or repository root."
       }
     }
   },
@@ -185,7 +185,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": "Path relative to the action's working directory. Use '.' for the working directory."
+        "description": "Path relative to WorkingDirectory that locates the project or repository root."
       },
       "SupportedBitness": {
         "type": "string",
@@ -250,7 +250,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": "Path relative to the action's working directory. Use '.' for the working directory."
+        "description": "Path relative to WorkingDirectory that locates the project or repository root."
       },
       "ReleaseNotesFile": {
         "type": "string",
@@ -401,7 +401,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": "Path relative to the action's working directory. Use '.' for the working directory."
+        "description": "Path relative to WorkingDirectory that locates the project or repository root."
       },
       "ReleaseNotesFile": {
         "type": "string",
@@ -451,7 +451,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": "Path relative to the action's working directory. Use '.' for the working directory."
+        "description": "Path relative to WorkingDirectory that locates the project or repository root."
       },
       "SupportedBitness": {
         "type": "string",
@@ -516,7 +516,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": "Path relative to the action's working directory. Use '.' for the working directory."
+        "description": "Path relative to WorkingDirectory that locates the project or repository root."
       },
       "SupportedBitness": {
         "type": "string",
@@ -541,7 +541,7 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": "Path relative to the action's working directory. Use '.' for the working directory."
+        "description": "Path relative to WorkingDirectory that locates the project or repository root."
       }
     }
   },
@@ -561,7 +561,7 @@
       "WorkingDirectory": {
         "type": "string",
         "required": true,
-        "description": "Working directory for the action; RelativePath is resolved from here."
+        "description": ""
       }
     }
   },
@@ -606,7 +606,32 @@
       "RelativePath": {
         "type": "string",
         "required": true,
-        "description": "Path relative to the action's working directory. Use '.' for the working directory."
+        "description": "Path relative to WorkingDirectory that locates the project or repository root."
+      }
+    }
+  },
+  "Run": {
+    "description": "",
+    "parameters": {
+      "Arguments": {
+        "type": "string",
+        "required": true,
+        "description": ""
+      },
+      "DryRun": {
+        "type": "boolean",
+        "required": false,
+        "description": ""
+      },
+      "gcliPath": {
+        "type": "string",
+        "required": false,
+        "description": ""
+      },
+      "ScriptSegments": {
+        "type": "string",
+        "required": true,
+        "description": ""
       }
     }
   },
