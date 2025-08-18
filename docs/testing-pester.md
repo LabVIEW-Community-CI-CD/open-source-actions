@@ -1,5 +1,37 @@
 # Pester Testing
 
+## Setup
+
+Clone the [`labview-icon-editor`](https://github.com/LabVIEW-Community-CI-CD/labview-icon-editor) repository under
+`open-source-actions/labview-icon-editor`:
+
+```bash
+git clone https://github.com/LabVIEW-Community-CI-CD/labview-icon-editor.git labview-icon-editor
+```
+
+Alternatively, set `LABVIEW_ICON_EDITOR_PATH` to the location of an existing clone:
+
+```bash
+export LABVIEW_ICON_EDITOR_PATH=/path/to/labview-icon-editor
+```
+
+Required tooling:
+
+- PowerShell 7.5.1
+- Node.js 24 or newer
+- [`actionlint`](https://github.com/rhysd/actionlint)
+
+Sample command sequence to run the suite:
+
+```powershell
+npm install
+actionlint
+$cfg = New-PesterConfiguration
+$cfg.Run.Path = './tests/pester'
+$cfg.TestResult.Enabled = $false
+Invoke-Pester -Configuration $cfg
+```
+
 ## Canonical argument helper
 
 Pester tests share a small helper module, `tests/pester/Helper/ArgsJson.psm1`, which exposes `Get-LabVIEWIconEditorArgsJson`. The function returns a canonical set of dispatcher arguments and the project root so every test starts from the same baseline. Using the helper avoids repeating boilerplate and keeps tests resilient to environment differences.
