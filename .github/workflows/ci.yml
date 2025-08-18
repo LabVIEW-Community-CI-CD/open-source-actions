@@ -58,6 +58,9 @@ jobs:
       RUNNER_TYPE: ${{ matrix.runner_type }}
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-pwsh@v2
+        with:
+          version: '7.5.1'
       - name: Capture setup info
         shell: pwsh
         run: |
