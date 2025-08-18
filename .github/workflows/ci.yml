@@ -62,11 +62,6 @@ jobs:
         if: matrix.os == 'windows-latest'
         shell: pwsh
         run: |
-          $expectedBuild = '10.0.20348'
-          $build = (Get-ComputerInfo).OsVersion
-          if ($build -ne $expectedBuild) {
-            throw "Unexpected OS build: $build"
-          }
           $msiUrl = 'https://github.com/PowerShell/PowerShell/releases/download/v7.5.1/PowerShell-7.5.1-win-x64.msi'
           $msiPath = Join-Path $env:RUNNER_TEMP 'PowerShell-7.5.1-win-x64.msi'
           Invoke-WebRequest -Uri $msiUrl -OutFile $msiPath
