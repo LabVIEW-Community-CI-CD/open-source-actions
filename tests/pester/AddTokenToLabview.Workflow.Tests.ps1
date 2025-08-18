@@ -12,8 +12,8 @@ Describe 'AddTokenToLabview.Workflow' {
 
     It 'runs add-token-to-labview action and uploads token artifact' -Tag 'REQ-008' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
-        $workflowPath = Join-Path $repoRoot '.github/workflows/add-token-to-labview-self-hosted.yml'
-        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
+        $workflowPath = Join-Path $repoRoot '.github/workflows/add-token-to-labview-self-hosted.json'
+        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Json -AsHashtable
         $job = $wf.jobs.'add-token'
         $addStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -eq './add-token-to-labview/action.yml' } | Select-Object -First 1
         $checkoutSteps = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -eq 'actions/checkout@v4' }

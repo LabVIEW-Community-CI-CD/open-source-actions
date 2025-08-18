@@ -11,8 +11,8 @@ Describe 'PrepareLabviewSource.Workflow' {
 
     It 'runs prepare-labview-source action and uploads prepared source artifact' -Tag 'REQ-016' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
-        $workflowPath = Join-Path $repoRoot '.github/workflows/prepare-labview-source-self-hosted.yml'
-        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
+        $workflowPath = Join-Path $repoRoot '.github/workflows/prepare-labview-source-self-hosted.json'
+        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Json -AsHashtable
         $job = $wf.jobs.'prepare-labview-source'
         $prepareStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -eq './prepare-labview-source/action.yml' } | Select-Object -First 1
         $artifactStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -like 'actions/upload-artifact@*' } | Select-Object -First 1

@@ -11,8 +11,8 @@ Describe 'MissingInProject.Workflow' {
 
     It 'runs missing-in-project action and uploads findings report' -Tag 'REQ-014' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
-        $workflowPath = Join-Path $repoRoot '.github/workflows/missing-in-project-self-hosted.yml'
-        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
+        $workflowPath = Join-Path $repoRoot '.github/workflows/missing-in-project-self-hosted.json'
+        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Json -AsHashtable
         $job = $wf.jobs.'missing-in-project'
         $missingStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -eq './missing-in-project/action.yml' } | Select-Object -First 1
         $artifactStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -like 'actions/upload-artifact@*' } | Select-Object -First 1

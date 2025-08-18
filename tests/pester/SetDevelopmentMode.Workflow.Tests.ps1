@@ -11,8 +11,8 @@ Describe 'SetDevelopmentMode.Workflow' {
 
     It 'runs set-development-mode action and uploads logs' -Tag 'REQ-021' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
-        $workflowPath = Join-Path $repoRoot '.github/workflows/set-development-mode-self-hosted.yml'
-        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
+        $workflowPath = Join-Path $repoRoot '.github/workflows/set-development-mode-self-hosted.json'
+        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Json -AsHashtable
         $job = $wf.jobs.'set-development-mode'
         $setStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -eq './set-development-mode/action.yml' } | Select-Object -First 1
         $artifactStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -like 'actions/upload-artifact@*' } | Select-Object -First 1

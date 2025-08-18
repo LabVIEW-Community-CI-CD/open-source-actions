@@ -29,20 +29,22 @@ In this step, the wrapper action invokes the dispatcher to run the **build-lvlib
 3. **Invoke via PowerShell (CLI):** You can also call the dispatcher script directly. For example, the above build can be run in a PowerShell session or script:
 
 ```powershell
-$yaml = @'
-MinimumSupportedLVVersion: "2019"
-SupportedBitness: "32"
-WorkingDirectory: .
-RelativePath: .
-LabVIEW_Project: MyProject.lvproj
-Build_Spec: "My Build"
-Major: 1
-Minor: 0
-Patch: 0
-Build: 123
-Commit: abcdef
+$json = @'
+{
+  "MinimumSupportedLVVersion": "2019",
+  "SupportedBitness": "32",
+  "WorkingDirectory": ".",
+  "RelativePath": ".",
+  "LabVIEW_Project": "MyProject.lvproj",
+  "Build_Spec": "My Build",
+  "Major": 1,
+  "Minor": 0,
+  "Patch": 0,
+  "Build": 123,
+  "Commit": "abcdef"
+}
 '@
-pwsh -File actions/Invoke-OSAction.ps1 -ActionName build-lvlibp -ArgsYaml (ConvertFrom-Yaml $yaml)
+pwsh -File actions/Invoke-OSAction.ps1 -ActionName build-lvlibp -ArgsJson $json
 ```
 
 This will import the **OpenSourceActions** module and run the **Build** adapter. On completion, the script returns with an exit code (0 for success or a non-zero error code). You can include optional flags like `-WorkingDirectory` to change directory before execution, or `-DryRun` to simulate the action (see below). For details on these and other dispatcher flags, see [Common Parameters](common-parameters.md).

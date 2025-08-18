@@ -11,14 +11,14 @@ Describe 'CloseLabview.Workflow' {
 
     It 'runs close-labview action for 32-bit and 64-bit and uploads logs' -Tag 'REQ-012' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
-        $wfFile = Join-Path $repoRoot '.github/workflows/close-labview-external.yml'
+        $wfFile = Join-Path $repoRoot '.github/workflows/close-labview-external.json'
 
         if (-not (Test-Path $wfFile)) {
             Set-ItResult -Skipped -Because 'close-labview-external workflow not found'
             return
         }
 
-        $wf = Get-Content -Raw $wfFile | ConvertFrom-Yaml
+        $wf = Get-Content -Raw $wfFile | ConvertFrom-Json -AsHashtable
         $jobFound = $false
 
         foreach ($jobEntry in $wf.jobs.GetEnumerator()) {
@@ -51,7 +51,7 @@ Describe 'CloseLabview.Workflow' {
         }
 
         if (-not $jobFound) {
-            Set-ItResult -Failed -Because 'No steps found using close-labview action in close-labview-external.yml'
+            Set-ItResult -Failed -Because 'No steps found using close-labview action in close-labview-external.json'
         }
     }
 }

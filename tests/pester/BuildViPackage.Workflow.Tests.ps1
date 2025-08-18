@@ -11,12 +11,12 @@ Describe 'BuildViPackage.Workflow' {
 
     It 'runs build-vi-package action and uploads vi package artifact' -Tag 'REQ-011' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
-        $workflowPath = Join-Path $repoRoot '.github/workflows/build-vi-package-self-hosted.yml'
+        $workflowPath = Join-Path $repoRoot '.github/workflows/build-vi-package-self-hosted.json'
         if (-not (Test-Path $workflowPath)) {
             Set-ItResult -Skipped -Because 'Workflow file not found'
             return
         }
-        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
+        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Json -AsHashtable
         $job = $wf.jobs.'build-vi-package'
         $buildStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_['uses'] -eq './build-vi-package/action.yml' } | Select-Object -First 1
         $artifactStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_['uses'] -eq 'actions/upload-artifact@v4' -and $_['with']['path'] -match '\.vip$' } | Select-Object -First 1

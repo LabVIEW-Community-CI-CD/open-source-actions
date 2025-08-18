@@ -11,8 +11,8 @@ Describe 'RenameFile.Workflow' {
 
     It 'runs rename-file action and uploads renamed file artifact' -Tag 'REQ-017' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
-        $workflowPath = Join-Path $repoRoot '.github/workflows/rename-file-self-hosted.yml'
-        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
+        $workflowPath = Join-Path $repoRoot '.github/workflows/rename-file-self-hosted.json'
+        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Json -AsHashtable
         $job = $wf.jobs.'rename-file'
         $renameStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -eq './rename-file/action.yml' } | Select-Object -First 1
         $uploadStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -like 'actions/upload-artifact@*' } | Select-Object -First 1

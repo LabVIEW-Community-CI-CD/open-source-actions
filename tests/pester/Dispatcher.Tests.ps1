@@ -86,9 +86,10 @@ Describe 'ArgsFile handling' {
     @{ MinimumSupportedLVVersion = '2021'; SupportedBitness = '32' } | ConvertTo-Json -Compress | Set-Content -Path $jsonFile
 
     $override = @{ SupportedBitness = '64' }
+    $overrideJson = $override | ConvertTo-Json -Compress
 
     $projectRoot = (Get-LabVIEWIconEditorArgsJson).WorkingDirectory
-    $out = & $global:dispatcher -ActionName close-labview -ArgsFile $jsonFile -ArgsYaml $override -WorkingDirectory $projectRoot -DryRun *>&1 | Out-String
+    $out = & $global:dispatcher -ActionName close-labview -ArgsFile $jsonFile -ArgsJson $overrideJson -WorkingDirectory $projectRoot -DryRun *>&1 | Out-String
     $LASTEXITCODE | Should -Be 0
     $out | Should -Match '"SupportedBitness":"64"'
   }
