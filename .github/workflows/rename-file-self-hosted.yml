@@ -1,24 +1,24 @@
-name: Rename file (self-hosted test)
+name: Rename file (ubuntu test)
 
 on:
   workflow_dispatch:
 
 jobs:
   rename-file:
-    runs-on: [self-hosted, icon-editor-windows]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
         with:
           repository: LabVIEW-Community-CI-CD/labview-icon-editor
-          path: ../../labview-icon-editor/labview-icon-editor
+          path: labview-icon-editor/labview-icon-editor
       - name: Run rename-file action
         uses: ./rename-file/action.yml
         with:
-          current_filename: 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor\\README.md'
-          new_filename: 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor\\README-renamed.md'
+          current_filename: 'labview-icon-editor/labview-icon-editor/README.md'
+          new_filename: 'labview-icon-editor/labview-icon-editor/README-renamed.md'
       - name: Upload renamed file
         uses: actions/upload-artifact@v4
         with:
           name: renamed-file
-          path: 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor\\README-renamed.md'
+          path: 'labview-icon-editor/labview-icon-editor/README-renamed.md'

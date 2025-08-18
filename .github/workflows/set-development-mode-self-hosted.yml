@@ -1,23 +1,23 @@
-name: Set development mode (self-hosted test)
+name: Set development mode (ubuntu test)
 
 on:
   workflow_dispatch:
 
 jobs:
   set-development-mode:
-    runs-on: [self-hosted, icon-editor-windows]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Run set-development-mode action
         uses: ./set-development-mode/action.yml
         with:
-          relative_path: 'C:\\actions-runner\\_work\\open-source-actions\\open-source-actions'
+          relative_path: './'
           gcli_path: 'g-cli.exe'
-          working_directory: 'C:\\actions-runner\\_work\\open-source-actions\\open-source-actions'
+          working_directory: './'
           log_level: 'INFO'
           dry_run: 'true'
       - name: Upload dev mode logs
         uses: actions/upload-artifact@v4
         with:
           name: dev-mode-config
-          path: 'C:\\actions-runner\\_work\\open-source-actions\\open-source-actions\\dev-mode.log'
+          path: 'dev-mode.log'

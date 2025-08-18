@@ -1,12 +1,12 @@
 # Quickstart
 
-1. **Install Requirements:** Ensure you have **NI LabVIEW** (with command-line interface support, often via *g-cli*) installed on the target runner. Most actions require LabVIEW and the NI g-cli tool to be available (Windows runners are recommended). Also verify PowerShell 7+ (`pwsh`) is available for cross-platform script execution. Install **Node.js 24+** and run `npm install` to pull in the TypeScript dependencies used by helper scripts.
+1. **Install Requirements:** Ensure you have **NI LabVIEW** (with command-line interface support, often via *g-cli*) installed on the target runner. Most actions require LabVIEW and the NI g-cli tool to be available (Ubuntu runners are recommended). Also verify PowerShell 7+ (`pwsh`) is available for cross-platform script execution. Install **Node.js 24+** and run `npm install` to pull in the TypeScript dependencies used by helper scripts.
 2. **Invoke via Composite Action (GitHub):** Use the adapter-specific action in your workflow. For example, to **build a LabVIEW Packed Library**:
 
 ```yaml
 jobs:
   build_lvlibp:
-    runs-on: [self-hosted, icon-editor-windows]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
       - name: Build Packed Library (32-bit)
@@ -55,7 +55,7 @@ Chain the [apply-vipc](actions/apply-vipc.md), [set-development-mode](actions/se
 ```yaml
 jobs:
   build_icon_editor:
-    runs-on: [self-hosted, icon-editor-windows]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4

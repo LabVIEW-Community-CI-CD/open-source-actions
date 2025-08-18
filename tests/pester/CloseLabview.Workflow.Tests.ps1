@@ -3,11 +3,11 @@ $env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::Path
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-Describe 'CloseLabview.SelfHosted.Workflow' {
+Describe 'CloseLabview.Workflow' {
     $meta = @{
         requirement = 'REQ-012'
         Owner       = 'DevTools'
-        Evidence    = 'tests/pester/CloseLabview.SelfHosted.Workflow.Tests.ps1'
+        Evidence    = 'tests/pester/CloseLabview.Workflow.Tests.ps1'
     }
 
     It 'runs close-labview action for 32-bit and 64-bit and uploads logs' -Tag 'REQ-012' {
@@ -27,7 +27,7 @@ Describe 'CloseLabview.SelfHosted.Workflow' {
             $closeSteps = $job.steps | Where-Object { $_.uses -eq './close-labview/action.yml' }
             if ($closeSteps) {
                 $jobFound = $true
-                $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
+                $job.'runs-on' | Should -Be 'ubuntu-latest'
                 $bitness = $closeSteps | ForEach-Object { $_.with.supported_bitness }
                 $bitness | Should -Contain '32'
                 $bitness | Should -Contain '64'

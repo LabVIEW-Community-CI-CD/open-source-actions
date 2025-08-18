@@ -3,14 +3,14 @@ $env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::Path
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-Describe 'ModifyVipbDisplayInfo.SelfHosted.Workflow' {
+Describe 'ModifyVipbDisplayInfo.Workflow' {
     $meta = @{
         requirement = 'REQ-015'
         Owner       = 'DevTools'
-        Evidence    = 'tests/pester/ModifyVipbDisplayInfo.SelfHosted.Workflow.Tests.ps1'
+        Evidence    = 'tests/pester/ModifyVipbDisplayInfo.Workflow.Tests.ps1'
     }
 
-    It 'runs modify-vipb-display-info action on a self-hosted runner and uploads VIPB artifact' -Tag 'REQ-015' {
+    It 'runs modify-vipb-display-info action and uploads VIPB artifact' -Tag 'REQ-015' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'
@@ -23,7 +23,7 @@ Describe 'ModifyVipbDisplayInfo.SelfHosted.Workflow' {
                 $modStep = $job.steps | Where-Object { $_.uses -eq './modify-vipb-display-info/action.yml' } | Select-Object -First 1
                 if ($null -ne $modStep) {
                     $workflowFound = $true
-                    $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
+                    $job.'runs-on' | Should -Be 'ubuntu-latest'
                     $modStep.uses | Should -Be './modify-vipb-display-info/action.yml'
                     $modStep.with.supported_bitness | Should -Not -BeNullOrEmpty
                     $modStep.with.relative_path | Should -Not -BeNullOrEmpty
