@@ -3,7 +3,7 @@
 # Arguments: Hashtable of arguments forwarded to the script.
 # DryRun: If set, writes the command without executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function Run-OpenSourceActionScript {
+function Invoke-OpenSourceActionScript {
     param(
         [Parameter(Mandatory)] [string[]] $ScriptSegments,
         [Parameter(Mandatory)] [hashtable] $Arguments,
@@ -39,7 +39,7 @@ function Run-OpenSourceActionScript {
 # RelativePath: Path to the project root relative to the working directory.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeAddTokenToLabVIEW {
+function Invoke-AddTokenToLabVIEW {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $MinimumSupportedLVVersion,
@@ -54,7 +54,7 @@ function InvokeAddTokenToLabVIEW {
         SupportedBitness          = $SupportedBitness
         RelativePath              = $RelativePath
     }
-    return Run-OpenSourceActionScript -ScriptSegments @('add-token-to-labview','AddTokenToLabVIEW.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('add-token-to-labview','AddTokenToLabVIEW.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Applies a VI Package Configuration to a LabVIEW project.
@@ -65,7 +65,7 @@ function InvokeAddTokenToLabVIEW {
 # VIPCPath: Optional path to the VIPC file.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeApplyVIPC {
+function Invoke-ApplyVIPC {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $MinimumSupportedLVVersion,
@@ -84,7 +84,7 @@ function InvokeApplyVIPC {
         RelativePath              = $RelativePath
         VIPCPath                  = $VIPCPath
     }
-    return Run-OpenSourceActionScript -ScriptSegments @('apply-vipc','ApplyVIPC.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('apply-vipc','ApplyVIPC.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Builds a VI Package using the provided VIPB file and version metadata.
@@ -102,7 +102,7 @@ function InvokeApplyVIPC {
 # ReleaseNotesFile: Optional path to a release notes file.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeBuildViPackage {
+function Invoke-BuildViPackage {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $MinimumSupportedLVVersion,
@@ -135,7 +135,7 @@ function InvokeBuildViPackage {
         DisplayInformationJSON    = $DisplayInformationJSON
         ReleaseNotesFile          = $ReleaseNotesFile
     }
-    return Run-OpenSourceActionScript -ScriptSegments @('build-vi-package','build_vip.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('build-vi-package','build_vip.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Builds the project and records version information.
@@ -150,7 +150,7 @@ function InvokeBuildViPackage {
 # AuthorName: Author name recorded in build metadata.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeBuild {
+function Invoke-Build {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $RelativePath,
@@ -177,7 +177,7 @@ function InvokeBuild {
         CompanyName          = $CompanyName
         AuthorName           = $AuthorName
     }
-    return Run-OpenSourceActionScript -ScriptSegments @('build','Build.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('build','Build.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Builds a LabVIEW Packed Library using a project and build spec.
@@ -193,7 +193,7 @@ function InvokeBuild {
 # Commit: Commit identifier used for the build metadata.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeBuildLvlibp {
+function Invoke-BuildLvlibp {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $MinimumSupportedLVVersion,
@@ -222,7 +222,7 @@ function InvokeBuildLvlibp {
         Build                     = $Build
         Commit                    = $Commit
     }
-    return Run-OpenSourceActionScript -ScriptSegments @('build-lvlibp','Build_lvlibp.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('build-lvlibp','Build_lvlibp.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Closes any running instance of LabVIEW.
@@ -230,7 +230,7 @@ function InvokeBuildLvlibp {
 # SupportedBitness: Target LabVIEW bitness (32- or 64-bit).
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeCloseLabVIEW {
+function Invoke-CloseLabVIEW {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)][Alias('minimum_supported_lv_version')] [string] $MinimumSupportedLVVersion,
@@ -243,14 +243,14 @@ function InvokeCloseLabVIEW {
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
     }
-    return Run-OpenSourceActionScript -ScriptSegments @('close-labview','Close_LabVIEW.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('close-labview','Close_LabVIEW.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Generates a release notes file from the project's metadata.
 # OutputPath: Path where the release notes should be written.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeGenerateReleaseNotes {
+function Invoke-GenerateReleaseNotes {
     [CmdletBinding()]
     param(
         [Parameter()] [string] $OutputPath = 'Tooling/deployment/release_notes.md',
@@ -259,7 +259,7 @@ function InvokeGenerateReleaseNotes {
     )
     Write-Information "Executing GenerateReleaseNotes (DryRun=$DryRun)"
     $args = @{ OutputPath = $OutputPath }
-    return Run-OpenSourceActionScript -ScriptSegments @('generate-release-notes','GenerateReleaseNotes.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('generate-release-notes','GenerateReleaseNotes.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Lists files referenced in a LabVIEW project that are missing on disk.
@@ -268,7 +268,7 @@ function InvokeGenerateReleaseNotes {
 # ProjectFile: Path to the .lvproj file to analyze.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeMissingInProject {
+function Invoke-MissingInProject {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $LVVersion,
@@ -283,7 +283,7 @@ function InvokeMissingInProject {
         Arch        = $Arch
         ProjectFile = $ProjectFile
     }
-    return Run-OpenSourceActionScript -ScriptSegments @('missing-in-project','Invoke-MissingInProjectCLI.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('missing-in-project','Invoke-MissingInProjectCLI.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Updates display information fields in a VIPB build specification.
@@ -301,7 +301,7 @@ function InvokeMissingInProject {
 # ReleaseNotesFile: Optional path to a release notes file.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeModifyVIPBDisplayInfo {
+function Invoke-ModifyVIPBDisplayInfo {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $SupportedBitness,
@@ -334,7 +334,7 @@ function InvokeModifyVIPBDisplayInfo {
         DisplayInformationJSON = $DisplayInformationJSON
         ReleaseNotesFile       = $ReleaseNotesFile
     }
-    return Run-OpenSourceActionScript -ScriptSegments @('modify-vipb-display-info','ModifyVIPBDisplayInfo.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('modify-vipb-display-info','ModifyVIPBDisplayInfo.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Prepares a LabVIEW project for source distribution.
@@ -345,7 +345,7 @@ function InvokeModifyVIPBDisplayInfo {
 # Build_Spec: Name of the build specification within the project.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokePrepareLabVIEWSource {
+function Invoke-PrepareLabVIEWSource {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $MinimumSupportedLVVersion,
@@ -364,7 +364,7 @@ function InvokePrepareLabVIEWSource {
         LabVIEW_Project           = $LabVIEW_Project
         Build_Spec                = $Build_Spec
     }
-    return Run-OpenSourceActionScript -ScriptSegments @('prepare-labview-source','Prepare_LabVIEW_source.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('prepare-labview-source','Prepare_LabVIEW_source.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Renames a file on disk.
@@ -372,7 +372,7 @@ function InvokePrepareLabVIEWSource {
 # NewFilename: New path for the file.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeRenameFile {
+function Invoke-RenameFile {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $CurrentFilename,
@@ -385,7 +385,7 @@ function InvokeRenameFile {
         CurrentFilename = $CurrentFilename
         NewFilename     = $NewFilename
     }
-    return Run-OpenSourceActionScript -ScriptSegments @('rename-file','Rename-file.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('rename-file','Rename-file.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Restores the Setup LabVIEW source build specification.
@@ -396,7 +396,7 @@ function InvokeRenameFile {
 # Build_Spec: Name of the build specification within the project.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeRestoreSetupLVSource {
+function Invoke-RestoreSetupLVSource {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $MinimumSupportedLVVersion,
@@ -415,14 +415,14 @@ function InvokeRestoreSetupLVSource {
         LabVIEW_Project           = $LabVIEW_Project
         Build_Spec                = $Build_Spec
     }
-    return Run-OpenSourceActionScript -ScriptSegments @('restore-setup-lv-source','RestoreSetupLVSource.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('restore-setup-lv-source','RestoreSetupLVSource.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Returns a repository to its previous development mode state.
 # RelativePath: Path to the project root relative to the working directory.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeRevertDevelopmentMode {
+function Invoke-RevertDevelopmentMode {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $RelativePath,
@@ -431,14 +431,14 @@ function InvokeRevertDevelopmentMode {
     )
     Write-Information "Executing RevertDevelopmentMode (DryRun=$DryRun)"
     $args = @{ RelativePath = $RelativePath }
-    return Run-OpenSourceActionScript -ScriptSegments @('revert-development-mode','RevertDevelopmentMode.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('revert-development-mode','RevertDevelopmentMode.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Runs Pester tests located in the specified working directory.
 # WorkingDirectory: Path containing the Pester tests to execute.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeRunPesterTests {
+function Invoke-RunPesterTests {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $WorkingDirectory,
@@ -447,7 +447,7 @@ function InvokeRunPesterTests {
     )
     Write-Information "Executing RunPesterTests (DryRun=$DryRun)"
     $args = @{ WorkingDirectory = $WorkingDirectory }
-    return Run-OpenSourceActionScript -ScriptSegments @('run-pester-tests','RunPesterTests.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('run-pester-tests','RunPesterTests.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Runs LabVIEW unit tests.
@@ -455,7 +455,7 @@ function InvokeRunPesterTests {
 # SupportedBitness: Target LabVIEW bitness (32- or 64-bit).
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeRunUnitTests {
+function Invoke-RunUnitTests {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $MinimumSupportedLVVersion,
@@ -468,14 +468,14 @@ function InvokeRunUnitTests {
         MinimumSupportedLVVersion = $MinimumSupportedLVVersion
         SupportedBitness          = $SupportedBitness
     }
-    return Run-OpenSourceActionScript -ScriptSegments @('run-unit-tests','RunUnitTests.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('run-unit-tests','RunUnitTests.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }
 
 # Configures the repository for development mode.
 # RelativePath: Path to the project root relative to the working directory.
 # DryRun: If set, prints the command instead of executing it.
 # gcliPath: Optional path prepended to PATH for locating the g CLI.
-function InvokeSetDevelopmentMode {
+function Invoke-SetDevelopmentMode {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $RelativePath,
@@ -484,5 +484,5 @@ function InvokeSetDevelopmentMode {
     )
     Write-Information "Executing SetDevelopmentMode (DryRun=$DryRun)"
     $args = @{ RelativePath = $RelativePath }
-    return Run-OpenSourceActionScript -ScriptSegments @('set-development-mode','Set_Development_Mode.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
+    return Invoke-OpenSourceActionScript -ScriptSegments @('set-development-mode','Set_Development_Mode.ps1') -Arguments $args -DryRun:$DryRun -gcliPath $gcliPath
 }

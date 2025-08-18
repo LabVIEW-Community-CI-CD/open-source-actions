@@ -14,7 +14,7 @@ This guide explains the structure of the unified dispatcher and how to extend it
 
 - **Action Name**: Lowercase with hyphens, e.g., `"my-new-action"`.
 - **Script Filename**: Place your PowerShell script in `scripts/<action-name>/` with a clear name.
-- **Adapter Function Name**: Use `Invoke<PascalCase>` (e.g., `InvokeMyNewAction`).
+- **Adapter Function Name**: Use `Invoke-<PascalCase>` (e.g., `Invoke-MyNewAction`).
 - **Folder Structure**:
 
 ```text
@@ -28,7 +28,7 @@ scripts/
 Add your function to `OpenSourceActions.psm1`:
 
 ```powershell
-function InvokeMyNewAction {
+function Invoke-MyNewAction {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $Param1,

@@ -19,22 +19,22 @@ Import-Module (Join-Path $PSScriptRoot 'OpenSourceActions.psm1') -Force
 # Attempt to build registry from generated dispatcher metadata; fall back to
 # a static map only if loading fails or produces no entries.
 $FallbackRegistry = [ordered]@{
-    'add-token-to-labview'      = 'InvokeAddTokenToLabVIEW'
-    'apply-vipc'               = 'InvokeApplyVIPC'
-    'build'                    = 'InvokeBuild'
-    'build-lvlibp'             = 'InvokeBuildLvlibp'
-    'build-vi-package'         = 'InvokeBuildViPackage'
-    'close-labview'            = 'InvokeCloseLabVIEW'
-    'generate-release-notes'   = 'InvokeGenerateReleaseNotes'
-    'missing-in-project'       = 'InvokeMissingInProject'
-    'modify-vipb-display-info' = 'InvokeModifyVIPBDisplayInfo'
-    'prepare-labview-source'   = 'InvokePrepareLabVIEWSource'
-    'rename-file'              = 'InvokeRenameFile'
-    'restore-setup-lv-source'  = 'InvokeRestoreSetupLVSource'
-    'revert-development-mode'  = 'InvokeRevertDevelopmentMode'
-    'run-pester-tests'         = 'InvokeRunPesterTests'
-    'run-unit-tests'           = 'InvokeRunUnitTests'
-    'set-development-mode'     = 'InvokeSetDevelopmentMode'
+    'add-token-to-labview'      = 'Invoke-AddTokenToLabVIEW'
+    'apply-vipc'               = 'Invoke-ApplyVIPC'
+    'build'                    = 'Invoke-Build'
+    'build-lvlibp'             = 'Invoke-BuildLvlibp'
+    'build-vi-package'         = 'Invoke-BuildViPackage'
+    'close-labview'            = 'Invoke-CloseLabVIEW'
+    'generate-release-notes'   = 'Invoke-GenerateReleaseNotes'
+    'missing-in-project'       = 'Invoke-MissingInProject'
+    'modify-vipb-display-info' = 'Invoke-ModifyVIPBDisplayInfo'
+    'prepare-labview-source'   = 'Invoke-PrepareLabVIEWSource'
+    'rename-file'              = 'Invoke-RenameFile'
+    'restore-setup-lv-source'  = 'Invoke-RestoreSetupLVSource'
+    'revert-development-mode'  = 'Invoke-RevertDevelopmentMode'
+    'run-pester-tests'         = 'Invoke-RunPesterTests'
+    'run-unit-tests'           = 'Invoke-RunUnitTests'
+    'set-development-mode'     = 'Invoke-SetDevelopmentMode'
   }
 
 $Registry = $null
@@ -45,7 +45,7 @@ try {
     $generated = [ordered]@{}
     foreach ($fn in $raw.Keys) {
       if ($fn -notlike 'Invoke*') { continue }
-      $name = $fn -replace '^Invoke'
+      $name = $fn -replace '^Invoke-?'
       $name = $name -creplace '([a-z0-9])([A-Z])', '$1-$2'
       $name = $name -creplace '([A-Z])([A-Z][a-z])', '$1-$2'
       $name = $name -ireplace 'Lab-VIEW', 'LabVIEW'
