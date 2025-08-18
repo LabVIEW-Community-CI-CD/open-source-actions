@@ -93,7 +93,6 @@ jobs:
             Install-Module -Name Pester -MinimumVersion 5.0.0 -Scope CurrentUser -Force -SkipPublisherCheck
           }
       - name: Validate native YAML parsing
-        if: matrix.runner_type == 'integration'
         shell: pwsh
         run: |
           $parsed = ConvertFrom-Yaml 'a: 1'
@@ -102,7 +101,6 @@ jobs:
         shell: pwsh
         run: |
           if (Test-Path "tests/pester") {
-            Import-Module Pester -MinimumVersion 5.0.0
             $cfg = New-PesterConfiguration
             $cfg.Run.Path = './tests/pester'
             $cfg.TestResult.Enabled = $false
