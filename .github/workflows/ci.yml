@@ -58,9 +58,28 @@ jobs:
       RUNNER_TYPE: ${{ matrix.runner_type }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-pwsh@v2
-        with:
-          version: '7.5.1'
+      - name: Install PowerShell 7.5.1
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          $expectedBuild = '10.0.20348'
+          $build = (Get-ComputerInfo).OsVersion
+          if ($build -ne $expectedBuild) {
+            throw "Unexpected OS build: $build"
+          }
+          $msiUrl = 'https://github.com/PowerShell/PowerShell/releases/download/v7.5.1/PowerShell-7.5.1-win-x64.msi'
+          $msiPath = Join-Path $env:RUNNER_TEMP 'PowerShell-7.5.1-win-x64.msi'
+          Invoke-WebRequest -Uri $msiUrl -OutFile $msiPath
+          $expectedHash = 'b110eccaf55bb53ae5e6b6de478587ed8203570b0bda9bd374a0998e24d4033a'
+          $actualHash = (Get-FileHash $msiPath -Algorithm SHA256).Hash
+          if ($actualHash -ne $expectedHash) {
+            throw "SHA256 mismatch: $actualHash"
+          }
+          Start-Process msiexec -Wait -ArgumentList '/i', $msiPath, '/qn', 'ADD_PATH=1'
+          $version = (pwsh --version).Trim() -replace '^PowerShell '
+          if ($version -ne '7.5.1') {
+            throw "PowerShell version $version is not 7.5.1"
+          }
       - name: Capture setup info
         shell: pwsh
         run: |
