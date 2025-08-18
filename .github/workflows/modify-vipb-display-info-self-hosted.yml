@@ -1,23 +1,23 @@
-name: Modify VIPB display info (self-hosted test)
+name: Modify VIPB display info (ubuntu test)
 
 on:
   workflow_dispatch:
 
 jobs:
   modify-vipb-display-info:
-    runs-on: [self-hosted, icon-editor-windows]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
         with:
           repository: LabVIEW-Community-CI-CD/labview-icon-editor
-          path: ../../labview-icon-editor/labview-icon-editor
+          path: labview-icon-editor/labview-icon-editor
       - name: Run modify-vipb-display-info action
         uses: ./modify-vipb-display-info/action.yml
         with:
           supported_bitness: '64'
-          relative_path: 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor'
-          vipb_path: 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor\\source\\lv_icon.vipb'
+          relative_path: 'labview-icon-editor/labview-icon-editor'
+          vipb_path: 'labview-icon-editor/labview-icon-editor/source/lv_icon.vipb'
           minimum_supported_lv_version: '2021'
           labview_minor_revision: '0'
           major: '1'
@@ -30,4 +30,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: vipb-display-info
-          path: 'C:\\actions-runner\\_work\\labview-icon-editor\\labview-icon-editor\\source\\lv_icon.vipb'
+          path: 'labview-icon-editor/labview-icon-editor/source/lv_icon.vipb'

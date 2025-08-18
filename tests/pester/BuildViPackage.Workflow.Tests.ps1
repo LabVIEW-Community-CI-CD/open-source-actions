@@ -3,11 +3,11 @@ $env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::Path
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-Describe 'BuildViPackage.SelfHosted.Workflow' {
+Describe 'BuildViPackage.Workflow' {
     $meta = @{
         requirement = 'REQ-011'
         Owner       = 'DevTools'
-        Evidence    = 'tests/pester/BuildViPackage.SelfHosted.Workflow.Tests.ps1'
+        Evidence    = 'tests/pester/BuildViPackage.Workflow.Tests.ps1'
     }
 
     It 'runs build-vi-package action and uploads vi package artifact' -Tag 'REQ-011' {
@@ -22,7 +22,7 @@ Describe 'BuildViPackage.SelfHosted.Workflow' {
         $buildStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_['uses'] -eq './build-vi-package/action.yml' } | Select-Object -First 1
         $artifactStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_['uses'] -eq 'actions/upload-artifact@v4' -and $_['with']['path'] -match '\.vip$' } | Select-Object -First 1
 
-        $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
+        $job.'runs-on' | Should -Be 'ubuntu-latest'
 
         $buildStep.with.vipb_path | Should -Match 'labview-icon-editor.*NI Icon editor.vipb$'
         $buildStep.with.major | Should -Be '1'

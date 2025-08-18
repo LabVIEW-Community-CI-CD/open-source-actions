@@ -3,14 +3,14 @@ $env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::Path
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-Describe 'RestoreSetupLvSource.SelfHosted.Workflow' {
+Describe 'MissingInProject.Workflow' {
     $meta = @{
-        requirement = 'REQ-018'
+        requirement = 'REQ-014'
         Owner       = 'DevTools'
-        Evidence    = 'tests/pester/RestoreSetupLvSource.SelfHosted.Workflow.Tests.ps1'
+        Evidence    = 'tests/pester/MissingInProject.Workflow.Tests.ps1'
     }
 
-    It 'runs restore-setup-lv-source action on a self-hosted runner and uploads restoration artifacts' -Tag 'REQ-018' {
+    It 'runs missing-in-project action and uploads findings report' -Tag 'REQ-014' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'
@@ -20,17 +20,18 @@ Describe 'RestoreSetupLvSource.SelfHosted.Workflow' {
             $wf = Get-Content -Raw $wfFile.FullName | ConvertFrom-Yaml
             foreach ($jobEntry in $wf.jobs.GetEnumerator()) {
                 $job = $jobEntry.Value
-                $restoreStep = $job.steps | Where-Object { $_.uses -eq './restore-setup-lv-source/action.yml' } | Select-Object -First 1
-                if ($null -ne $restoreStep) {
+                $missingStep = $job.steps | Where-Object { $_.uses -eq './missing-in-project/action.yml' } | Select-Object -First 1
+                if ($null -ne $missingStep) {
                     $workflowFound = $true
-                    $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
-                    $restoreStep.with.relative_path | Should -Match 'labview-icon-editor$'
-                    $restoreStep.env | Should -Not -BeNullOrEmpty
+                    $job.'runs-on' | Should -Be 'ubuntu-latest'
+                    $missingStep.uses | Should -Be './missing-in-project/action.yml'
+                    $missingStep.with.lv_version | Should -Not -BeNullOrEmpty
+                    $missingStep.with.arch | Should -Not -BeNullOrEmpty
+                    $missingStep.with.project_file | Should -Not -BeNullOrEmpty
+                    $missingStep.with.relative_path | Should -Not -BeNullOrEmpty
                     $artifactStep = $job.steps | Where-Object {
                         $_.ContainsKey('uses') -and $_.uses -like 'actions/upload-artifact@*' -and (
-                            ($_.with.path -match 'restore') -or ($_.with.path -match 'snapshot') -or
-                            ($_.with.name -match 'restore') -or ($_.with.name -match 'snapshot') -or
-                            ($_.with.path -match 'log') -or ($_.with.name -match 'log')
+                            ($_.with.name -match 'missing') -or ($_.with.path -match 'missing')
                         )
                     } | Select-Object -First 1
                     $artifactStep | Should -Not -BeNullOrEmpty
@@ -39,7 +40,7 @@ Describe 'RestoreSetupLvSource.SelfHosted.Workflow' {
         }
 
         if (-not $workflowFound) {
-            Set-ItResult -Skipped -Because 'No workflow found using restore-setup-lv-source action'
+            Set-ItResult -Skipped -Because 'No workflow found using missing-in-project action'
         }
     }
 }

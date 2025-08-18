@@ -46,8 +46,8 @@ jobs:
         include:
           - os: ubuntu-24.04
             runs-on: ubuntu-24.04
-          - os: icon-editor-windows
-            runs-on: [self-hosted, icon-editor-windows]
+          - os: windows-latest
+            runs-on: windows-latest
     runs-on: ${{ matrix.runs-on }}
     steps:
       - uses: actions/checkout@v4

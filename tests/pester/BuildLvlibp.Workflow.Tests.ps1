@@ -3,11 +3,11 @@ $env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::Path
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-Describe 'BuildLvlibp.SelfHosted.Workflow' {
+Describe 'BuildLvlibp.Workflow' {
     $meta = @{
         requirement = 'REQ-010'
         Owner       = 'DevTools'
-        Evidence    = 'tests/pester/BuildLvlibp.SelfHosted.Workflow.Tests.ps1'
+        Evidence    = 'tests/pester/BuildLvlibp.Workflow.Tests.ps1'
     }
 
     It 'runs build-lvlibp action and uploads lvlibp artifact' -Tag 'REQ-010' {
@@ -18,7 +18,7 @@ Describe 'BuildLvlibp.SelfHosted.Workflow' {
         $buildStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_['uses'] -eq './build-lvlibp/action.yml' } | Select-Object -First 1
         $artifactStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_['uses'] -eq 'actions/upload-artifact@v4' -and $_['with']['path'] -match '\.lvlibp$' } | Select-Object -First 1
 
-        $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
+        $job.'runs-on' | Should -Be 'ubuntu-latest'
 
         $buildStep.with.minimum_supported_lv_version | Should -Be '2021'
         $buildStep.with.supported_bitness | Should -Be '64'

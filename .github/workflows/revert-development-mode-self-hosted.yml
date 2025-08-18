@@ -1,19 +1,19 @@
-name: Revert development mode (self-hosted test)
+name: Revert development mode (ubuntu test)
 
 on:
   workflow_dispatch:
 
 jobs:
   revert-development-mode:
-    runs-on: [self-hosted, icon-editor-windows]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Run revert-development-mode action
         uses: ./revert-development-mode/action.yml
         with:
-          relative_path: 'C:\\actions-runner\\_work\\open-source-actions\\open-source-actions'
+          relative_path: './'
       - name: Upload config artifact
         uses: actions/upload-artifact@v4
         with:
           name: devmode-config
-          path: 'C:\\actions-runner\\_work\\open-source-actions\\open-source-actions\\devmode-config.txt'
+          path: 'devmode-config.txt'

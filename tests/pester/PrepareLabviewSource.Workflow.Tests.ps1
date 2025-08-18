@@ -3,14 +3,14 @@ $env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::Path
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-Describe 'PrepareLabviewSource.SelfHosted.Workflow' {
+Describe 'PrepareLabviewSource.Workflow' {
     $meta = @{
-        requirement = 'REQ-011'
+        requirement = 'REQ-016'
         Owner       = 'DevTools'
-        Evidence    = 'tests/pester/PrepareLabviewSource.SelfHosted.Workflow.Tests.ps1'
+        Evidence    = 'tests/pester/PrepareLabviewSource.Workflow.Tests.ps1'
     }
 
-    It 'runs prepare-labview-source action and uploads prepared source artifact' -Tag 'REQ-011' {
+    It 'runs prepare-labview-source action and uploads prepared source artifact' -Tag 'REQ-016' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'
@@ -23,7 +23,7 @@ Describe 'PrepareLabviewSource.SelfHosted.Workflow' {
                 $prepareStep = $job.steps | Where-Object { $_.uses -eq './prepare-labview-source/action.yml' } | Select-Object -First 1
                 if ($null -ne $prepareStep) {
                     $workflowFound = $true
-                    $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
+                    $job.'runs-on' | Should -Be 'ubuntu-latest'
                     $prepareStep.uses | Should -Be './prepare-labview-source/action.yml'
                     $prepareStep.with.relative_path | Should -Match 'labview-icon-editor$'
                     $prepareStep.with.labview_project | Should -Match 'labview-icon-editor.*lv_icon.lvproj$'

@@ -3,11 +3,11 @@ $env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::Path
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-Describe 'RunUnitTests.SelfHosted.Workflow' {
+Describe 'RunUnitTests.Workflow' {
     $meta = @{
-        requirement = 'REQ-011'
+        requirement = 'REQ-020'
         Owner       = 'DevTools'
-        Evidence    = 'tests/pester/RunUnitTests.SelfHosted.Workflow.Tests.ps1'
+        Evidence    = 'tests/pester/RunUnitTests.Workflow.Tests.ps1'
     }
 
     It 'runs run-unit-tests action and uploads unit-test results' -Tag 'REQ-011' {
@@ -18,7 +18,7 @@ Describe 'RunUnitTests.SelfHosted.Workflow' {
         $testStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_['uses'] -eq './run-unit-tests/action.yml' } | Select-Object -First 1
         $artifactStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_['uses'] -eq 'actions/upload-artifact@v4' -and $_['with']['path'] -match 'UnitTestReport\.xml' } | Select-Object -First 1
 
-        $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
+        $job.'runs-on' | Should -Be 'ubuntu-latest'
 
         $testStep.with.minimum_supported_lv_version | Should -Be '2021'
         $testStep.with.supported_bitness | Should -Be '64'

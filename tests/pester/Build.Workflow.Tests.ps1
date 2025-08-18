@@ -3,11 +3,11 @@ $env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::Path
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-Describe 'Build.SelfHosted.Workflow' {
+Describe 'Build.Workflow' {
     $meta = @{
         requirement = 'REQ-009'
         Owner       = 'DevTools'
-        Evidence    = 'tests/pester/Build.SelfHosted.Workflow.Tests.ps1'
+        Evidence    = 'tests/pester/Build.Workflow.Tests.ps1'
     }
 
     It 'runs build action with required inputs' -Tag 'REQ-009' {
@@ -18,7 +18,7 @@ Describe 'Build.SelfHosted.Workflow' {
         $buildStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_['uses'] -eq './build/action.yml' } | Select-Object -First 1
         $artifactStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_['uses'] -eq 'actions/upload-artifact@v4' -and $_['with']['path'] -match 'lv_icon_x64\.lvlibp' } | Select-Object -First 1
 
-        $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
+        $job.'runs-on' | Should -Be 'ubuntu-latest'
 
         $buildStep.with.relative_path | Should -Match 'labview-icon-editor$'
         $buildStep.with.major | Should -Be '1'

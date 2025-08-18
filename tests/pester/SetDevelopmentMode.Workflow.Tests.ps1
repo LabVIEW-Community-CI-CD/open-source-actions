@@ -3,14 +3,14 @@ $env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::Path
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
-Describe 'SetDevelopmentMode.SelfHosted.Workflow' {
+Describe 'SetDevelopmentMode.Workflow' {
     $meta = @{
         requirement = 'REQ-021'
         Owner       = 'DevTools'
-        Evidence    = 'tests/pester/SetDevelopmentMode.SelfHosted.Workflow.Tests.ps1'
+        Evidence    = 'tests/pester/SetDevelopmentMode.Workflow.Tests.ps1'
     }
 
-    It 'runs set-development-mode action on a self-hosted runner and uploads logs' -Tag 'REQ-021' {
+    It 'runs set-development-mode action and uploads logs' -Tag 'REQ-021' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
         $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'
@@ -23,7 +23,7 @@ Describe 'SetDevelopmentMode.SelfHosted.Workflow' {
                 $setStep = $job.steps | Where-Object { $_.uses -eq './set-development-mode/action.yml' } | Select-Object -First 1
                 if ($null -ne $setStep) {
                     $workflowFound = $true
-                    $job.'runs-on' | Should -Be @('self-hosted','icon-editor-windows')
+                    $job.'runs-on' | Should -Be 'ubuntu-latest'
                     $setStep.with.relative_path | Should -Match 'labview-icon-editor$'
                     $setStep.with.gcli_path | Should -Not -BeNullOrEmpty
                     $setStep.with.working_directory | Should -Not -BeNullOrEmpty
