@@ -15,6 +15,10 @@ function Get-LabVIEWIconEditorArgsJson {
         throw 'Unsupported platform'
     }
 
+    if (-not (Test-Path -Path $workingDir)) {
+        throw 'labview-icon-editor repository not found. Clone https://github.com/LabVIEW-Community-CI-CD/labview-icon-editor or set LABVIEW_ICON_EDITOR_PATH to its location.'
+    }
+
     $args = @{
         MinimumSupportedLVVersion = '2021'
         SupportedBitness          = '64'
