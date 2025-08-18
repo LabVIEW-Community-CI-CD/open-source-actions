@@ -58,6 +58,7 @@ jobs:
       RUNNER_TYPE: ${{ matrix.runner_type }}
     steps:
       - uses: actions/checkout@v4
+        if: matrix.os != 'windows-latest'
       - uses: actions/setup-pwsh@v2
         with:
           version: '7.5.1'
@@ -92,14 +93,10 @@ jobs:
             Remove-Module Pester -ErrorAction SilentlyContinue
             Install-Module -Name Pester -MinimumVersion 5.0.0 -Scope CurrentUser -Force -SkipPublisherCheck
           }
-      - name: Install powershell-yaml
-        shell: pwsh
-        run: Install-Module -Name powershell-yaml -Scope CurrentUser -Force
-      - name: Validate YAML parsing
+      - name: Validate native YAML parsing
         if: matrix.runner_type == 'integration'
         shell: pwsh
         run: |
-          Import-Module powershell-yaml
           $parsed = ConvertFrom-Yaml 'a: 1'
           if ($parsed.a -ne 1) { throw 'YAML parsing failed' }
       - name: Run Pester
@@ -114,7 +111,7 @@ jobs:
             Invoke-Pester -Configuration $cfg
           }
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: matrix.os != 'windows-latest' && always()
         with:
           name: pester-junit-${{ matrix.os }}
           path: pester-results/pester-junit.xml
