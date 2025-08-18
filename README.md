@@ -105,7 +105,7 @@ $json = @'
 '@
 pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson $json
 ```
-YAML conversion via `ConvertFrom-Yaml` is no longer required. You can also load arguments from a JSON file:
+Alternatively, load arguments from a JSON file:
 
 ```powershell
 pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsFile ./config/run-tests.json
