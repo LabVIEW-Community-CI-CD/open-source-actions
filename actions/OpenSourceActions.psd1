@@ -10,22 +10,22 @@
   CompatiblePSEditions  = @('Core')
 
   FunctionsToExport = @(
-    'InvokeAddTokenToLabVIEW'
-    'InvokeApplyVIPC'
-    'InvokeBuild'
-    'InvokeBuildLvlibp'
-    'InvokeBuildViPackage'
-    'InvokeCloseLabVIEW'
-    'InvokeGenerateReleaseNotes'
-    'InvokeMissingInProject'
-    'InvokeModifyVIPBDisplayInfo'
-    'InvokePrepareLabVIEWSource'
-    'InvokeRenameFile'
-    'InvokeRestoreSetupLVSource'
-    'InvokeRevertDevelopmentMode'
-    'InvokeRunPesterTests'
-    'InvokeRunUnitTests'
-    'InvokeSetDevelopmentMode'
+    'Invoke-AddTokenToLabVIEW'
+    'Invoke-ApplyVIPC'
+    'Invoke-Build'
+    'Invoke-BuildLvlibp'
+    'Invoke-BuildViPackage'
+    'Invoke-CloseLabVIEW'
+    'Invoke-GenerateReleaseNotes'
+    'Invoke-MissingInProject'
+    'Invoke-ModifyVIPBDisplayInfo'
+    'Invoke-PrepareLabVIEWSource'
+    'Invoke-RenameFile'
+    'Invoke-RestoreSetupLVSource'
+    'Invoke-RevertDevelopmentMode'
+    'Invoke-RunPesterTests'
+    'Invoke-RunUnitTests'
+    'Invoke-SetDevelopmentMode'
   )
 
   PrivateData = @{
