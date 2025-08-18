@@ -1,0 +1,19 @@
+name: Revert development mode (self-hosted test)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  revert-development-mode:
+    runs-on: [self-hosted, icon-editor-windows]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run revert-development-mode action
+        uses: ./revert-development-mode/action.yml
+        with:
+          relative_path: 'C:\\actions-runner\\_work\\open-source-actions\\open-source-actions'
+      - name: Upload config artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: devmode-config
+          path: 'C:\\actions-runner\\_work\\open-source-actions\\open-source-actions\\devmode-config.txt'
