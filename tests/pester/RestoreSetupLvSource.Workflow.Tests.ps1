@@ -11,8 +11,8 @@ Describe 'RestoreSetupLvSource.Workflow' {
 
     It 'runs restore-setup-lv-source action and uploads restoration artifacts' -Tag 'REQ-018' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
-        $workflowPath = Join-Path $repoRoot '.github/workflows/restore-setup-lv-source-self-hosted.yml'
-        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
+        $workflowPath = Join-Path $repoRoot '.github/workflows/restore-setup-lv-source-self-hosted.json'
+        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Json -AsHashtable
         $job = $wf.jobs.'restore-setup-lv-source'
         $restoreStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -eq './restore-setup-lv-source/action.yml' } | Select-Object -First 1
         $artifactStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -like 'actions/upload-artifact@*' } | Select-Object -First 1

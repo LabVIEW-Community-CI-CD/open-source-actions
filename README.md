@@ -97,17 +97,19 @@ Chain the [apply-vipc](docs/actions/apply-vipc.md), [set-development-mode](docs/
 If you prefer or need to run tasks directly, call the dispatcher script [actions/Invoke-OSAction.ps1](actions/Invoke-OSAction.ps1) yourself:
 
 ```powershell
-$yaml = @'
-MinimumSupportedLVVersion: "2021"
-SupportedBitness: "64"
+$json = @'
+{
+  "MinimumSupportedLVVersion": "2021",
+  "SupportedBitness": "64"
+}
 '@
-pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsYaml (ConvertFrom-Yaml $yaml)
+pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson $json
 ```
 
 You can also load arguments from a file:
 
 ```powershell
-pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsFile ./config/run-tests.yaml
+pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsFile ./config/run-tests.json
 ```
 
 ### Discovering actions

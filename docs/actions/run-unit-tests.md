@@ -20,11 +20,13 @@ None.
 ## CLI example
 
 ```powershell
-$yaml = @'
-MinimumSupportedLVVersion: "2020"
-SupportedBitness: "64"
+$json = @'
+{
+  "MinimumSupportedLVVersion": "2020",
+  "SupportedBitness": "64"
+}
 '@
-pwsh -File actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsYaml (ConvertFrom-Yaml $yaml)
+pwsh -File actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson $json
 ```
 
 ## GitHub Action inputs

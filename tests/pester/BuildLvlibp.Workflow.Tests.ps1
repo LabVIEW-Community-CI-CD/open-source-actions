@@ -11,8 +11,8 @@ Describe 'BuildLvlibp.Workflow' {
 
     It 'runs build-lvlibp action and uploads lvlibp artifact' -Tag 'REQ-010' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
-        $workflowPath = Join-Path $repoRoot '.github/workflows/build-lvlibp-self-hosted.yml'
-        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
+        $workflowPath = Join-Path $repoRoot '.github/workflows/build-lvlibp-self-hosted.json'
+        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Json -AsHashtable
         $job = $wf.jobs.'build-lvlibp'
         $buildStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_['uses'] -eq './build-lvlibp/action.yml' } | Select-Object -First 1
         $artifactStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_['uses'] -eq 'actions/upload-artifact@v4' -and $_['with']['path'] -match '\.lvlibp$' } | Select-Object -First 1

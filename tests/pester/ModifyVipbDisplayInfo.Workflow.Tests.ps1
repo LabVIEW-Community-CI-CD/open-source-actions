@@ -11,8 +11,8 @@ Describe 'ModifyVipbDisplayInfo.Workflow' {
 
     It 'runs modify-vipb-display-info action and uploads VIPB artifact' -Tag 'REQ-015' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
-        $workflowPath = Join-Path $repoRoot '.github/workflows/modify-vipb-display-info-self-hosted.yml'
-        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Yaml
+        $workflowPath = Join-Path $repoRoot '.github/workflows/modify-vipb-display-info-self-hosted.json'
+        $wf = Get-Content -Raw $workflowPath | ConvertFrom-Json -AsHashtable
         $job = $wf.jobs.'modify-vipb-display-info'
         $modStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -eq './modify-vipb-display-info/action.yml' } | Select-Object -First 1
         $artifactStep = $job.steps | Where-Object { $_.ContainsKey('uses') -and $_.uses -like 'actions/upload-artifact@*' } | Select-Object -First 1

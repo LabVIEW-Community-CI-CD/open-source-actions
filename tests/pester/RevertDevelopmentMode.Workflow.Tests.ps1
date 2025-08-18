@@ -12,11 +12,11 @@ Describe 'RevertDevelopmentMode.Workflow' {
     It 'runs revert-development-mode action and uploads configuration artifact' -Tag 'REQ-019' {
         $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
         $wfDir = Join-Path $repoRoot '.github/workflows'
-        $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.yml'
+        $workflowFiles = Get-ChildItem -Path $wfDir -Filter '*.json'
         $workflowFound = $false
 
         foreach ($wfFile in $workflowFiles) {
-            $wf = Get-Content -Raw $wfFile.FullName | ConvertFrom-Yaml
+            $wf = Get-Content -Raw $wfFile.FullName | ConvertFrom-Json -AsHashtable
             foreach ($jobEntry in $wf.jobs.GetEnumerator()) {
                 $job = $jobEntry.Value
                 $revertStep = $job.steps | Where-Object { $_.uses -eq './revert-development-mode/action.yml' } | Select-Object -First 1
