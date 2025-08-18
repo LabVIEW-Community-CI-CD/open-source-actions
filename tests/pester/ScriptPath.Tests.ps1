@@ -1,5 +1,4 @@
 #requires -Version 7.0
-$env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::PathSeparator + $env:PSModulePath
 # Verify that each action script exists in the expected location.
 # Requirement: REQ-004 - Every action script exists at the expected path.
 
@@ -9,8 +8,10 @@ $ErrorActionPreference = 'Stop'
 $repoRoot = (Resolve-Path (Join-Path $PSScriptRoot '..' '..')).Path
 $scriptRoot = Join-Path $repoRoot 'scripts'
 
+Import-Module (Join-Path $PSScriptRoot 'Helper' 'ArgsJson.psm1')
+$projectRoot = (Get-LabVIEWIconEditorArgsJson).WorkingDirectory
 $dispatcher = Join-Path $repoRoot 'actions' 'Invoke-OSAction.ps1'
-$actionNames = pwsh -NoProfile -File $dispatcher -ListActions |
+$actionNames = pwsh -NoProfile -File $dispatcher -ListActions -WorkingDirectory $projectRoot |
     Where-Object { $_ -match '^\s+- ' } |
     ForEach-Object { $_.Trim().Substring(2) }
 

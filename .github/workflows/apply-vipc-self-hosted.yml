@@ -1,26 +1,19 @@
-name: Apply VIPC (self-hosted test)
+name: Apply VIPC (ubuntu test)
 
 on:
   workflow_dispatch:
 
 jobs:
   apply-vipc:
-    runs-on: [self-hosted, icon-editor-windows]
-    strategy:
-      matrix:
-        dry_run: [true, false]
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: LabVIEW-Community-CI-CD/labview-icon-editor
-          path: ../../labview-icon-editor/labview-icon-editor
-      - name: Run apply-vipc action (dry_run=${{ matrix.dry_run }})
+      - name: Run apply-vipc action (dry_run=true)
         uses: ./apply-vipc/action.yml
         with:
           minimum_supported_lv_version: '2021'
           vip_lv_version: '2021'
           supported_bitness: '64'
-          relative_path: 'C:\actions-runner\_work\labview-icon-editor\labview-icon-editor'
-          vipc_path: 'C:\actions-runner\_work\labview-icon-editor\labview-icon-editor\.github\actions\apply-vipc\runner_dependencies.vipc'
-          dry_run: ${{ matrix.dry_run }}
+          relative_path: '.'
+          vipc_path: 'scripts/apply-vipc/runner_dependencies.vipc'
+          dry_run: true

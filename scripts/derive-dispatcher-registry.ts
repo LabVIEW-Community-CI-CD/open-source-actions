@@ -106,6 +106,12 @@ async function main() {
       registry[fn] = { description, parameters: parseParams(paramsBlock) };
     }
   }
+  for (const info of Object.values(registry)) {
+    if (info.parameters.RelativePath) {
+      info.parameters.RelativePath.description =
+        'Path relative to WorkingDirectory that locates the project or repository root.';
+    }
+  }
   const collator = new Intl.Collator('en');
   const sorted: Record<string, FuncInfo> = {};
   for (const fn of Object.keys(registry).sort(collator.compare)) sorted[fn] = registry[fn];

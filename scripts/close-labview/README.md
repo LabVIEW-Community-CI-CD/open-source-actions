@@ -18,6 +18,8 @@ Run **`Close_LabVIEW.ps1`** to terminate a running LabVIEW instance via g-cli.
     supported_bitness: 64
 ```
 
+See also: [docs/actions/close-labview.md](../../docs/actions/close-labview.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).

@@ -7,10 +7,10 @@
     environments and closes any running LabVIEW instances.
 
 .PARAMETER RelativePath
-    Path to the repository root.
+    Path relative to the action's working directory. Use "." for the working directory (e.g., repository root).
 
 .EXAMPLE
-    .\RevertDevelopmentMode.ps1 -RelativePath "C:\labview-icon-editor"
+    .\RevertDevelopmentMode.ps1 -RelativePath "."
 #>
 
 param(

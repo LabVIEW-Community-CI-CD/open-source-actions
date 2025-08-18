@@ -14,10 +14,10 @@
     Target bitness of the LabVIEW environment ("32" or "64").
 
 .PARAMETER RelativePath
-    Path to the repository root that should be added to the INI token.
+    Path relative to the action's working directory. Use "." for the working directory (e.g., repository root).
 
 .EXAMPLE
-    .\AddTokenToLabVIEW.ps1 -MinimumSupportedLVVersion "2021" -SupportedBitness "64" -RelativePath "C:\labview-icon-editor"
+    .\AddTokenToLabVIEW.ps1 -MinimumSupportedLVVersion "2021" -SupportedBitness "64" -RelativePath "."
 #>
 
 param(

@@ -10,7 +10,7 @@ Common parameters are described in [Common parameters](../common-parameters.md).
 
 ### Required
 
-- **RelativePath** (`string`): Path to the repository root.
+- **RelativePath** (`string`): Path relative to the action's working directory. Use "." when the working directory is desired.
 
 ### Optional
 
@@ -20,6 +20,7 @@ None.
 
 ```powershell
 pwsh -File actions/Invoke-OSAction.ps1 -ActionName set-development-mode -ArgsJson '{
+  "WorkingDirectory": ".",
   "RelativePath": "."
 }'
 ```
@@ -30,9 +31,9 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 
 | Input | CLI parameter | Description |
 | --- | --- | --- |
-| `relative_path` | `RelativePath` | Relative path containing the repository. |
+| `relative_path` | `RelativePath` | Path relative to the working directory. Use '.' to refer to the working directory. |
 | `gcli_path` | `gcliPath` | Optional path to the g-cli executable. |
-| `working_directory` | `WorkingDirectory` | Working directory where the action will run. |
+| `working_directory` | `WorkingDirectory` | Base directory for the action; relative paths are resolved from here. |
 | `log_level` | `LogLevel` | Verbosity level (ERROR\|WARN\|INFO\|DEBUG). |
 | `dry_run` | `DryRun` | If true, simulate the action without side effects. |
 
@@ -42,6 +43,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - name: Set development mode
   uses: LabVIEW-Community-CI-CD/open-source-actions/set-development-mode@v1
   with:
+    working_directory: '.'
     relative_path: '.'
 ```
 
@@ -51,3 +53,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - non‑zero – script or g-cli error
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/set-development-mode/README.md](../../scripts/set-development-mode/README.md).

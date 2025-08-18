@@ -94,20 +94,21 @@ Chain the [apply-vipc](docs/actions/apply-vipc.md), [set-development-mode](docs/
 
 ## CLI/dispatcher usage
 
-If you prefer or need to run tasks directly, call the dispatcher script [actions/Invoke-OSAction.ps1](actions/Invoke-OSAction.ps1) yourself:
+If you prefer or need to run tasks directly, serialize arguments as JSON and call the dispatcher script [actions/Invoke-OSAction.ps1](actions/Invoke-OSAction.ps1) yourself:
 
 ```powershell
-$yaml = @'
-MinimumSupportedLVVersion: "2021"
-SupportedBitness: "64"
+$json = @'
+{
+  "MinimumSupportedLVVersion": "2021",
+  "SupportedBitness": "64"
+}
 '@
-pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsYaml (ConvertFrom-Yaml $yaml)
+pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson $json
 ```
-
-You can also load arguments from a file:
+Alternatively, load arguments from a JSON file:
 
 ```powershell
-pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsFile ./config/run-tests.yaml
+pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsFile ./config/run-tests.json
 ```
 
 ### Discovering actions
@@ -138,8 +139,13 @@ For CI, `npm run test:ci` emits a JUnit XML report that [scripts/generate-ci-sum
 Pester tests cover the dispatcher and helper modules. See [docs/testing-pester.md](docs/testing-pester.md) for guidelines on using the canonical argument helper and adding new tests. Run them with:
 
 ```powershell
-Invoke-Pester -CI -Path ./tests/pester
+$cfg = New-PesterConfiguration
+$cfg.Run.Path = './tests/pester'
+$cfg.TestResult.Enabled = $false
+Invoke-Pester -Configuration $cfg
 ```
+
+XML test result output is intentionally disabled.
 
 ## Contributing
 

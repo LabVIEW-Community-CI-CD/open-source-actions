@@ -1,5 +1,4 @@
 #requires -Version 7.0
-$env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::PathSeparator + $env:PSModulePath
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
@@ -22,21 +21,21 @@ Describe 'Adapters restore PATH' -Skip {
     }
 
     $cases = @(
-        @{ Func='InvokeAddTokenToLabVIEW'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','add-token-to-labview','AddTokenToLabVIEW.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64'; RelativePath='.' } },
-        @{ Func='InvokeApplyVIPC'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','apply-vipc','ApplyVIPC.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; VIP_LVVersion='2021'; SupportedBitness='64'; RelativePath='.'; VIPCPath='dummy.vipc' } },
-        @{ Func='InvokeBuildViPackage'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','build-vi-package','build_vip.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64'; LabVIEWMinorRevision='2021'; RelativePath='.'; VIPBPath='dummy.vipb'; Major=1; Minor=0; Patch=0; Build=1; Commit='abc'; DisplayInformationJSON='{}' } },
-        @{ Func='InvokeBuild'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','build','Build.ps1'); Args=@{ RelativePath='.'; Major=1; Minor=0; Patch=0; Build=1; Commit='abc'; LabVIEWMinorRevision='2021'; CompanyName='Co'; AuthorName='Auth' } },
-        @{ Func='InvokeBuildLvlibp'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','build-lvlibp','Build_lvlibp.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64'; RelativePath='.'; LabVIEW_Project='Proj'; Build_Spec='Spec'; Major=1; Minor=0; Patch=0; Build=1; Commit='abc' } },
-        @{ Func='InvokeCloseLabVIEW'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','close-labview','Close_LabVIEW.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64' } },
-        @{ Func='InvokeGenerateReleaseNotes'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','generate-release-notes','GenerateReleaseNotes.ps1'); Args=@{ OutputPath='notes.md' } },
-        @{ Func='InvokeMissingInProject'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','missing-in-project','Invoke-MissingInProjectCLI.ps1'); Args=@{ LVVersion='2021'; Arch='64'; ProjectFile='Proj.lvproj' } },
-        @{ Func='InvokeModifyVIPBDisplayInfo'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','modify-vipb-display-info','ModifyVIPBDisplayInfo.ps1'); Args=@{ SupportedBitness='64'; RelativePath='.'; VIPBPath='dummy.vipb'; MinimumSupportedLVVersion='2021'; LabVIEWMinorRevision='2021'; Major=1; Minor=0; Patch=0; Build=1; Commit='abc'; DisplayInformationJSON='{}' } },
-        @{ Func='InvokePrepareLabVIEWSource'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','prepare-labview-source','Prepare_LabVIEW_source.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64'; RelativePath='.'; LabVIEW_Project='Proj'; Build_Spec='Spec' } },
-        @{ Func='InvokeRenameFile'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','rename-file','Rename-file.ps1'); Args=@{ CurrentFilename='a'; NewFilename='b' } },
-        @{ Func='InvokeRestoreSetupLVSource'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','restore-setup-lv-source','RestoreSetupLVSource.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64'; RelativePath='.'; LabVIEW_Project='Proj'; Build_Spec='Spec' } },
-        @{ Func='InvokeRevertDevelopmentMode'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','revert-development-mode','RevertDevelopmentMode.ps1'); Args=@{ RelativePath='.' } },
-        @{ Func='InvokeRunUnitTests'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','run-unit-tests','RunUnitTests.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64' } },
-        @{ Func='InvokeSetDevelopmentMode'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','set-development-mode','Set_Development_Mode.ps1'); Args=@{ RelativePath='.' } }
+        @{ Func='Invoke-AddTokenToLabVIEW'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','add-token-to-labview','AddTokenToLabVIEW.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64'; RelativePath='.' } },
+        @{ Func='Invoke-ApplyVIPC'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','apply-vipc','ApplyVIPC.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; VIP_LVVersion='2021'; SupportedBitness='64'; RelativePath='.'; VIPCPath='dummy.vipc' } },
+        @{ Func='Invoke-BuildViPackage'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','build-vi-package','build_vip.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64'; LabVIEWMinorRevision='2021'; RelativePath='.'; VIPBPath='dummy.vipb'; Major=1; Minor=0; Patch=0; Build=1; Commit='abc'; DisplayInformationJSON='{}' } },
+        @{ Func='Invoke-Build'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','build','Build.ps1'); Args=@{ RelativePath='.'; Major=1; Minor=0; Patch=0; Build=1; Commit='abc'; LabVIEWMinorRevision='2021'; CompanyName='Co'; AuthorName='Auth' } },
+        @{ Func='Invoke-BuildLvlibp'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','build-lvlibp','Build_lvlibp.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64'; RelativePath='.'; LabVIEW_Project='Proj'; Build_Spec='Spec'; Major=1; Minor=0; Patch=0; Build=1; Commit='abc' } },
+        @{ Func='Invoke-CloseLabVIEW'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','close-labview','Close_LabVIEW.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64' } },
+        @{ Func='Invoke-GenerateReleaseNotes'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','generate-release-notes','GenerateReleaseNotes.ps1'); Args=@{ OutputPath='notes.md' } },
+        @{ Func='Invoke-MissingInProject'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','missing-in-project','Invoke-MissingInProjectCLI.ps1'); Args=@{ LVVersion='2021'; Arch='64'; ProjectFile='Proj.lvproj' } },
+        @{ Func='Invoke-ModifyVIPBDisplayInfo'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','modify-vipb-display-info','ModifyVIPBDisplayInfo.ps1'); Args=@{ SupportedBitness='64'; RelativePath='.'; VIPBPath='dummy.vipb'; MinimumSupportedLVVersion='2021'; LabVIEWMinorRevision='2021'; Major=1; Minor=0; Patch=0; Build=1; Commit='abc'; DisplayInformationJSON='{}' } },
+        @{ Func='Invoke-PrepareLabVIEWSource'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','prepare-labview-source','Prepare_LabVIEW_source.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64'; RelativePath='.'; LabVIEW_Project='Proj'; Build_Spec='Spec' } },
+        @{ Func='Invoke-RenameFile'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','rename-file','Rename-file.ps1'); Args=@{ CurrentFilename='a'; NewFilename='b' } },
+        @{ Func='Invoke-RestoreSetupLVSource'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','restore-setup-lv-source','RestoreSetupLVSource.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64'; RelativePath='.'; LabVIEW_Project='Proj'; Build_Spec='Spec' } },
+        @{ Func='Invoke-RevertDevelopmentMode'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','revert-development-mode','RevertDevelopmentMode.ps1'); Args=@{ RelativePath='.' } },
+        @{ Func='Invoke-RunUnitTests'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','run-unit-tests','RunUnitTests.ps1'); Args=@{ MinimumSupportedLVVersion='2021'; SupportedBitness='64' } },
+        @{ Func='Invoke-SetDevelopmentMode'; Script=[System.IO.Path]::Combine($repoRoot,'scripts','set-development-mode','Set_Development_Mode.ps1'); Args=@{ RelativePath='.' } }
     )
 
     foreach ($case in $cases) {

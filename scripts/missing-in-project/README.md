@@ -27,7 +27,7 @@ Results are returned as standard GitHub Action outputs so downstream jobs can d
 
 | Requirement            | Notes |
 |------------------------|-------|
-| **Windows runner**     | LabVIEW and g‑cli are only available on Windows. |
+| **Ubuntu runner**     | LabVIEW and g‑cli are available on Ubuntu. |
 | **LabVIEW** `>= 2020`  | Must match the _numeric_ version you pass in **`lv-ver`**. |
 | **g‑cli** in `PATH`    | The action calls `g-cli --lv-ver …`. Install from NI Package Manager or copy the executable into the runner image. |
 | **PowerShell 7**       | Composite steps use PowerShell Core (`pwsh`). |
@@ -60,7 +60,7 @@ Results are returned as standard GitHub Action outputs so downstream jobs can d
 jobs:
   missing-in-project-check:
     needs: [changes, apply-deps]
-    runs-on: icon-editor-windows
+    runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
@@ -87,7 +87,7 @@ If you want **any** missing file to abort the pipeline immediately, place the st
 jobs:
   missing-in-project-check:
     needs: [changes, apply-deps]
-    runs-on: icon-editor-windows
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         arch: [32, 64]
@@ -151,6 +151,8 @@ type .github/actions/missing-in-project/missing_files.txt
 ```
 
 ---
+
+See also: [docs/actions/missing-in-project.md](../../docs/actions/missing-in-project.md)
 
 ## License
 

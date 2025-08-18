@@ -3,7 +3,7 @@
     Run Pester tests located in a repository.
 
 .DESCRIPTION
-    Invokes Pester in CI mode against the tests under the provided working directory.
+    Invokes Pester against the tests under the provided working directory.
 
 .PARAMETER WorkingDirectory
     Path to the repository containing tests under `tests/pester`.
@@ -24,10 +24,12 @@ $ErrorActionPreference = 'Stop'
 $testPath = Join-Path $WorkingDirectory 'tests/pester'
 $cfg = New-PesterConfiguration
 $cfg.Output.NoColor = $true
+$cfg.Run.Path = $testPath
+$cfg.TestResult.Enabled = $false
 $ansiPattern = '\x1B\[[0-9;]*[A-Za-z]'
 
 $output = & {
-    Invoke-Pester -CI -Configuration $cfg -Path $testPath 2>&1
+    Invoke-Pester -Configuration $cfg 2>&1
 }
 $exitCode = $LASTEXITCODE
 $output | ForEach-Object { $_ -replace $ansiPattern, '' }

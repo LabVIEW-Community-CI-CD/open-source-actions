@@ -24,6 +24,8 @@ Run **`RestoreSetupLVSource.ps1`** to restore packaged LabVIEW sources and remov
     build_spec: "Editor Packed Library"
 ```
 
+See also: [docs/actions/restore-setup-lv-source.md](../../docs/actions/restore-setup-lv-source.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).

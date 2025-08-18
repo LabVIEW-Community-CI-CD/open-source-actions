@@ -6,6 +6,8 @@ To keep documentation consistent and easy to review, please follow these rules w
 
 Action documentation lives under [docs/actions/](actions/). Keep these files in sync with their corresponding implementations in [scripts/](../scripts).
 
+- Run `npm run verify:docs` to check that documented inputs match each action's action.yml.
+
 ## Markdown linting
 
 - Run `npm run lint:md` to lint Markdown formatting.

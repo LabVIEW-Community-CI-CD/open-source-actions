@@ -8,17 +8,17 @@ This guide explains the structure of the unified dispatcher and how to extend it
 
 - **Dispatcher Script (`Invoke-OSAction.ps1`)**: Entry point that parses inputs and dispatches to an adapter based on `-ActionName`.
 - **PowerShell Module (`OpenSourceActions.psm1`)**: Houses all adapter functions and shared logic.
-- **Underlying Scripts**: Implement the actual functionality and live under `actions/<action-name>/`.
+- **Underlying Scripts**: Implement the actual functionality and live under `scripts/<action-name>/`.
 
 ## Naming Conventions
 
 - **Action Name**: Lowercase with hyphens, e.g., `"my-new-action"`.
-- **Script Filename**: Place your PowerShell script in `actions/<action-name>/` with a clear name.
-- **Adapter Function Name**: Use `Invoke<PascalCase>` (e.g., `InvokeMyNewAction`).
+- **Script Filename**: Place your PowerShell script in `scripts/<action-name>/` with a clear name.
+- **Adapter Function Name**: Use `Invoke-<PascalCase>` (e.g., `Invoke-MyNewAction`).
 - **Folder Structure**:
 
 ```text
-actions/
+scripts/
   my-new-action/
     MyNewAction.ps1
 ```
@@ -28,7 +28,7 @@ actions/
 Add your function to `OpenSourceActions.psm1`:
 
 ```powershell
-function InvokeMyNewAction {
+function Invoke-MyNewAction {
     [CmdletBinding()]
     param(
         [Parameter(Mandatory)] [string] $Param1,
@@ -37,7 +37,7 @@ function InvokeMyNewAction {
         [switch] $DryRun
     )
     Write-Information "Invoking MyNewAction with Param1=$Param1 ..." -InformationAction Continue
-    $scriptPath = Join-Path $PSScriptRoot 'my-new-action/MyNewAction.ps1'
+    $scriptPath = Join-Path $PSScriptRoot '../scripts/my-new-action/MyNewAction.ps1'
     $args = @{
         Param1 = $Param1
         Param2 = $Param2
@@ -55,18 +55,12 @@ function InvokeMyNewAction {
 }
 ```
 
-## Registry Update (`Invoke-OSAction.ps1`)
+## Registry Update (`dispatchers.json`)
 
-Map the action name to the adapter function:
+After adding your adapter function, regenerate the dispatcher registry:
 
-```powershell
-$registry = @{
-    'add-token-to-labview' = 'InvokeAddTokenToLabVIEW'
-    'apply-vipc'           = 'InvokeApplyVIPC'
-    # ... existing mappings
-    'my-new-action'        = 'InvokeMyNewAction'
-}
-```
+1. Run `npm run derive:registry` to update `dispatchers.json`.
+2. Commit the regenerated file.
 
 ## Logging and Verbosity
 

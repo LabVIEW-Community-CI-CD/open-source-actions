@@ -13,7 +13,7 @@
     Bitness of the LabVIEW environment ("32" or "64").
 
 .PARAMETER RelativePath
-    Path to the repository root.
+    Path relative to the action's working directory. Use "." for the working directory (e.g., repository root).
 
 .PARAMETER LabVIEW_Project
     Name of the LabVIEW project (without extension).
@@ -22,7 +22,7 @@
     Build specification name within the project.
 
 .EXAMPLE
-    .\RestoreSetupLVSource.ps1 -MinimumSupportedLVVersion "2021" -SupportedBitness "64" -RelativePath "C:\labview-icon-editor" -LabVIEW_Project "lv_icon_editor" -Build_Spec "Editor Packed Library"
+    .\RestoreSetupLVSource.ps1 -MinimumSupportedLVVersion "2021" -SupportedBitness "64" -RelativePath "." -LabVIEW_Project "lv_icon_editor" -Build_Spec "Editor Packed Library"
 #>
 param(
     [string]$MinimumSupportedLVVersion,

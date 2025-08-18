@@ -37,6 +37,8 @@ Execute **`ModifyVIPBDisplayInfo.ps1`** to merge metadata into a `.vipb` file be
     display_information_json: '{}'
 ```
 
+See also: [docs/actions/modify-vipb-display-info.md](../../docs/actions/modify-vipb-display-info.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).

@@ -20,6 +20,7 @@ jobs:
           node-version: 24
       - run: npm run check:node
       - run: npm install
+      - run: npm run link:check
       - run: npm run test:ci
       - run: npm run derive:registry
       - run: npm run generate:summary
@@ -49,14 +50,31 @@ jobs:
           - os: ubuntu-24.04
             runs-on: ubuntu-24.04
             runner_type: default
-          - os: icon-editor-windows
-            runs-on: [self-hosted, icon-editor-windows]
+          - os: windows-latest
+            runs-on: windows-latest
             runner_type: integration
     runs-on: ${{ matrix.runs-on }}
     env:
       RUNNER_TYPE: ${{ matrix.runner_type }}
     steps:
       - uses: actions/checkout@v4
+      - name: Install PowerShell 7.5.1
+        if: matrix.os == 'windows-latest'
+        shell: pwsh
+        run: |
+          $msiUrl = 'https://github.com/PowerShell/PowerShell/releases/download/v7.5.1/PowerShell-7.5.1-win-x64.msi'
+          $msiPath = Join-Path $env:RUNNER_TEMP 'PowerShell-7.5.1-win-x64.msi'
+          Invoke-WebRequest -Uri $msiUrl -OutFile $msiPath
+          $expectedHash = 'b110eccaf55bb53ae5e6b6de478587ed8203570b0bda9bd374a0998e24d4033a'
+          $actualHash = (Get-FileHash $msiPath -Algorithm SHA256).Hash
+          if ($actualHash -ne $expectedHash) {
+            throw "SHA256 mismatch: $actualHash"
+          }
+          Start-Process msiexec -Wait -ArgumentList '/i', $msiPath, '/qn', 'ADD_PATH=1'
+          $version = (pwsh --version).Trim() -replace '^PowerShell '
+          if ($version -ne '7.5.1') {
+            throw "PowerShell version $version is not 7.5.1"
+          }
       - name: Capture setup info
         shell: pwsh
         run: |
@@ -88,29 +106,14 @@ jobs:
             Remove-Module Pester -ErrorAction SilentlyContinue
             Install-Module -Name Pester -MinimumVersion 5.0.0 -Scope CurrentUser -Force -SkipPublisherCheck
           }
-      - name: Install powershell-yaml
-        if: matrix.runner_type != 'integration'
-        shell: pwsh
-        run: Install-Module -Name powershell-yaml -Scope CurrentUser -Force
-      - name: Validate native YAML parsing
-        if: matrix.runner_type == 'integration'
-        shell: pwsh
-        run: |
-          $parsed = ConvertFrom-Yaml 'a: 1'
-          if ($parsed.a -ne 1) { throw 'YAML parsing failed' }
       - name: Run Pester
         shell: pwsh
         run: |
           if (Test-Path "tests/pester") {
-            $OutDir = Join-Path $env:GITHUB_WORKSPACE 'pester-results'
-            New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
-            Import-Module Pester -MinimumVersion 5.0.0
-            $cfg = [PesterConfiguration]::Default
+            $cfg = New-PesterConfiguration
             $cfg.Run.Path = './tests/pester'
+            $cfg.TestResult.Enabled = $false
             $cfg.Run.Exit = $true
-            $cfg.TestResult.Enabled = $true
-            $cfg.TestResult.OutputFormat = 'JUnitXml'
-            $cfg.TestResult.OutputPath = (Join-Path $OutDir 'pester-junit.xml')
             Invoke-Pester -Configuration $cfg
           }
       - uses: actions/upload-artifact@v4

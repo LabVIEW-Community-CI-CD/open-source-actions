@@ -12,7 +12,7 @@
 
   Example usage:
     .\Build.ps1 `
-      -RelativePath "C:\release\labview-icon-editor-fork" `
+      -RelativePath "." `
       -Major 1 -Minor 0 -Patch 0 -Build 3 -Commit "Placeholder" `
       -CompanyName "Acme Corporation" `
       -AuthorName "John Doe (Acme Corp)" `

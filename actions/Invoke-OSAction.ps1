@@ -2,7 +2,7 @@
 param(
   [Parameter(Position=0)] [string] $ActionName,
   [Parameter()] [string] $ArgsJson = '{}',
-  [Parameter()] [hashtable] $ArgsYaml,
+  [Parameter()] [hashtable] $ArgsHashtable,
   [Parameter()] [string] $ArgsFile,
   [Parameter()] [string] $WorkingDirectory,
   [Parameter()] [ValidateSet('ERROR','WARN','INFO','DEBUG')] [string] $LogLevel = 'INFO',
@@ -19,22 +19,22 @@ Import-Module (Join-Path $PSScriptRoot 'OpenSourceActions.psm1') -Force
 # Attempt to build registry from generated dispatcher metadata; fall back to
 # a static map only if loading fails or produces no entries.
 $FallbackRegistry = [ordered]@{
-    'add-token-to-labview'      = 'InvokeAddTokenToLabVIEW'
-    'apply-vipc'               = 'InvokeApplyVIPC'
-    'build'                    = 'InvokeBuild'
-    'build-lvlibp'             = 'InvokeBuildLvlibp'
-    'build-vi-package'         = 'InvokeBuildViPackage'
-    'close-labview'            = 'InvokeCloseLabVIEW'
-    'generate-release-notes'   = 'InvokeGenerateReleaseNotes'
-    'missing-in-project'       = 'InvokeMissingInProject'
-    'modify-vipb-display-info' = 'InvokeModifyVIPBDisplayInfo'
-    'prepare-labview-source'   = 'InvokePrepareLabVIEWSource'
-    'rename-file'              = 'InvokeRenameFile'
-    'restore-setup-lv-source'  = 'InvokeRestoreSetupLVSource'
-    'revert-development-mode'  = 'InvokeRevertDevelopmentMode'
-    'run-pester-tests'         = 'InvokeRunPesterTests'
-    'run-unit-tests'           = 'InvokeRunUnitTests'
-    'set-development-mode'     = 'InvokeSetDevelopmentMode'
+    'add-token-to-labview'      = 'Invoke-AddTokenToLabVIEW'
+    'apply-vipc'               = 'Invoke-ApplyVIPC'
+    'build'                    = 'Invoke-Build'
+    'build-lvlibp'             = 'Invoke-BuildLvlibp'
+    'build-vi-package'         = 'Invoke-BuildViPackage'
+    'close-labview'            = 'Invoke-CloseLabVIEW'
+    'generate-release-notes'   = 'Invoke-GenerateReleaseNotes'
+    'missing-in-project'       = 'Invoke-MissingInProject'
+    'modify-vipb-display-info' = 'Invoke-ModifyVIPBDisplayInfo'
+    'prepare-labview-source'   = 'Invoke-PrepareLabVIEWSource'
+    'rename-file'              = 'Invoke-RenameFile'
+    'restore-setup-lv-source'  = 'Invoke-RestoreSetupLVSource'
+    'revert-development-mode'  = 'Invoke-RevertDevelopmentMode'
+    'run-pester-tests'         = 'Invoke-RunPesterTests'
+    'run-unit-tests'           = 'Invoke-RunUnitTests'
+    'set-development-mode'     = 'Invoke-SetDevelopmentMode'
   }
 
 $Registry = $null
@@ -45,7 +45,7 @@ try {
     $generated = [ordered]@{}
     foreach ($fn in $raw.Keys) {
       if ($fn -notlike 'Invoke*') { continue }
-      $name = $fn -replace '^Invoke'
+      $name = $fn -replace '^Invoke-?'
       $name = $name -creplace '([a-z0-9])([A-Z])', '$1-$2'
       $name = $name -creplace '([A-Z])([A-Z][a-z])', '$1-$2'
       $name = $name -ireplace 'Lab-VIEW', 'LabVIEW'
@@ -58,6 +58,8 @@ try {
 }
 if (-not $Registry) { $Registry = $FallbackRegistry }
 
+# Sets the verbosity for informational and verbose messages.
+# Level: Desired log level (ERROR, WARN, INFO, DEBUG).
 function Set-LogLevel {
   param([string]$Level)
   switch ($Level.ToUpperInvariant()) {
@@ -69,11 +71,14 @@ function Set-LogLevel {
   }
 }
 
+# Outputs the list of available actions.
 function Show-List {
   Write-Output 'Available actions:'
   $Registry.Keys | Sort-Object | ForEach-Object { Write-Output " - $_" }
 }
 
+# Displays parameter information for an action.
+# Name: Action name to describe.
 function Show-Description([string]$Name) {
   $key = $Name.ToLowerInvariant()
   if (-not $Registry.Contains($key)) { throw "Unknown action '$Name'" }
@@ -88,6 +93,11 @@ function Show-Description([string]$Name) {
   $consoleLines | ForEach-Object { Write-Output $_ }
 }
 
+# Filters a set of input arguments to those accepted by a dispatcher.
+# InputArgs: Hashtable of supplied arguments.
+# FuncName: Target dispatcher function name.
+# ActionNameForWarn: Action name used when emitting warnings.
+# ReturnUnknownParams: If set, returns unknown parameters as well.
 function Filter-Args([hashtable]$InputArgs, [string]$FuncName, [string]$ActionNameForWarn, [switch]$ReturnUnknownParams) {
   $cmd = Get-Command $FuncName -ErrorAction Stop
 
@@ -132,31 +142,28 @@ try {
   if (-not $Registry.Contains($key)) { throw "Unknown ActionName '$ActionName'. Use -ListActions to see options." }
   $funcName = $Registry[$key]
 
-  # Parse ArgsFile/ArgsJson/ArgsYaml → case-insensitive hashtable
+  # Parse ArgsFile/ArgsJson/ArgsHashtable → case-insensitive hashtable
   $argsHash = @{}
   if ($ArgsFile) {
     if (-not (Test-Path $ArgsFile)) { throw "ArgsFile '$ArgsFile' not found" }
     $ext = [System.IO.Path]::GetExtension($ArgsFile).ToLowerInvariant()
     $content = Get-Content -Path $ArgsFile -Raw
-    try {
-      switch ($ext) {
-        '.json' {
-          $fileArgs = ConvertFrom-Json -InputObject $content -AsHashtable -ErrorAction Stop
+      try {
+        switch ($ext) {
+          '.json' {
+            $fileArgs = ConvertFrom-Json -InputObject $content -AsHashtable -ErrorAction Stop
+          }
+          default {
+            throw "Unsupported ArgsFile extension '$ext'. Use .json."
+          }
         }
-        '.yaml' {
-          $fileArgs = ConvertFrom-Yaml -Yaml $content -ErrorAction Stop | ConvertTo-Json -Depth 32 | ConvertFrom-Json -AsHashtable
-        }
-        '.yml' {
-          $fileArgs = ConvertFrom-Yaml -Yaml $content -ErrorAction Stop | ConvertTo-Json -Depth 32 | ConvertFrom-Json -AsHashtable
-        }
-        default {
-          throw "Unsupported ArgsFile extension '$ext'. Use .json, .yaml, or .yml."
+        if ($fileArgs -isnot [hashtable]) {
+          throw 'ArgsFile root node must be a mapping/object'
         }
       }
-    }
-    catch {
-      throw "ArgsFile could not be parsed: $($_.Exception.Message)"
-    }
+      catch {
+        throw "ArgsFile could not be parsed: $($_.Exception.Message)"
+      }
     foreach ($k in $fileArgs.Keys) { $argsHash[$k] = $fileArgs[$k] }
   }
 
@@ -180,9 +187,9 @@ try {
     }
     foreach ($k in $jsonHash.Keys) { $argsHash[$k] = $jsonHash[$k] }
   }
-  if ($ArgsYaml) {
-    foreach ($k in $ArgsYaml.Keys) {
-      $argsHash[$k] = $ArgsYaml[$k]
+  if ($ArgsHashtable) {
+    foreach ($k in $ArgsHashtable.Keys) {
+      $argsHash[$k] = $ArgsHashtable[$k]
     }
   }
 

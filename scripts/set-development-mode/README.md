@@ -16,6 +16,8 @@ Execute **`Set_Development_Mode.ps1`** to prepare the repository for active deve
     relative_path: ${{ github.workspace }}
 ```
 
+See also: [docs/actions/set-development-mode.md](../../docs/actions/set-development-mode.md)
+
 ## License
 
 This directory inherits the root repository’s license (MIT, unless otherwise noted).

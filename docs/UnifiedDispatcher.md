@@ -13,17 +13,25 @@ See [Common Parameters](common-parameters.md) for a complete list of dispatcher 
 
 ## Cross‑platform
 
-Works on **Windows and Linux** as long as LabVIEW and [g-cli](https://github.com/ni/g-cli) are installed and available on `PATH`. For non‑standard installs, pass `gcliPath` in `args_yaml`.
+Works on **Windows and Linux** as long as LabVIEW and [g-cli](https://github.com/ni/g-cli) are installed and available on `PATH`. For non‑standard installs, pass `gcliPath` in `args_json`.
 
 ## Example (CLI)
 
 ```powershell
-$yaml = @'
-MinimumSupportedLVVersion: "2021"
-SupportedBitness: "64"
-gcliPath: "/opt/gcli/bin"
+$json = @'
+{
+  "MinimumSupportedLVVersion": "2021",
+  "SupportedBitness": "64",
+  "gcliPath": "/opt/gcli/bin"
+}
 '@
-pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsYaml (ConvertFrom-Yaml $yaml) -LogLevel INFO
+pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson $json -LogLevel INFO
+```
+
+Arguments can also be read from a JSON file:
+
+```powershell
+pwsh ./actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsFile ./config/run-tests.json -LogLevel INFO
 ```
 
 ## Wrapper action usage
@@ -46,8 +54,8 @@ jobs:
         include:
           - os: ubuntu-24.04
             runs-on: ubuntu-24.04
-          - os: icon-editor-windows
-            runs-on: [self-hosted, icon-editor-windows]
+          - os: windows-latest
+            runs-on: windows-latest
     runs-on: ${{ matrix.runs-on }}
     steps:
       - uses: actions/checkout@v4

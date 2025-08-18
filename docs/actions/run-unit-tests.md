@@ -20,11 +20,19 @@ None.
 ## CLI example
 
 ```powershell
-$yaml = @'
-MinimumSupportedLVVersion: "2020"
-SupportedBitness: "64"
+$json = @'
+{
+  "MinimumSupportedLVVersion": "2020",
+  "SupportedBitness": "64"
+}
 '@
-pwsh -File actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsYaml (ConvertFrom-Yaml $yaml)
+pwsh -File actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsJson $json
+```
+
+Alternatively, load arguments from a JSON file:
+
+```powershell
+pwsh -File actions/Invoke-OSAction.ps1 -ActionName run-unit-tests -ArgsFile ./config/run-tests.json
 ```
 
 ## GitHub Action inputs
@@ -36,7 +44,7 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 | `minimum_supported_lv_version` | `MinimumSupportedLVVersion` | LabVIEW version for the test run. |
 | `supported_bitness` | `SupportedBitness` | "32" or "64" bitness of LabVIEW. |
 | `gcli_path` | `gcliPath` | Optional path to the g-cli executable. |
-| `working_directory` | `WorkingDirectory` | Working directory where the action will run. |
+| `working_directory` | `WorkingDirectory` | Base directory for the action; relative paths are resolved from here. |
 | `log_level` | `LogLevel` | Verbosity level (ERROR\|WARN\|INFO\|DEBUG). |
 | `dry_run` | `DryRun` | If true, simulate the action without side effects. |
 
@@ -57,3 +65,5 @@ GitHub Action inputs are provided in `snake_case`, while CLI parameters use `Pas
 - `3` – g-cli or test run error
 
 For troubleshooting tips, see the [troubleshooting guide](../troubleshooting.md).
+
+See also: [scripts/run-unit-tests/README.md](../../scripts/run-unit-tests/README.md).
