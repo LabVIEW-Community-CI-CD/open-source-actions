@@ -6,6 +6,7 @@
 - Install `actionlint` and ensure it is on your `PATH`:
   - `go install github.com/rhysd/actionlint/cmd/actionlint@latest`
 - Ensure PowerShell 7.5.1 is installed and accessible.
+- PowerShell 7.5.1 includes native YAML support; external modules such as `powershell-yaml` are no longer required.
 
 ## Testing
 - Run `npm run check:node` to verify Node.js satisfies the required version.

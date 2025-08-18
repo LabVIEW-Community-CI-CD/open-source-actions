@@ -1,5 +1,4 @@
 #requires -Version 7.0
-$env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::PathSeparator + $env:PSModulePath
 # Pester v5+ tests that do NOT require LabVIEW/g-cli.
 # Run:
 #   $cfg = New-PesterConfiguration

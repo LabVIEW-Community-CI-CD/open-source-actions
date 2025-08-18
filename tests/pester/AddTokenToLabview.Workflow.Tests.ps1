@@ -1,5 +1,4 @@
 #requires -Version 7.0
-$env:PSModulePath = (Join-Path $PSScriptRoot 'Modules') + [System.IO.Path]::PathSeparator + $env:PSModulePath
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
