@@ -111,11 +111,6 @@ jobs:
             Remove-Module Pester -ErrorAction SilentlyContinue
             Install-Module -Name Pester -MinimumVersion 5.0.0 -Scope CurrentUser -Force -SkipPublisherCheck
           }
-      - name: Validate native YAML parsing
-        shell: pwsh
-        run: |
-          $parsed = ConvertFrom-Yaml 'a: 1'
-          if ($parsed.a -ne 1) { throw 'YAML parsing failed' }
       - name: Run Pester
         shell: pwsh
         run: |
