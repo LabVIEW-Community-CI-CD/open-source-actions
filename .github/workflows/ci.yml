@@ -58,9 +58,24 @@ jobs:
       RUNNER_TYPE: ${{ matrix.runner_type }}
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-pwsh@v2
-        with:
-          version: '7.5.1'
+        if: matrix.os != 'windows-latest'
+      - name: Install PowerShell 7.5.1 (Ubuntu)
+        if: matrix.os == 'ubuntu-24.04'
+        shell: bash
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget
+          wget https://github.com/PowerShell/PowerShell/releases/download/v7.5.1/powershell_7.5.1-1.deb_amd64.deb -O /tmp/powershell.deb
+          sudo dpkg -i /tmp/powershell.deb
+      - name: Install PowerShell 7.5.1 (Windows)
+        if: matrix.os == 'windows-latest'
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $url = 'https://github.com/PowerShell/PowerShell/releases/download/v7.5.1/PowerShell-7.5.1-win-x64.msi'
+          $msi = "$env:TEMP\pwsh.msi"
+          Invoke-WebRequest -Uri $url -OutFile $msi
+          Start-Process msiexec -Wait -ArgumentList '/i', $msi, '/qn', '/norestart'
       - name: Capture setup info
         shell: pwsh
         run: |
@@ -92,14 +107,10 @@ jobs:
             Remove-Module Pester -ErrorAction SilentlyContinue
             Install-Module -Name Pester -MinimumVersion 5.0.0 -Scope CurrentUser -Force -SkipPublisherCheck
           }
-      - name: Install powershell-yaml
-        shell: pwsh
-        run: Install-Module -Name powershell-yaml -Scope CurrentUser -Force
-      - name: Validate YAML parsing
+      - name: Validate native YAML parsing
         if: matrix.runner_type == 'integration'
         shell: pwsh
         run: |
-          Import-Module powershell-yaml
           $parsed = ConvertFrom-Yaml 'a: 1'
           if ($parsed.a -ne 1) { throw 'YAML parsing failed' }
       - name: Run Pester
@@ -114,7 +125,7 @@ jobs:
             Invoke-Pester -Configuration $cfg
           }
       - uses: actions/upload-artifact@v4
-        if: always()
+        if: matrix.os != 'windows-latest' && always()
         with:
           name: pester-junit-${{ matrix.os }}
           path: pester-results/pester-junit.xml
